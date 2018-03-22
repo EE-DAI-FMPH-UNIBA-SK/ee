@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+  <h:head>
+    <title>Your calendars</title>
+    <h:outputStylesheet name="js/fullcalendar/fullcalendar.css"/>
+    <h:outputStylesheet name="css/calendar.css"/>
+    <h:outputScript  library="js" name="fullcalendar/lib/moment.min.js"/>
+    <h:outputScript  library="js" name="fullcalendar/lib/jquery.min.js"/>
+    <h:outputScript  library="js" name="fullcalendar/fullcalendar.min.js" />
+    <h:outputScript  library="js" name="calendar.js" />
+  </h:head>
+  <h:body >
+    <h:form id="form">
+      <div class="up">
+        <div id="addCalendar">
+          <p:panelGrid columns="2">
+            <f:facet name="header">Pridať nový kalendár</f:facet>
+            <h:outputText value="Meno"/>
+            <p:inputText id="name"/>
+            <h:outputText value="Verejný kalendár:"/>
+            <h:selectBooleanCheckbox id="public"/>
+            <f:facet name="footer">
+              <h:button value="Vytvoriť kalendár" onclick="addCalendar()"  />
+            </f:facet>
+          </p:panelGrid>
+        </div>
+        <div id="importXML">
+          <p:fileUpload mode="simple" id="xmlUpload" />
+          <input type="button" value="Import XML dát" onclick="importEvents()"/>
+        </div>
+        <div id="importJson">
+          <p:fileUpload mode="simple" id="jsonUpload" />
+          <input type="button" value="Import JSON dát" onclick="importJson()"/>
+        </div>
+      </div>
+      <div class="down">
+        <div class="leftSite">
+          <h3>Kalendáre</h3>
+          <div id="calendare"/>
+        </div>
+        <div class="rightSite" id="showCalendar">
+          <h3 id="calendarName"></h3>
+          <div id='events'/>
+        </div>
+      </div>
+    </h:form>
+  </h:body>
+</html>
+

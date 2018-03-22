@@ -1,0 +1,40 @@
+#addCalendar{
+  width: 30%;
+  float: left;
+}
+
+#importXML{
+  width: 30%;
+  float: right;
+}
+
+#importJson{
+  width: 30%;
+  float: right;
+}
+
+#calendare{
+  width: 30%;
+}
+
+.rightSite{
+  float: left;
+  width: 78%;
+}
+
+.leftSite{
+  width: 20%;
+  float: left;
+}
+
+.up, .down{
+  position: absolute;
+}
+
+.up{
+  height: 150px;
+}
+
+.down{
+  top: 160px;
+}

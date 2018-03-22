@@ -1,0 +1,85 @@
+﻿<timetable version="0.1" name="1mAIN">
+  <lesson id="1249">
+    <type>Prednáška</type>
+    <room>A</room>
+    <subject>Programovanie paralelných a distribuovaných systémov</subject>
+    <day>Ut</day>
+    <start>8:10</start>
+    <end>11:10</end>
+    <teacher>D. Gruska</teacher>
+  </lesson>
+  <lesson id="1279">
+    <type>Výber/Vol</type>
+    <room>M-III</room>
+    <subject>Tvorba edukačného softvéru</subject>
+    <day>Ut</day>
+    <start>11:30</start>
+    <end>13:00</end>
+    <teacher>M. Tomcsányiová</teacher>
+  </lesson>
+  <lesson id="1871">
+    <type>Prednáška</type>
+    <room>I-23</room>
+    <subject>Diskrétne štruktúry v informatike a počítačovej grafike</subject>
+    <day>Ut</day>
+    <start>14:50</start>
+    <end>16:20</end>
+    <teacher>T. Jajcayová</teacher>
+  </lesson>
+  <lesson id="1872">
+    <type>Prednáška</type>
+    <room>M-VII</room>
+    <subject>Algoritmické riešenie ťažkých problémov</subject>
+    <day>St</day>
+    <start>11:30</start>
+    <end>13:00</end>
+    <teacher>T. Vinař</teacher>
+  </lesson>
+  <lesson id="1873">
+    <type>Cvičenie</type>
+    <room>I-23</room>
+    <subject>Algoritmické riešenie ťažkých problémov</subject>
+    <day>Št</day>
+    <start>10:40</start>
+    <end>12:10</end>
+    <teacher>M. Lipovský</teacher>
+  </lesson>
+  <lesson id="1878">
+    <type>Cvičenie</type>
+    <room>I-9</room>
+    <subject>Diskrétne štruktúry v informatike a počítačovej grafike</subject>
+    <day>Št</day>
+    <start>11:30</start>
+    <end>13:00</end>
+    <teacher>P. Náther</teacher>
+    <teacher>T. Jajcayová</teacher>
+  </lesson>
+  <lesson id="1230">
+    <type>Kurz</type>
+    <room>B</room>
+    <subject>Formálne metódy tvorby softvéru</subject>
+    <day>Št</day>
+    <start>13:10</start>
+    <end>16:10</end>
+    <teacher>D. Gruska</teacher>
+  </lesson>
+  <lesson id="1170">
+    <type>Nezadaný typ</type>
+    <room>KTVS</room>
+    <subject>Telesná výchova a šport (2)</subject>
+    <day>Pi</day>
+    <start>8:10</start>
+    <end>12:40</end>
+    <teacher>KTVŠ</teacher>
+  </lesson>
+  <lesson id="1252">
+    <type>Seminár</type>
+    <room>A</room>
+    <subject>Projektový seminár (1)</subject>
+    <day>Pi</day>
+    <start>8:10</start>
+    <end>9:40</end>
+    <teacher>R. Ďurikovič</teacher>
+    <teacher>A. Riečický</teacher>
+  </lesson>
+</timetable>
