@@ -26,28 +26,37 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  * @author Livia
  */
 @Entity
-@Table(name = "households")
+@Table(name = "calendar")
 @XmlRootElement
-@NamedQueries({@NamedQuery(name = "Households.findAll", query = "SELECT h FROM Households h"), @NamedQuery(name = "Households.findById", query = "SELECT h FROM Households h WHERE h.id = :id"), @NamedQuery(name = "Households.findByName", query = "SELECT h FROM Households h WHERE h.name = :name")})
-public class Households implements Serializable {
+@NamedQueries({
+  @NamedQuery(name = "Calendar.findAll", query = "SELECT c FROM Calendar c"),
+  @NamedQuery(name = "Calendar.findById", query = "SELECT c FROM Calendar c WHERE c.id = :id"),
+  @NamedQuery(name = "Calendar.findByName", query = "SELECT c FROM Calendar c WHERE c.name = :name"),
+  @NamedQuery(name = "Calendar.findByVisible", query = "SELECT c FROM Calendar c WHERE c.visible = :visible")})
+public class Calendar implements Serializable {
   private static final long serialVersionUID = 1L;
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Basic(optional = false) @Column(name = "id")
   private Integer id;
-  @Size(max = 20) @Column(name = "name")
+  @Size(max = 100) @Column(name = "name")
   private String name;
-  @OneToMany(mappedBy = "householdId")
-  private Collection<HouseholdUsers> householdUsersCollection;
-  @OneToMany(mappedBy = "householdId")
-  private Collection<ShoppingLists> shoppingListsCollection;
-  @JoinColumn(name = "admin_id", referencedColumnName = "id") @ManyToOne
-  private Users adminId;
+  @Column(name = "visible")
+  private Boolean visible;
+  @JoinColumn(name = "user", referencedColumnName = "id") @ManyToOne
+  private User user;
+  @OneToMany(mappedBy = "calendar")
+  private Collection<Eventincalendar> eventincalendarCollection;
   //
 
-  public Households() {
+  public Calendar() {
   }
 
-  public Households(Integer id) {
+  public Calendar(Integer id) {
     this.id = id;
+  }
+
+  public Calendar(String name, boolean visible) {
+    this.name = name;
+    this.visible = visible;
   }
 
   public Integer getId() {
@@ -66,30 +75,29 @@ public class Households implements Serializable {
     this.name = name;
   }
 
+  public Boolean getVisible() {
+    return visible;
+  }
+
+  public void setVisible(Boolean visible) {
+    this.visible = visible;
+  }
+
+  public User getUser() {
+    return user;
+  }
+
+  public void setUser(User user) {
+    this.user = user;
+  }
+
   @XmlTransient @JsonIgnore
-  public Collection<HouseholdUsers> getHouseholdUsersCollection() {
-    return householdUsersCollection;
+  public Collection<Eventincalendar> getEventincalendarCollection() {
+    return eventincalendarCollection;
   }
 
-  public void setHouseholdUsersCollection(Collection<HouseholdUsers> householdUsersCollection) {
-    this.householdUsersCollection = householdUsersCollection;
-  }
-
-  @XmlTransient @JsonIgnore
-  public Collection<ShoppingLists> getShoppingListsCollection() {
-    return shoppingListsCollection;
-  }
-
-  public void setShoppingListsCollection(Collection<ShoppingLists> shoppingListsCollection) {
-    this.shoppingListsCollection = shoppingListsCollection;
-  }
-
-  public Users getAdminId() {
-    return adminId;
-  }
-
-  public void setAdminId(Users adminId) {
-    this.adminId = adminId;
+  public void setEventincalendarCollection(Collection<Eventincalendar> eventincalendarCollection) {
+    this.eventincalendarCollection = eventincalendarCollection;
   }
 
   @Override
@@ -102,10 +110,10 @@ public class Households implements Serializable {
   @Override
   public boolean equals(Object object) {
     // TODO: Warning - this method won't work in the case the id fields are not set
-    if (!(object instanceof Households)) {
+    if (!(object instanceof Calendar)) {
       return false;
     }
-    Households other = (Households) object;
+    Calendar other = (Calendar) object;
     if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
       return false;
     }
@@ -114,7 +122,7 @@ public class Households implements Serializable {
 
   @Override
   public String toString() {
-    return "com.entity.Households[ id=" + id + " ]";
+    return "com.entity.Calendar[ id=" + id + " ]";
   }
 
 }

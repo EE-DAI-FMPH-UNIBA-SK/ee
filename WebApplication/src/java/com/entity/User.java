@@ -24,17 +24,16 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  * @author Livia
  */
 @Entity
-@Table(name = "users")
+@Table(name = "user")
 @XmlRootElement
 @NamedQueries({
-  @NamedQuery(name = "Users.control", query = "SELECT u FROM Users u WHERE u.name = :name and u.password = :password"),
-  @NamedQuery(name = "Users.findAll", query = "SELECT u FROM Users u"),
-  @NamedQuery(name = "Users.findById", query = "SELECT u FROM Users u WHERE u.id = :id"),
-  @NamedQuery(name = "Users.findByName", query = "SELECT u FROM Users u WHERE u.name = :name"),
-  @NamedQuery(name = "Users.findByEmail", query = "SELECT u FROM Users u WHERE u.email = :email"),
-  @NamedQuery(name = "Users.findByPassword", query = "SELECT u FROM Users u WHERE u.password = :password")
-})
-public class Users implements Serializable {
+  @NamedQuery(name = "User.control", query = "SELECT u FROM User u WHERE u.name = :name and u.password = :password"),
+  @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
+  @NamedQuery(name = "User.findById", query = "SELECT u FROM User u WHERE u.id = :id"),
+  @NamedQuery(name = "User.findByName", query = "SELECT u FROM User u WHERE u.name = :name"),
+  @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
+  @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password")})
+public class User implements Serializable {
   private static final long serialVersionUID = 1L;
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Basic(optional = false) @Column(name = "id")
   private Integer id;
@@ -45,20 +44,20 @@ public class Users implements Serializable {
   private String email;
   @Size(max = 20) @Column(name = "password")
   private String password;
-  @OneToMany(mappedBy = "userId")
-  private Collection<HouseholdUsers> householdUsersCollection;
-  @OneToMany(mappedBy = "userId")
-  private Collection<Calendars> calendarsCollection;
-  @OneToMany(mappedBy = "userId")
-  private Collection<ShoppingLists> shoppingListsCollection;
-  @OneToMany(mappedBy = "adminId")
-  private Collection<Households> householdsCollection;
+  @OneToMany(mappedBy = "user")
+  private Collection<Calendar> calendarCollection;
+  @OneToMany(mappedBy = "user")
+  private Collection<Shoppinglist> shoppinglistCollection;
+  @OneToMany(mappedBy = "user")
+  private Collection<Userinhousehold> userinhouseholdCollection;
+  @OneToMany(mappedBy = "admin")
+  private Collection<Household> householdCollection;
   //
 
-  public Users() {
+  public User() {
   }
 
-  public Users(Integer id) {
+  public User(Integer id) {
     this.id = id;
   }
 
@@ -95,39 +94,39 @@ public class Users implements Serializable {
   }
 
   @XmlTransient @JsonIgnore
-  public Collection<HouseholdUsers> getHouseholdUsersCollection() {
-    return householdUsersCollection;
+  public Collection<Calendar> getCalendarCollection() {
+    return calendarCollection;
   }
 
-  public void setHouseholdUsersCollection(Collection<HouseholdUsers> householdUsersCollection) {
-    this.householdUsersCollection = householdUsersCollection;
-  }
-
-  @XmlTransient @JsonIgnore
-  public Collection<Calendars> getCalendarsCollection() {
-    return calendarsCollection;
-  }
-
-  public void setCalendarsCollection(Collection<Calendars> calendarsCollection) {
-    this.calendarsCollection = calendarsCollection;
+  public void setCalendarCollection(Collection<Calendar> calendarCollection) {
+    this.calendarCollection = calendarCollection;
   }
 
   @XmlTransient @JsonIgnore
-  public Collection<ShoppingLists> getShoppingListsCollection() {
-    return shoppingListsCollection;
+  public Collection<Shoppinglist> getShoppinglistCollection() {
+    return shoppinglistCollection;
   }
 
-  public void setShoppingListsCollection(Collection<ShoppingLists> shoppingListsCollection) {
-    this.shoppingListsCollection = shoppingListsCollection;
+  public void setShoppinglistCollection(Collection<Shoppinglist> shoppinglistCollection) {
+    this.shoppinglistCollection = shoppinglistCollection;
   }
 
   @XmlTransient @JsonIgnore
-  public Collection<Households> getHouseholdsCollection() {
-    return householdsCollection;
+  public Collection<Userinhousehold> getUserinhouseholdCollection() {
+    return userinhouseholdCollection;
   }
 
-  public void setHouseholdsCollection(Collection<Households> householdsCollection) {
-    this.householdsCollection = householdsCollection;
+  public void setUserinhouseholdCollection(Collection<Userinhousehold> userinhouseholdCollection) {
+    this.userinhouseholdCollection = userinhouseholdCollection;
+  }
+
+  @XmlTransient @JsonIgnore
+  public Collection<Household> getHouseholdCollection() {
+    return householdCollection;
+  }
+
+  public void setHouseholdCollection(Collection<Household> householdCollection) {
+    this.householdCollection = householdCollection;
   }
 
   @Override
@@ -140,10 +139,10 @@ public class Users implements Serializable {
   @Override
   public boolean equals(Object object) {
     // TODO: Warning - this method won't work in the case the id fields are not set
-    if (!(object instanceof Users)) {
+    if (!(object instanceof User)) {
       return false;
     }
-    Users other = (Users) object;
+    User other = (User) object;
     if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
       return false;
     }
@@ -152,7 +151,7 @@ public class Users implements Serializable {
 
   @Override
   public String toString() {
-    return "com.entity.Users[ id=" + id + " ]";
+    return "com.entity.User[ id=" + id + " ]";
   }
 
 }

@@ -24,27 +24,27 @@ import org.json.simple.JSONObject;
  *
  * @author Livia
  */
-public class SviatkyXML {
+public class HolidayXML {
   //
 
-  private static String SVIATOK = "sviatok";
+  private static String HOLIDAY = "sviatok";
   static final SimpleDateFormat sdfOut = new SimpleDateFormat("yyyy-MM-dd");
   static final SimpleDateFormat sdfIn = new SimpleDateFormat("dd.MM.");
-  private Set<JSONObject> meninyList = new HashSet<>();
-  private boolean citamUdalost;
-  private boolean spracuvamMeno;
-  private boolean spracuvamDatum;
-  private boolean spracuvamDlzku;
+  private Set<JSONObject> holidaysList = new HashSet<>();
+  private boolean readEvent;
+  private boolean readName;
+  private boolean readDate;
+  private boolean readLength;
 
   //parsovanie XML pomocou StAX metody
-  public Collection<JSONObject> getSviatky() {
+  public Collection<JSONObject> getHolidays() {
 
     try {
       XMLInputFactory factory = XMLInputFactory.newInstance();
-      InputStream is = SviatkyXML.class.getResourceAsStream("/udalosti.xml");
+      InputStream is = HolidayXML.class.getResourceAsStream("/udalosti.xml");
       XMLEventReader eventReader = factory.createXMLEventReader(is);
-      JSONObject udalost = new JSONObject();
-      Date datum = new Date();
+      JSONObject jsonObject = new JSONObject();
+      Date date = new Date();
 
       while (eventReader.hasNext()) {
         XMLEvent event = eventReader.nextEvent();
@@ -58,57 +58,56 @@ public class SviatkyXML {
             if (name.equalsIgnoreCase("udalost")) {
               Iterator<Attribute> attributes = startElement.getAttributes();
               String type = attributes.next().getValue();
-              if (type.equals(SVIATOK)) {
-                citamUdalost = true;
-                udalost = new JSONObject();
+              if (type.equals(HOLIDAY)) {
+                readEvent = true;
+                jsonObject = new JSONObject();
               }
-            } else if (citamUdalost && name.equalsIgnoreCase("nazov")) {
-              spracuvamMeno = true;
-            } else if (citamUdalost && name.equalsIgnoreCase("datum")) {
-              spracuvamDatum = true;
-            } else if (citamUdalost && name.equalsIgnoreCase("dlzka")) {
-              spracuvamDlzku = true;
+            } else if (readEvent && name.equalsIgnoreCase("nazov")) {
+              readName = true;
+            } else if (readEvent && name.equalsIgnoreCase("datum")) {
+              readDate = true;
+            } else if (readEvent && name.equalsIgnoreCase("dlzka")) {
+              readLength = true;
             }
             break;
 
           case XMLStreamConstants.CHARACTERS:
             Characters characters = event.asCharacters();
-            if (citamUdalost && spracuvamMeno) {
-              udalost.put("title", characters.getData());
-              spracuvamMeno = false;
+            if (readEvent && readName) {
+              jsonObject.put("title", characters.getData());
+              readName = false;
             }
-            if (citamUdalost && spracuvamDatum) {
+            if (readEvent && readDate) {
               try {
-                String pom = characters.getData();
                 Calendar cal = Calendar.getInstance();
-                int rok = cal.get(Calendar.YEAR);
-                cal.setTime(sdfIn.parse(pom));
-                cal.set(Calendar.YEAR, rok);
-                datum = cal.getTime();
-//                udalost.put("start", sdfOut.format(datum));
+                int year = cal.get(Calendar.YEAR);
+                cal.setTime(sdfIn.parse(characters.getData()));
+                cal.set(Calendar.YEAR, year);
+                date = cal.getTime();
+                jsonObject.put("start", sdfOut.format(date));
               } catch (Exception e) {
               }
-              spracuvamDatum = false;
+              readDate = false;
             }
-            if (citamUdalost && spracuvamDlzku) {
+            if (readEvent && readLength) {
               Calendar cal = Calendar.getInstance();
-              cal.setTime(datum);
+              cal.setTime(date);
               int length = Integer.valueOf(characters.getData());
               if (length != 24) {
                 cal.add(Calendar.HOUR, Integer.valueOf(length));
-                udalost.put("end", sdfOut.format(cal.getTime()));
+                jsonObject.put("end", sdfOut.format(cal.getTime()));
               } else {
-                udalost.put("allDay", true);
+                jsonObject.put("allDay", true);
               }
-              spracuvamDlzku = false;
+              readLength = false;
             }
             break;
 
           case XMLStreamConstants.END_ELEMENT:
 
-            if (citamUdalost && event.asEndElement().getName().getLocalPart().equalsIgnoreCase("udalost")) {
-              meninyList.add(udalost);
-              citamUdalost = false;
+            if (readEvent && event.asEndElement().getName().getLocalPart().equalsIgnoreCase("udalost")) {
+              holidaysList.add(jsonObject);
+              readEvent = false;
             }
             break;
         }
@@ -117,8 +116,8 @@ public class SviatkyXML {
       System.err.println(ex.getMessage());
       ex.printStackTrace();
     }
-
-    return meninyList;
+    System.out.println(holidaysList.size());
+    return holidaysList;
   }
 
 }

@@ -1,6 +1,6 @@
 package XML;
 
-import com.entity.Calendars;
+import com.entity.Calendar;
 import com.query.DataQuery;
 
 import java.io.StringWriter;
@@ -24,11 +24,11 @@ import org.w3c.dom.Element;
  *
  * @author Livia
  */
-public class KalendareXML {
+public class CalendarsXML {
   //
-  private List<Calendars> calendars;
+  private List<Calendar> calendars;
 
-  public KalendareXML(List<Calendars> cal) {
+  public CalendarsXML(List<Calendar> cal) {
     calendars = cal;
   }
 
@@ -48,8 +48,8 @@ public class KalendareXML {
       if (calendars == null || calendars.isEmpty()) {
         calendars = DataQuery.getInstance().getCalendars();
       }
-      calendars = calendars.stream().filter(cal -> cal.getUserId().getId() == id).collect(Collectors.toList());
-      for (Calendars c : calendars) {
+      calendars = calendars.stream().filter(cal -> cal.getUser().getId() == id).collect(Collectors.toList());
+      for (Calendar c : calendars) {
         Element calendar = doc.createElement("calendar");
 
         //set id attribute

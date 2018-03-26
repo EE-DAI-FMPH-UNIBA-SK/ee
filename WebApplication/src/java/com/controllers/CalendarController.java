@@ -1,24 +1,30 @@
 package com.controllers;
 
 import JSON.CallendarJSON;
-import XML.KalendareXML;
-import com.entity.Calendars;
-import com.entity.EventList;
-import com.entity.Events;
-import com.entity.Users;
+import XML.CalendarsXML;
+import com.entity.Calendar;
+import com.entity.Event;
+import com.entity.Eventincalendar;
+import com.entity.User;
 import com.query.DataQuery;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.servlet.http.Part;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -38,31 +44,42 @@ import org.xml.sax.SAXException;
  *
  * @author Livia
  */
-@ManagedBean(name = "Calendars")
+@ManagedBean(name = "Calendar")
 @ApplicationScoped
 public class CalendarController implements Serializable {
-  static final SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm");
-  static final SimpleDateFormat sdfDate = new SimpleDateFormat("dd.MM.yyyy");
+  private static final SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm");
+  private static final SimpleDateFormat sdfDate = new SimpleDateFormat("dd.MM.yyyy");
+  private static final Map<String, String> days;
+
+  static {
+    days = new HashMap<String, String>();
+    days.put("Po", "0");
+    days.put("Ut", "1");
+    days.put("St", "2");
+    days.put("Št", "3");
+    days.put("Pi", "4");
+  }
   //
-  private List<Calendars> calendars;
-  private Calendars showCalendar;
+  private List<Calendar> calendars;
+  private Calendar showCalendar;
 
   private int userId = 1;
+  private Part file;
 
-  public List<Calendars> getCalendars() {
+  public List<Calendar> getCalendars() {
     calendars = DataQuery.getInstance().getCalendars();
     return calendars;
   }
 
-  public void setCalendars(List<Calendars> calendars) {
+  public void setCalendars(List<Calendar> calendars) {
     this.calendars = calendars;
   }
 
-  public Calendars getShowCalendar() {
+  public Calendar getShowCalendar() {
     return showCalendar;
   }
 
-  public void setShowCalendar(Calendars showCalendar) {
+  public void setShowCalendar(Calendar showCalendar) {
     this.showCalendar = showCalendar;
   }
 
@@ -74,13 +91,29 @@ public class CalendarController implements Serializable {
     this.userId = userId;
   }
 
+  public Part getFile() {
+    return file;
+  }
+
+  public void setFile(Part file) {
+    this.file = file;
+  }
+
+  public void saveFile() {
+    try (InputStream input = file.getInputStream()) {
+      Files.copy(input, new File(System.getProperty("java.io.tmpdir"), file.getSubmittedFileName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
   public void importXmlData(String fileName) {
     if (showCalendar != null) {
       try {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 
-        InputStream fIs = CalendarController.class.getResourceAsStream("/" + fileName);
+        InputStream fIs = new FileInputStream(System.getProperty("java.io.tmpdir") + "/" + fileName);
 
         Document doc = dBuilder.parse(fIs);
         doc.getDocumentElement().normalize();
@@ -93,56 +126,30 @@ public class CalendarController implements Serializable {
           if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
             Element eElement = (Element) nNode;
-            Events e = new Events();
+            Event e = new Event();
             e.setName(eElement.getElementsByTagName("subject").item(0).getTextContent());
-            switch (eElement.getElementsByTagName("type").item(0).getTextContent()) {
-              case "Prednáška":
-                e.setType(6);
-                break;
-              case "Seminár":
-                e.setType(8);
-                break;
-              case "Cvičenie":
-                e.setType(7);
-                break;
-            }
-            switch (eElement.getElementsByTagName("day").item(0).getTextContent()) {
-              case "Po":
-                e.setIter("0");
-                break;
-              case "Ut":
-                e.setIter("1");
-                break;
-              case "St":
-                e.setIter("2");
-                break;
-              case "Št":
-                e.setIter("3");
-                break;
-              case "Pi":
-                e.setIter("4");
-                break;
-            }
+            e.setType(eElement.getElementsByTagName("type").item(0).getTextContent());
+            e.setIter(days.get(eElement.getElementsByTagName("day").item(0).getTextContent()));
             Date start = sdfTime.parse(eElement.getElementsByTagName("start").item(0).getTextContent());
             Date end = sdfTime.parse(eElement.getElementsByTagName("end").item(0).getTextContent());
-            Calendar cal = Calendar.getInstance();
+            java.util.Calendar cal = java.util.Calendar.getInstance();
             e.setStartDate(cal.getTime());
-            cal.add(Calendar.MONTH, 6);
+            cal.add(java.util.Calendar.MONTH, 6);
             e.setEndDate(cal.getTime());
             e.setStartDate(new Date());
             e.setStart(start);
             e.setLength((int) ((end.getTime() - start.getTime()) * 0.000000277778));
             e.setState(0);
-            Events e2 = DataQuery.getInstance().findEventByName(e.getName());
+            Event e2 = DataQuery.getInstance().findEventByName(e.getName());
             if (e2 == null || e2.getType() != e.getType()) {
               e2 = DataQuery.getInstance().addEvent(e);
-              EventList eL = new EventList(showCalendar, e2);
-              DataQuery.getInstance().addEventList(eL);
+              Eventincalendar eL = new Eventincalendar(showCalendar, e2);
+              DataQuery.getInstance().addCalendarEvent(eL);
             } else {
-              EventList el = DataQuery.getInstance().getEventList(showCalendar, e2);
+              Eventincalendar el = DataQuery.getInstance().getEventList(showCalendar, e2);
               if (el == null) {
-                EventList eL = new EventList(showCalendar, e2);
-                DataQuery.getInstance().addEventList(eL);
+                Eventincalendar eL = new Eventincalendar(showCalendar, e2);
+                DataQuery.getInstance().addCalendarEvent(eL);
               }
             }
           }
@@ -167,14 +174,15 @@ public class CalendarController implements Serializable {
     try {
 
       JsonFactory jfactory = new JsonFactory();
-      InputStream is = CalendarController.class.getResourceAsStream("/" + fileName);
+      InputStream is = new FileInputStream(System.getProperty("java.io.tmpdir") + "/" + fileName);
+
       JsonParser jParser = jfactory.createJsonParser(is);
 
       while (jParser.nextToken() != JsonToken.END_OBJECT) {
         String fieldname = jParser.getCurrentName();
         if ("calendars".equals(fieldname)) {
           while (jParser.nextToken() != JsonToken.END_ARRAY) {
-            Calendars c = new Calendars();
+            Calendar c = new Calendar();
             while (jParser.nextToken() != JsonToken.END_OBJECT) {
               String fieldname2 = jParser.getCurrentName();
               if ("calendarName".equals(fieldname2)) {
@@ -187,14 +195,14 @@ public class CalendarController implements Serializable {
               }
 
               if ("events".equals(fieldname2)) {
-                Calendars c2 = DataQuery.getInstance().findCalendarsByName(c.getName());
+                Calendar c2 = DataQuery.getInstance().findCalendarsByName(c.getName());
                 if (c2 == null) {
-                  c.setUserId(DataQuery.getInstance().getUserById(userId));
+                  c.setUser(DataQuery.getInstance().getUserById(userId));
                   c2 = DataQuery.getInstance().addCalendar(c, false);
                   calendars.add(c2);
                 }
                 while (jParser.nextToken() != JsonToken.END_ARRAY) {
-                  Events e = new Events();
+                  Event e = new Event();
                   while (jParser.nextToken() != JsonToken.END_OBJECT) {
                     String fieldname3 = jParser.getCurrentName();
                     if ("name".equals(fieldname3)) {
@@ -219,7 +227,7 @@ public class CalendarController implements Serializable {
                     }
                     if ("type".equals(fieldname3)) {
                       jParser.nextToken();
-                      e.setType(jParser.getIntValue());
+                      e.setType(jParser.getText());
                     }
                     if ("state".equals(fieldname3)) {
                       jParser.nextToken();
@@ -230,12 +238,12 @@ public class CalendarController implements Serializable {
                       e.setIter(jParser.getText());
                     }
                   }
-                  Events e2 = DataQuery.getInstance().findEventByName(e.getName());
+                  Event e2 = DataQuery.getInstance().findEventByName(e.getName());
                   if (e2 == null || e2.getType() != e.getType()) {
                     e2 = DataQuery.getInstance().addEvent(e);
                   }
-                  EventList eL = new EventList(c2, e2);
-                  DataQuery.getInstance().addEventList(eL);
+                  Eventincalendar eL = new Eventincalendar(c2, e2);
+                  DataQuery.getInstance().addCalendarEvent(eL);
                 }
               }
             }
@@ -264,7 +272,7 @@ public class CalendarController implements Serializable {
     if (calendars == null) {
       getCalendars();
     }
-    KalendareXML xml = new KalendareXML(calendars);
+    CalendarsXML xml = new CalendarsXML(calendars);
     return xml.exportXMLData(1);
   }
 
@@ -275,11 +283,12 @@ public class CalendarController implements Serializable {
   }
 
   public int addCalendar(String name, boolean visible) {
-    Calendars newCalendar = new Calendars(name, visible);
-    Users user = DataQuery.getInstance().getUserById(1);
-    newCalendar.setUserId(user);
+    Calendar newCalendar = new Calendar(name, visible);
+    User user = DataQuery.getInstance().getUserById(1);
+    newCalendar.setUser(user);
     newCalendar = DataQuery.getInstance().addCalendar(newCalendar, true);
     calendars.add(newCalendar);
     return newCalendar.getId();
   }
+
 }

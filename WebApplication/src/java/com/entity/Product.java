@@ -24,27 +24,34 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  * @author Livia
  */
 @Entity
-@Table(name = "recipes")
+@Table(name = "product")
 @XmlRootElement
-@NamedQueries({@NamedQuery(name = "Recipes.findAll", query = "SELECT r FROM Recipes r"), @NamedQuery(name = "Recipes.findById", query = "SELECT r FROM Recipes r WHERE r.id = :id"), @NamedQuery(name = "Recipes.findByName", query = "SELECT r FROM Recipes r WHERE r.name = :name"), @NamedQuery(name = "Recipes.findByCountPortions", query = "SELECT r FROM Recipes r WHERE r.countPortions = :countPortions"), @NamedQuery(name = "Recipes.findByDescription", query = "SELECT r FROM Recipes r WHERE r.description = :description")})
-public class Recipes implements Serializable {
+@NamedQueries({
+  @NamedQuery(name = "Product.findAll", query = "SELECT p FROM Product p"),
+  @NamedQuery(name = "Product.findById", query = "SELECT p FROM Product p WHERE p.id = :id"),
+  @NamedQuery(name = "Product.findByName", query = "SELECT p FROM Product p WHERE p.name = :name"),
+  @NamedQuery(name = "Product.findByValue", query = "SELECT p FROM Product p WHERE p.value = :value"),
+  @NamedQuery(name = "Product.findByCount", query = "SELECT p FROM Product p WHERE p.count = :count")})
+public class Product implements Serializable {
   private static final long serialVersionUID = 1L;
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Basic(optional = false) @Column(name = "id")
   private Integer id;
   @Size(max = 20) @Column(name = "name")
   private String name;
-  @Column(name = "count_portions")
-  private Integer countPortions;
-  @Size(max = 20) @Column(name = "description")
-  private String description;
-  @OneToMany(mappedBy = "recipeId")
-  private Collection<Ingredients> ingredientsCollection;
+  @Column(name = "value")
+  private Integer value;
+  @Column(name = "count")
+  private Integer count;
+  @OneToMany(mappedBy = "product")
+  private Collection<Item> itemCollection;
+  @OneToMany(mappedBy = "product")
+  private Collection<Ingredient> ingredientCollection;
   //
 
-  public Recipes() {
+  public Product() {
   }
 
-  public Recipes(Integer id) {
+  public Product(Integer id) {
     this.id = id;
   }
 
@@ -64,29 +71,38 @@ public class Recipes implements Serializable {
     this.name = name;
   }
 
-  public Integer getCountPortions() {
-    return countPortions;
+  public Integer getValue() {
+    return value;
   }
 
-  public void setCountPortions(Integer countPortions) {
-    this.countPortions = countPortions;
+  public void setValue(Integer value) {
+    this.value = value;
   }
 
-  public String getDescription() {
-    return description;
+  public Integer getCount() {
+    return count;
   }
 
-  public void setDescription(String description) {
-    this.description = description;
+  public void setCount(Integer count) {
+    this.count = count;
   }
 
   @XmlTransient @JsonIgnore
-  public Collection<Ingredients> getIngredientsCollection() {
-    return ingredientsCollection;
+  public Collection<Item> getItemCollection() {
+    return itemCollection;
   }
 
-  public void setIngredientsCollection(Collection<Ingredients> ingredientsCollection) {
-    this.ingredientsCollection = ingredientsCollection;
+  public void setItemCollection(Collection<Item> itemCollection) {
+    this.itemCollection = itemCollection;
+  }
+
+  @XmlTransient @JsonIgnore
+  public Collection<Ingredient> getIngredientCollection() {
+    return ingredientCollection;
+  }
+
+  public void setIngredientCollection(Collection<Ingredient> ingredientCollection) {
+    this.ingredientCollection = ingredientCollection;
   }
 
   @Override
@@ -99,10 +115,10 @@ public class Recipes implements Serializable {
   @Override
   public boolean equals(Object object) {
     // TODO: Warning - this method won't work in the case the id fields are not set
-    if (!(object instanceof Recipes)) {
+    if (!(object instanceof Product)) {
       return false;
     }
-    Recipes other = (Recipes) object;
+    Product other = (Product) object;
     if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
       return false;
     }
@@ -111,7 +127,7 @@ public class Recipes implements Serializable {
 
   @Override
   public String toString() {
-    return "com.entity.Recipes[ id=" + id + " ]";
+    return "com.entity.Product[ id=" + id + " ]";
   }
 
 }

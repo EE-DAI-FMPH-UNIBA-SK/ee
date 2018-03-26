@@ -29,7 +29,7 @@ public class UserController implements Serializable {
     FacesContext context = FacesContext.getCurrentInstance();
     userId = DataQuery.getInstance().loginControl(email, password);
     if (userId != 0) {
-      return "calendars?faces-redirect=true";
+      return "calendars";
     }
     RequestContext.getCurrentInstance().update("growl");
     context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Email or password invalid!" + email + password));

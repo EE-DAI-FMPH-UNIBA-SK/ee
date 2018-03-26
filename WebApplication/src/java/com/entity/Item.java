@@ -20,23 +20,28 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Livia
  */
 @Entity
-@Table(name = "ingredients")
+@Table(name = "item")
 @XmlRootElement
-@NamedQueries({@NamedQuery(name = "Ingredients.findAll", query = "SELECT i FROM Ingredients i"), @NamedQuery(name = "Ingredients.findById", query = "SELECT i FROM Ingredients i WHERE i.id = :id")})
-public class Ingredients implements Serializable {
+@NamedQueries({
+  @NamedQuery(name = "Item.findAll", query = "SELECT i FROM Item i"),
+  @NamedQuery(name = "Item.findById", query = "SELECT i FROM Item i WHERE i.id = :id"),
+  @NamedQuery(name = "Item.findByDone", query = "SELECT i FROM Item i WHERE i.done = :done")})
+public class Item implements Serializable {
   private static final long serialVersionUID = 1L;
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Basic(optional = false) @Column(name = "id")
   private Integer id;
-  @JoinColumn(name = "recipe_id", referencedColumnName = "id") @ManyToOne
-  private Recipes recipeId;
-  @JoinColumn(name = "product_id", referencedColumnName = "id") @ManyToOne
-  private Products productId;
+  @Column(name = "done")
+  private Boolean done;
+  @JoinColumn(name = "product", referencedColumnName = "id") @ManyToOne
+  private Product product;
+  @JoinColumn(name = "shoppingList", referencedColumnName = "id") @ManyToOne
+  private Shoppinglist shoppingList;
   //
 
-  public Ingredients() {
+  public Item() {
   }
 
-  public Ingredients(Integer id) {
+  public Item(Integer id) {
     this.id = id;
   }
 
@@ -48,20 +53,28 @@ public class Ingredients implements Serializable {
     this.id = id;
   }
 
-  public Recipes getRecipeId() {
-    return recipeId;
+  public Boolean getDone() {
+    return done;
   }
 
-  public void setRecipeId(Recipes recipeId) {
-    this.recipeId = recipeId;
+  public void setDone(Boolean done) {
+    this.done = done;
   }
 
-  public Products getProductId() {
-    return productId;
+  public Product getProduct() {
+    return product;
   }
 
-  public void setProductId(Products productId) {
-    this.productId = productId;
+  public void setProduct(Product product) {
+    this.product = product;
+  }
+
+  public Shoppinglist getShoppingList() {
+    return shoppingList;
+  }
+
+  public void setShoppingList(Shoppinglist shoppingList) {
+    this.shoppingList = shoppingList;
   }
 
   @Override
@@ -74,10 +87,10 @@ public class Ingredients implements Serializable {
   @Override
   public boolean equals(Object object) {
     // TODO: Warning - this method won't work in the case the id fields are not set
-    if (!(object instanceof Ingredients)) {
+    if (!(object instanceof Item)) {
       return false;
     }
-    Ingredients other = (Ingredients) object;
+    Item other = (Item) object;
     if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
       return false;
     }
@@ -86,7 +99,7 @@ public class Ingredients implements Serializable {
 
   @Override
   public String toString() {
-    return "com.entity.Ingredients[ id=" + id + " ]";
+    return "com.entity.Item[ id=" + id + " ]";
   }
 
 }

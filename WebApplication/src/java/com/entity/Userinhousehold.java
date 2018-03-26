@@ -20,25 +20,25 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Livia
  */
 @Entity
-@Table(name = "items")
+@Table(name = "userinhousehold")
 @XmlRootElement
-@NamedQueries({@NamedQuery(name = "Items.findAll", query = "SELECT i FROM Items i"), @NamedQuery(name = "Items.findById", query = "SELECT i FROM Items i WHERE i.id = :id"), @NamedQuery(name = "Items.findByDone", query = "SELECT i FROM Items i WHERE i.done = :done")})
-public class Items implements Serializable {
+@NamedQueries({
+  @NamedQuery(name = "Userinhousehold.findAll", query = "SELECT u FROM Userinhousehold u"),
+  @NamedQuery(name = "Userinhousehold.findById", query = "SELECT u FROM Userinhousehold u WHERE u.id = :id")})
+public class Userinhousehold implements Serializable {
   private static final long serialVersionUID = 1L;
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Basic(optional = false) @Column(name = "id")
   private Integer id;
-  @Column(name = "done")
-  private Boolean done;
-  @JoinColumn(name = "product_id", referencedColumnName = "id") @ManyToOne
-  private Products productId;
-  @JoinColumn(name = "shopping_list_id", referencedColumnName = "id") @ManyToOne
-  private ShoppingLists shoppingListId;
+  @JoinColumn(name = "user", referencedColumnName = "id") @ManyToOne
+  private User user;
+  @JoinColumn(name = "household", referencedColumnName = "id") @ManyToOne
+  private Household household;
   //
 
-  public Items() {
+  public Userinhousehold() {
   }
 
-  public Items(Integer id) {
+  public Userinhousehold(Integer id) {
     this.id = id;
   }
 
@@ -50,28 +50,20 @@ public class Items implements Serializable {
     this.id = id;
   }
 
-  public Boolean getDone() {
-    return done;
+  public User getUser() {
+    return user;
   }
 
-  public void setDone(Boolean done) {
-    this.done = done;
+  public void setUser(User user) {
+    this.user = user;
   }
 
-  public Products getProductId() {
-    return productId;
+  public Household getHousehold() {
+    return household;
   }
 
-  public void setProductId(Products productId) {
-    this.productId = productId;
-  }
-
-  public ShoppingLists getShoppingListId() {
-    return shoppingListId;
-  }
-
-  public void setShoppingListId(ShoppingLists shoppingListId) {
-    this.shoppingListId = shoppingListId;
+  public void setHousehold(Household household) {
+    this.household = household;
   }
 
   @Override
@@ -84,10 +76,10 @@ public class Items implements Serializable {
   @Override
   public boolean equals(Object object) {
     // TODO: Warning - this method won't work in the case the id fields are not set
-    if (!(object instanceof Items)) {
+    if (!(object instanceof Userinhousehold)) {
       return false;
     }
-    Items other = (Items) object;
+    Userinhousehold other = (Userinhousehold) object;
     if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
       return false;
     }
@@ -96,7 +88,7 @@ public class Items implements Serializable {
 
   @Override
   public String toString() {
-    return "com.entity.Items[ id=" + id + " ]";
+    return "com.entity.Userinhousehold[ id=" + id + " ]";
   }
 
 }

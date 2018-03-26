@@ -52,18 +52,7 @@ function showEvents(events) {
 
 
   document.getElementById("showCalendar").appendChild(event);
-  var obj = JSON.parse(events, function (key, value) {
-    if (key == "ranges") {
-      value.start = moment(value.start, 'YYYY-MM-DD');
-      value.end = moment(value.end, 'YYYY-MM-DD');
-      console.log(value);
-      return value;
-    } else {
-      return value;
-    }
-  });
-
-  console.log(events);
+  var obj = JSON.parse(events);
 
   $('#events').fullCalendar({
     header: {
@@ -74,14 +63,25 @@ function showEvents(events) {
     navLinks: true, // can click day/week names to navigate views
     editable: true,
     eventLimit: true, // allow "more" link when too many events
-    events: obj.events
+    eventRender: function (event, element, view) {
+      if (event.ranges != null) {
+        return (event.ranges.filter(function (range) {
+          return (event.start.isBefore(range.end) &&
+                  event.end.isAfter(range.start));
+        }).length) > 0;
+      }
+    },
+    events: function (start, end, timezone, callback) {
+      var events = obj.events;
+      callback(events);
+    }
   });
 }
 
 function showCalendars(dataXML) {
   var parser, xmlDoc;
   var txt = "";
-  document.getElementById("calendare").innerHTML = "";
+  document.getElementById("calendars").innerHTML = "";
 
   parser = new DOMParser();
   xmlDoc = parser.parseFromString(dataXML, "text/xml");
@@ -96,7 +96,7 @@ function showCalendars(dataXML) {
     input.setAttribute("value", name);
     input.setAttribute("onclick", 'showCalendarsEvents(' + id + ', "' + name + '")');
 
-    document.getElementById("calendare").appendChild(input);
+    document.getElementById("calendars").appendChild(input);
   }
 }
 
@@ -109,11 +109,11 @@ function addCalendar() {
 }
 
 function importEvents() {
-  file = document.getElementById("form:xmlUpload").files[0];
+  file = document.getElementById("form:importXML:xmlFile").files[0];
   wsocket.send("importXML;" + file.name);
 }
 
 function importJson() {
-  file = document.getElementById("form:jsonUpload").files[0];
+  file = document.getElementById("form:importJson:jsonFile").files[0];
   wsocket.send("importJson;" + file.name);
 }

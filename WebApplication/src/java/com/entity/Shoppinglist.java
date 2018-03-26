@@ -29,10 +29,15 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  * @author Livia
  */
 @Entity
-@Table(name = "shopping_lists")
+@Table(name = "shoppinglist")
 @XmlRootElement
-@NamedQueries({@NamedQuery(name = "ShoppingLists.findAll", query = "SELECT s FROM ShoppingLists s"), @NamedQuery(name = "ShoppingLists.findById", query = "SELECT s FROM ShoppingLists s WHERE s.id = :id"), @NamedQuery(name = "ShoppingLists.findByName", query = "SELECT s FROM ShoppingLists s WHERE s.name = :name"), @NamedQuery(name = "ShoppingLists.findByStart", query = "SELECT s FROM ShoppingLists s WHERE s.start = :start"), @NamedQuery(name = "ShoppingLists.findByFinish", query = "SELECT s FROM ShoppingLists s WHERE s.finish = :finish")})
-public class ShoppingLists implements Serializable {
+@NamedQueries({
+  @NamedQuery(name = "Shoppinglist.findAll", query = "SELECT s FROM Shoppinglist s"),
+  @NamedQuery(name = "Shoppinglist.findById", query = "SELECT s FROM Shoppinglist s WHERE s.id = :id"),
+  @NamedQuery(name = "Shoppinglist.findByName", query = "SELECT s FROM Shoppinglist s WHERE s.name = :name"),
+  @NamedQuery(name = "Shoppinglist.findByStart", query = "SELECT s FROM Shoppinglist s WHERE s.start = :start"),
+  @NamedQuery(name = "Shoppinglist.findByFinish", query = "SELECT s FROM Shoppinglist s WHERE s.finish = :finish")})
+public class Shoppinglist implements Serializable {
   private static final long serialVersionUID = 1L;
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Basic(optional = false) @Column(name = "id")
   private Integer id;
@@ -42,18 +47,18 @@ public class ShoppingLists implements Serializable {
   private Date start;
   @Column(name = "finish") @Temporal(TemporalType.DATE)
   private Date finish;
-  @JoinColumn(name = "household_id", referencedColumnName = "id") @ManyToOne
-  private Households householdId;
-  @JoinColumn(name = "user_id", referencedColumnName = "id") @ManyToOne
-  private Users userId;
-  @OneToMany(mappedBy = "shoppingListId")
-  private Collection<Items> itemsCollection;
+  @OneToMany(mappedBy = "shoppingList")
+  private Collection<Item> itemCollection;
+  @JoinColumn(name = "household", referencedColumnName = "id") @ManyToOne
+  private Household household;
+  @JoinColumn(name = "user", referencedColumnName = "id") @ManyToOne
+  private User user;
   //
 
-  public ShoppingLists() {
+  public Shoppinglist() {
   }
 
-  public ShoppingLists(Integer id) {
+  public Shoppinglist(Integer id) {
     this.id = id;
   }
 
@@ -89,29 +94,29 @@ public class ShoppingLists implements Serializable {
     this.finish = finish;
   }
 
-  public Households getHouseholdId() {
-    return householdId;
-  }
-
-  public void setHouseholdId(Households householdId) {
-    this.householdId = householdId;
-  }
-
-  public Users getUserId() {
-    return userId;
-  }
-
-  public void setUserId(Users userId) {
-    this.userId = userId;
-  }
-
   @XmlTransient @JsonIgnore
-  public Collection<Items> getItemsCollection() {
-    return itemsCollection;
+  public Collection<Item> getItemCollection() {
+    return itemCollection;
   }
 
-  public void setItemsCollection(Collection<Items> itemsCollection) {
-    this.itemsCollection = itemsCollection;
+  public void setItemCollection(Collection<Item> itemCollection) {
+    this.itemCollection = itemCollection;
+  }
+
+  public Household getHousehold() {
+    return household;
+  }
+
+  public void setHousehold(Household household) {
+    this.household = household;
+  }
+
+  public User getUser() {
+    return user;
+  }
+
+  public void setUser(User user) {
+    this.user = user;
   }
 
   @Override
@@ -124,10 +129,10 @@ public class ShoppingLists implements Serializable {
   @Override
   public boolean equals(Object object) {
     // TODO: Warning - this method won't work in the case the id fields are not set
-    if (!(object instanceof ShoppingLists)) {
+    if (!(object instanceof Shoppinglist)) {
       return false;
     }
-    ShoppingLists other = (ShoppingLists) object;
+    Shoppinglist other = (Shoppinglist) object;
     if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
       return false;
     }
@@ -136,7 +141,7 @@ public class ShoppingLists implements Serializable {
 
   @Override
   public String toString() {
-    return "com.entity.ShoppingLists[ id=" + id + " ]";
+    return "com.entity.Shoppinglist[ id=" + id + " ]";
   }
 
 }

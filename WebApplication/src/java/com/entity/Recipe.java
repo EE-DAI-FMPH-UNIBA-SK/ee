@@ -9,8 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -26,38 +24,32 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  * @author Livia
  */
 @Entity
-@Table(name = "calendars")
+@Table(name = "recipe")
 @XmlRootElement
 @NamedQueries({
-  @NamedQuery(name = "Calendars.findAll", query = "SELECT c FROM Calendars c"),
-  @NamedQuery(name = "Calendars.findById", query = "SELECT c FROM Calendars c WHERE c.id = :id"),
-  @NamedQuery(name = "Calendars.findByName", query = "SELECT c FROM Calendars c WHERE c.name = :name"),
-  @NamedQuery(name = "Calendars.findByVisible", query = "SELECT c FROM Calendars c WHERE c.visible = :visible")
-})
-public class Calendars implements Serializable {
+  @NamedQuery(name = "Recipe.findAll", query = "SELECT r FROM Recipe r"),
+  @NamedQuery(name = "Recipe.findById", query = "SELECT r FROM Recipe r WHERE r.id = :id"),
+  @NamedQuery(name = "Recipe.findByName", query = "SELECT r FROM Recipe r WHERE r.name = :name"),
+  @NamedQuery(name = "Recipe.findByCountPortions", query = "SELECT r FROM Recipe r WHERE r.countPortions = :countPortions"), @NamedQuery(name = "Recipe.findByDescription", query = "SELECT r FROM Recipe r WHERE r.description = :description")})
+public class Recipe implements Serializable {
   private static final long serialVersionUID = 1L;
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Basic(optional = false) @Column(name = "id")
   private Integer id;
-  @Column(name = "visible")
-  private Boolean visible;
-  @Size(max = 100) @Column(name = "name")
+  @Size(max = 20) @Column(name = "name")
   private String name;
-  @JoinColumn(name = "user_id", referencedColumnName = "id") @ManyToOne
-  private Users userId;
-  @OneToMany(mappedBy = "calendarId")
-  private Collection<EventList> eventListCollection;
+  @Column(name = "count_portions")
+  private Integer countPortions;
+  @Size(max = 20) @Column(name = "description")
+  private String description;
+  @OneToMany(mappedBy = "recipe")
+  private Collection<Ingredient> ingredientCollection;
   //
 
-  public Calendars() {
+  public Recipe() {
   }
 
-  public Calendars(Integer id) {
+  public Recipe(Integer id) {
     this.id = id;
-  }
-
-  public Calendars(String name, boolean visible) {
-    this.name = name;
-    this.visible = visible;
   }
 
   public Integer getId() {
@@ -68,14 +60,6 @@ public class Calendars implements Serializable {
     this.id = id;
   }
 
-  public Boolean getVisible() {
-    return visible;
-  }
-
-  public void setVisible(Boolean visible) {
-    this.visible = visible;
-  }
-
   public String getName() {
     return name;
   }
@@ -84,21 +68,29 @@ public class Calendars implements Serializable {
     this.name = name;
   }
 
-  public Users getUserId() {
-    return userId;
+  public Integer getCountPortions() {
+    return countPortions;
   }
 
-  public void setUserId(Users userId) {
-    this.userId = userId;
+  public void setCountPortions(Integer countPortions) {
+    this.countPortions = countPortions;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
   }
 
   @XmlTransient @JsonIgnore
-  public Collection<EventList> getEventListCollection() {
-    return eventListCollection;
+  public Collection<Ingredient> getIngredientCollection() {
+    return ingredientCollection;
   }
 
-  public void setEventListCollection(Collection<EventList> eventListCollection) {
-    this.eventListCollection = eventListCollection;
+  public void setIngredientCollection(Collection<Ingredient> ingredientCollection) {
+    this.ingredientCollection = ingredientCollection;
   }
 
   @Override
@@ -111,10 +103,10 @@ public class Calendars implements Serializable {
   @Override
   public boolean equals(Object object) {
     // TODO: Warning - this method won't work in the case the id fields are not set
-    if (!(object instanceof Calendars)) {
+    if (!(object instanceof Recipe)) {
       return false;
     }
-    Calendars other = (Calendars) object;
+    Recipe other = (Recipe) object;
     if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
       return false;
     }
@@ -123,7 +115,7 @@ public class Calendars implements Serializable {
 
   @Override
   public String toString() {
-    return "com.entity.Calendars[ id=" + id + " ]";
+    return "com.entity.Recipe[ id=" + id + " ]";
   }
 
 }

@@ -1,9 +1,9 @@
 package com.query;
 
-import com.entity.Calendars;
-import com.entity.EventList;
-import com.entity.Events;
-import com.entity.Users;
+import com.entity.Calendar;
+import com.entity.Event;
+import com.entity.Eventincalendar;
+import com.entity.User;
 
 import java.util.Collections;
 import java.util.List;
@@ -39,7 +39,7 @@ public class DataQuery {
 
   public int loginControl(String name, String password) {
     try {
-      Users u = em.createNamedQuery("Users.control", Users.class).setParameter("name", name).setParameter("password", password).getSingleResult();
+      User u = em.createNamedQuery("User.control", User.class).setParameter("name", name).setParameter("password", password).getSingleResult();
       if (u != null) {
         return u.getId();
       }
@@ -50,9 +50,9 @@ public class DataQuery {
     }
   }
 
-  public List<Calendars> getCalendars() {
+  public List<Calendar> getCalendars() {
     try {
-      TypedQuery<Calendars> q = em.createNamedQuery("Calendars.findAll", Calendars.class);
+      TypedQuery<Calendar> q = em.createNamedQuery("Calendar.findAll", Calendar.class);
       q.setHint("javax.persistence.cache.storeMode", "REFRESH");
       return q.getResultList();
     } catch (Exception e) {
@@ -61,9 +61,9 @@ public class DataQuery {
     }
   }
 
-  public Calendars getCalendarById(int id) {
+  public Calendar getCalendarById(int id) {
     try {
-      TypedQuery<Calendars> q = em.createNamedQuery("Calendars.findById", Calendars.class);
+      TypedQuery<Calendar> q = em.createNamedQuery("Calendar.findById", Calendar.class);
       q.setHint("javax.persistence.cache.storeMode", "REFRESH");
       return q.setParameter("id", id).getSingleResult();
     } catch (Exception e) {
@@ -72,7 +72,7 @@ public class DataQuery {
     }
   }
 
-  public Calendars addCalendar(Calendars calendar, boolean c) {
+  public Calendar addCalendar(Calendar calendar, boolean c) {
     try {
       EntityTransaction et = em.getTransaction();
       if (!et.isActive()) {
@@ -87,10 +87,10 @@ public class DataQuery {
     }
   }
 
-  public Calendars findCalendarsByName(String name) {
+  public Calendar findCalendarsByName(String name) {
     try {
       if (name != null) {
-        TypedQuery<Calendars> q = em.createNamedQuery("Calendars.findByName", Calendars.class);
+        TypedQuery<Calendar> q = em.createNamedQuery("Calendar.findByName", Calendar.class);
         q.setHint("javax.persistence.cache.storeMode", "REFRESH");
         return q.setParameter("name", name).getSingleResult();
       }
@@ -101,7 +101,7 @@ public class DataQuery {
     }
   }
 
-  public Events addEvent(Events event) {
+  public Event addEvent(Event event) {
     try {
       EntityTransaction et = em.getTransaction();
       if (!et.isActive()) {
@@ -117,7 +117,7 @@ public class DataQuery {
     }
   }
 
-  public EventList addEventList(EventList eventList) {
+  public Eventincalendar addCalendarEvent(Eventincalendar eventList) {
     try {
       EntityTransaction et = em.getTransaction();
       if (!et.isActive()) {
@@ -133,11 +133,11 @@ public class DataQuery {
     }
   }
 
-  public Events findEventByName(String name) {
+  public Event findEventByName(String name) {
     try {
       if (name != null) {
 
-        TypedQuery<Events> q = em.createNamedQuery("Events.findByName", Events.class);
+        TypedQuery<Event> q = em.createNamedQuery("Event.findByName", Event.class);
         q.setHint("javax.persistence.cache.storeMode", "REFRESH");
         return q.setParameter("name", name).getSingleResult();
 
@@ -148,18 +148,18 @@ public class DataQuery {
     }
   }
 
-  public EventList getEventList(Calendars calendarId, Events eventId) {
+  public Eventincalendar getEventList(Calendar calendarId, Event eventId) {
     try {
-      return em.createNamedQuery("EventList.findByEventCalendarId", EventList.class).setParameter("calendarId", calendarId).setParameter("eventId", eventId).getSingleResult();
+      return em.createNamedQuery("Eventincalendar.findByEventCalendarId", Eventincalendar.class).setParameter("calendarId", calendarId).setParameter("eventId", eventId).getSingleResult();
     } catch (Exception e) {
       System.out.println(e.getMessage());
       return null;
     }
   }
 
-  public Users getUserById(int id) {
+  public User getUserById(int id) {
     try {
-      return em.createNamedQuery("Users.findById", Users.class).setParameter("id", id).getSingleResult();
+      return em.createNamedQuery("User.findById", User.class).setParameter("id", id).getSingleResult();
     } catch (Exception e) {
       System.out.println(e.getMessage());
       return null;

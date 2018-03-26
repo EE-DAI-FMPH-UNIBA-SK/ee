@@ -15,7 +15,7 @@
     <h:outputScript  library="js" name="calendar.js" />
   </h:head>
   <h:body >
-    <h:form id="form">
+    <h:form id="form" enctype="multipart/form-data">
       <div class="up">
         <div id="addCalendar">
           <p:panelGrid columns="2">
@@ -29,19 +29,25 @@
             </f:facet>
           </p:panelGrid>
         </div>
-        <div id="importXML">
-          <p:fileUpload mode="simple" id="xmlUpload" />
-          <input type="button" value="Import XML dát" onclick="importEvents()"/>
-        </div>
-        <div id="importJson">
-          <p:fileUpload mode="simple" id="jsonUpload" />
-          <input type="button" value="Import JSON dát" onclick="importJson()"/>
+        <div id="imports">
+          <h:form enctype="multipart/form-data" id="importXML">
+            <h:inputFile value="#{Calendar.file}" id="xmlFile">
+              <f:ajax listener="#{Calendar.saveFile()}" />
+            </h:inputFile>
+            <input type="button"  value="Import XML dát" onclick="importEvents()" />
+          </h:form>
+          <h:form enctype="multipart/form-data"  id="importJson">
+            <h:inputFile value="#{Calendar.file}" id="jsonFile">
+              <f:ajax listener="#{Calendar.saveFile()}" />
+            </h:inputFile>
+            <input type="button" value="Import JSON dát" onclick="importJson()"/>
+          </h:form>
         </div>
       </div>
       <div class="down">
         <div class="leftSite">
           <h3>Kalendáre</h3>
-          <div id="calendare"/>
+          <div id="calendars"/>
         </div>
         <div class="rightSite" id="showCalendar">
           <h3 id="calendarName"></h3>

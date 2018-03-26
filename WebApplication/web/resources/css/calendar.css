@@ -13,7 +13,11 @@
   float: right;
 }
 
-#calendare{
+#imports{
+  float: right;
+}
+
+#calendars{
   width: 30%;
 }
 

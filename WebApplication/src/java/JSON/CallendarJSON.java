@@ -1,15 +1,14 @@
 package JSON;
 
-import XML.MeninyXML;
-import XML.SviatkyXML;
-import com.entity.Calendars;
-import com.entity.EventList;
-import com.entity.Events;
+import XML.HolidayXML;
+import XML.NamesXML;
+import com.entity.Calendar;
+import com.entity.Event;
+import com.entity.Eventincalendar;
 import com.query.DataQuery;
 
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -31,20 +30,20 @@ public class CallendarJSON {
 
   public String getEvents(int calendarId) {
     JSONObject obj = new JSONObject();
-    Calendars calendar = DataQuery.getInstance().getCalendarById(calendarId);
+    Calendar calendar = DataQuery.getInstance().getCalendarById(calendarId);
     JSONArray events = new JSONArray();
     if (calendar != null) {
-      for (EventList el : calendar.getEventListCollection()) {
-        Events e = el.getEventId();
+      for (Eventincalendar el : calendar.getEventincalendarCollection()) {
+        Event e = el.getEvent();
         if (e != null) {
           JSONObject event = new JSONObject();
           event.put("title", e.getName());
-          Calendar cal = Calendar.getInstance();
+          java.util.Calendar cal = java.util.Calendar.getInstance();
           cal.setTime(e.getStartDate());
-          cal.add(Calendar.MILLISECOND, ((int) e.getStart().getTime() + 3600000));
+          cal.add(java.util.Calendar.MILLISECOND, ((int) e.getStart().getTime() + 3600000));
           event.put("start", sdf2.format(cal.getTime()));
-          cal.add(Calendar.HOUR, e.getLength());
-          cal.add(Calendar.MINUTE, -1);
+          cal.add(java.util.Calendar.HOUR, e.getLength());
+          cal.add(java.util.Calendar.MINUTE, -1);
           event.put("end", sdf2.format(cal.getTime()));
           JSONArray dow = new JSONArray();
           for (String i : e.getIter().split(",")) {
@@ -52,18 +51,20 @@ public class CallendarJSON {
           }
           event.put("dow", dow);
           if (dow != null) {
-            JSONObject ranges = new JSONObject();
-            ranges.put("start", sdf1.format(e.getStartDate()));
-            ranges.put("end", sdf1.format(e.getEndDate()));
+            JSONArray ranges = new JSONArray();
+            JSONObject range = new JSONObject();
+            range.put("start", sdf1.format(e.getStartDate()));
+            range.put("end", sdf1.format(e.getEndDate()));
+            ranges.add(range);
             event.put("ranges", ranges);
           }
           events.add(event);
         }
       }
     }
-    events.addAll(getMeniny());
+    events.addAll(getNames());
 
-    events.addAll(getSviatky());
+    events.addAll(getHolidays());
 
     obj.put("events", events);
 
@@ -71,16 +72,16 @@ public class CallendarJSON {
 
   }
 
-  private Collection<JSONObject> getMeniny() {
+  private Collection<JSONObject> getNames() {
     try {
       SAXParserFactory factory = SAXParserFactory.newInstance();
       SAXParser saxParser = factory.newSAXParser();
 
-      MeninyXML meniny = new MeninyXML();
-      InputStream is = SviatkyXML.class.getResourceAsStream("/udalosti.xml");
-      saxParser.parse(is, meniny);
+      NamesXML names = new NamesXML();
+      InputStream is = CallendarJSON.class.getResourceAsStream("/udalosti.xml");
+      saxParser.parse(is, names);
 
-      return meniny.getMeniny();
+      return names.getNames();
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -88,9 +89,9 @@ public class CallendarJSON {
     return Collections.EMPTY_SET;
   }
 
-  private Collection<JSONObject> getSviatky() {
-    SviatkyXML sviatky = new SviatkyXML();
-    return sviatky.getSviatky();
+  private Collection<JSONObject> getHolidays() {
+    HolidayXML holidays = new HolidayXML();
+    return holidays.getHolidays();
   }
 
 }

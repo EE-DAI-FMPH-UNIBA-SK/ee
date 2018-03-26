@@ -27,20 +27,22 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  * @author Livia
  */
 @Entity
-@Table(name = "events")
+@Table(name = "event")
 @XmlRootElement
 @NamedQueries({
-  @NamedQuery(name = "Events.findAll", query = "SELECT e FROM Events e"),
-  @NamedQuery(name = "Events.findById", query = "SELECT e FROM Events e WHERE e.id = :id"),
-  @NamedQuery(name = "Events.findByName", query = "SELECT e FROM Events e WHERE e.name = :name"),
-  @NamedQuery(name = "Events.findByStart", query = "SELECT e FROM Events e WHERE e.start = :start"),
-  @NamedQuery(name = "Events.findByLength", query = "SELECT e FROM Events e WHERE e.length = :length"),
-  @NamedQuery(name = "Events.findByType", query = "SELECT e FROM Events e WHERE e.type = :type"),
-  @NamedQuery(name = "Events.findByState", query = "SELECT e FROM Events e WHERE e.state = :state"),
-  @NamedQuery(name = "Events.findByStartDate", query = "SELECT e FROM Events e WHERE e.startDate = :startDate"),
-  @NamedQuery(name = "Events.findByIter", query = "SELECT e FROM Events e WHERE e.iter = :iter"),
-  @NamedQuery(name = "Events.findByEndDate", query = "SELECT e FROM Events e WHERE e.endDate = :endDate")})
-public class Events implements Serializable {
+  @NamedQuery(name = "Event.findAll", query = "SELECT e FROM Event e"),
+  @NamedQuery(name = "Event.findById", query = "SELECT e FROM Event e WHERE e.id = :id"),
+  @NamedQuery(name = "Event.findByName", query = "SELECT e FROM Event e WHERE e.name = :name"),
+  @NamedQuery(name = "Event.findByStart", query = "SELECT e FROM Event e WHERE e.start = :start"),
+  @NamedQuery(name = "Event.findByLength", query = "SELECT e FROM Event e WHERE e.length = :length"),
+  @NamedQuery(name = "Event.findByType", query = "SELECT e FROM Event e WHERE e.type = :type"),
+  @NamedQuery(name = "Event.findByState", query = "SELECT e FROM Event e WHERE e.state = :state"),
+  @NamedQuery(name = "Event.findByStartDate", query = "SELECT e FROM Event e WHERE e.startDate = :startDate"),
+  @NamedQuery(name = "Event.findByEndDate", query = "SELECT e FROM Event e WHERE e.endDate = :endDate"),
+  @NamedQuery(name = "Event.findByIter", query = "SELECT e FROM Event e WHERE e.iter = :iter")})
+public class Event implements Serializable {
+  @Size(max = 20) @Column(name = "type")
+  private String type;
   private static final long serialVersionUID = 1L;
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Basic(optional = false) @Column(name = "id")
   private Integer id;
@@ -50,24 +52,22 @@ public class Events implements Serializable {
   private Date start;
   @Column(name = "length")
   private Integer length;
-  @Column(name = "type")
-  private Integer type;
   @Column(name = "state")
   private Integer state;
   @Column(name = "start_date") @Temporal(TemporalType.DATE)
   private Date startDate;
-  @Size(max = 20) @Column(name = "iter")
-  private String iter;
   @Column(name = "end_date") @Temporal(TemporalType.DATE)
   private Date endDate;
-  @OneToMany(mappedBy = "eventId")
-  private Collection<EventList> eventListCollection;
+  @Size(max = 20) @Column(name = "iter")
+  private String iter;
+  @OneToMany(mappedBy = "event")
+  private Collection<Eventincalendar> eventincalendarCollection;
   //
 
-  public Events() {
+  public Event() {
   }
 
-  public Events(Integer id) {
+  public Event(Integer id) {
     this.id = id;
   }
 
@@ -103,13 +103,6 @@ public class Events implements Serializable {
     this.length = length;
   }
 
-  public Integer getType() {
-    return type;
-  }
-
-  public void setType(Integer type) {
-    this.type = type;
-  }
 
   public Integer getState() {
     return state;
@@ -127,14 +120,6 @@ public class Events implements Serializable {
     this.startDate = startDate;
   }
 
-  public String getIter() {
-    return iter;
-  }
-
-  public void setIter(String iter) {
-    this.iter = iter;
-  }
-
   public Date getEndDate() {
     return endDate;
   }
@@ -143,13 +128,21 @@ public class Events implements Serializable {
     this.endDate = endDate;
   }
 
-  @XmlTransient @JsonIgnore
-  public Collection<EventList> getEventListCollection() {
-    return eventListCollection;
+  public String getIter() {
+    return iter;
   }
 
-  public void setEventListCollection(Collection<EventList> eventListCollection) {
-    this.eventListCollection = eventListCollection;
+  public void setIter(String iter) {
+    this.iter = iter;
+  }
+
+  @XmlTransient @JsonIgnore
+  public Collection<Eventincalendar> getEventincalendarCollection() {
+    return eventincalendarCollection;
+  }
+
+  public void setEventincalendarCollection(Collection<Eventincalendar> eventincalendarCollection) {
+    this.eventincalendarCollection = eventincalendarCollection;
   }
 
   @Override
@@ -162,10 +155,10 @@ public class Events implements Serializable {
   @Override
   public boolean equals(Object object) {
     // TODO: Warning - this method won't work in the case the id fields are not set
-    if (!(object instanceof Events)) {
+    if (!(object instanceof Event)) {
       return false;
     }
-    Events other = (Events) object;
+    Event other = (Event) object;
     if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
       return false;
     }
@@ -174,7 +167,15 @@ public class Events implements Serializable {
 
   @Override
   public String toString() {
-    return "com.entity.Events[ id=" + id + " ]";
+    return "com.entity.Event[ id=" + id + " ]";
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
   }
 
 }

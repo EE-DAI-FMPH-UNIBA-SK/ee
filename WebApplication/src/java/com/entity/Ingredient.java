@@ -20,23 +20,25 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Livia
  */
 @Entity
-@Table(name = "household_users")
+@Table(name = "ingredient")
 @XmlRootElement
-@NamedQueries({@NamedQuery(name = "HouseholdUsers.findAll", query = "SELECT h FROM HouseholdUsers h"), @NamedQuery(name = "HouseholdUsers.findById", query = "SELECT h FROM HouseholdUsers h WHERE h.id = :id")})
-public class HouseholdUsers implements Serializable {
+@NamedQueries({
+  @NamedQuery(name = "Ingredient.findAll", query = "SELECT i FROM Ingredient i"),
+  @NamedQuery(name = "Ingredient.findById", query = "SELECT i FROM Ingredient i WHERE i.id = :id")})
+public class Ingredient implements Serializable {
   private static final long serialVersionUID = 1L;
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Basic(optional = false) @Column(name = "id")
   private Integer id;
-  @JoinColumn(name = "user_id", referencedColumnName = "id") @ManyToOne
-  private Users userId;
-  @JoinColumn(name = "household_id", referencedColumnName = "id") @ManyToOne
-  private Households householdId;
+  @JoinColumn(name = "recipe", referencedColumnName = "id") @ManyToOne
+  private Recipe recipe;
+  @JoinColumn(name = "product", referencedColumnName = "id") @ManyToOne
+  private Product product;
   //
 
-  public HouseholdUsers() {
+  public Ingredient() {
   }
 
-  public HouseholdUsers(Integer id) {
+  public Ingredient(Integer id) {
     this.id = id;
   }
 
@@ -48,20 +50,20 @@ public class HouseholdUsers implements Serializable {
     this.id = id;
   }
 
-  public Users getUserId() {
-    return userId;
+  public Recipe getRecipe() {
+    return recipe;
   }
 
-  public void setUserId(Users userId) {
-    this.userId = userId;
+  public void setRecipe(Recipe recipe) {
+    this.recipe = recipe;
   }
 
-  public Households getHouseholdId() {
-    return householdId;
+  public Product getProduct() {
+    return product;
   }
 
-  public void setHouseholdId(Households householdId) {
-    this.householdId = householdId;
+  public void setProduct(Product product) {
+    this.product = product;
   }
 
   @Override
@@ -74,10 +76,10 @@ public class HouseholdUsers implements Serializable {
   @Override
   public boolean equals(Object object) {
     // TODO: Warning - this method won't work in the case the id fields are not set
-    if (!(object instanceof HouseholdUsers)) {
+    if (!(object instanceof Ingredient)) {
       return false;
     }
-    HouseholdUsers other = (HouseholdUsers) object;
+    Ingredient other = (Ingredient) object;
     if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
       return false;
     }
@@ -86,7 +88,7 @@ public class HouseholdUsers implements Serializable {
 
   @Override
   public String toString() {
-    return "com.entity.HouseholdUsers[ id=" + id + " ]";
+    return "com.entity.Ingredient[ id=" + id + " ]";
   }
 
 }
