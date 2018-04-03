@@ -1,0 +1,9 @@
+#householderItems, #householdUsers{
+  width: 50%;
+  float: left;
+}
+
+#addHousehold, #householdRecipes, #householdShoppingList{
+  width: 50%;
+  float: right;
+}
