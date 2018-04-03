@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+  <h:head>
+    <title>Facelet Title</title>
+    <h:outputStylesheet name="css/household.css"/>
+  </h:head>
+  <h:body>
+    <h:form id="household" >
+      <h:form id="householders" rendered="#{Household.selectedHousehold==null}">
+        <div id="householderItems">
+          <ui:repeat value="${Household.householders}" var="item" >
+            <h:commandButton action="${Household.selectHousehold(item)}" value="${item.name}">
+              <f:ajax execute="@form" render="household" />
+            </h:commandButton>
+            <h:commandButton action="${Household.deleteHousehold(item)}" value="X" rendered="${item.isAdmin(Household.userId)}">
+              <f:ajax execute="@form" render="household" />
+            </h:commandButton>
+            <br/>
+          </ui:repeat>
+        </div>
+        <div id="addHousehold">
+          <p:panelGrid columns="2">
+            <f:facet name="header">Vytvoriť novú domácnosť</f:facet>
+            <h:outputText value="Názov"/>
+            <p:inputText value="${Household.name}"/>
+            <f:facet name="footer">
+              <h:commandButton value="Vytvoriť dom" action="#{Household.addHousehold()}">
+                <f:ajax execute="@form" render="household" />
+              </h:commandButton>
+            </f:facet>
+          </p:panelGrid>
+        </div>
+      </h:form>
+      <h:form id="householdDetail" rendered="#{Household.selectedHousehold!=null}">
+        <h1>${Household.selectedHousehold.name}</h1>
+        <div id="householdUsers">
+          <h4>Users in householder</h4>
+          <ui:repeat value="${Household.selectedHousehold.userinhouseholdCollection}" var="item" >
+            <h:commandButton value="${item.user.name}"/>
+            <br/>
+          </ui:repeat>
+        </div>
+        <div id="householdRecipes">
+          <h:commandButton value="Recipes" action="recipes"/>
+        </div>
+        <div id="householdShoppingList">
+          <h:commandButton value="Shopping lists" action="shoppingLists"/>
+        </div>
+      </h:form>
+    </h:form>
+  </h:body>
+</html>
+
