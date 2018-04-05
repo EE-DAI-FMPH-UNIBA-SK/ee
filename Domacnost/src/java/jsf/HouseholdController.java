@@ -1,9 +1,9 @@
-package com.jsf;
+package jsf;
 
-import com.dataquery.DataQuery;
-import com.entity.Household;
-import com.entity.User;
-import com.entity.Userinhousehold;
+import dataQuery.DataQuery;
+import entity.Household;
+import entity.User;
+import entity.UserInHousehold;
 
 import java.io.Serializable;
 import java.util.List;
@@ -28,7 +28,6 @@ public class HouseholdController implements Serializable {
   private Household selectedHousehold;
 
   public HouseholdController() {
-//    System.err.println("uz sme dalej");
     userId = SessionUtils.getUserId();
     householders = DataQuery.getInstance().getHousholdersByUser(userId);
     System.err.println(householders.size());
@@ -36,7 +35,6 @@ public class HouseholdController implements Serializable {
   }
 
   public List<Household> getHouseholders() {
-    System.out.println("geter");
     return householders;
   }
 
@@ -78,33 +76,27 @@ public class HouseholdController implements Serializable {
   }
 
   public void addHousehold() {
-    System.out.println("com.jsf.HouseholdController.addHousehold()");
     User user = DataQuery.getInstance().getUserById(userId);
     Household newHousehold = new Household(name, user);
     newHousehold = DataQuery.getInstance().addHousehold(newHousehold);
-    System.err.println("je to tu ");
     setName("");
     householders.add(newHousehold);
     setHouseholders(householders);
   }
 
   public void deleteHousehold(Household household) {
-    System.out.println("com.jsf.HouseholdController.deleteHousehold()");
-    if (DataQuery.getInstance().deleteHousehold(household)) {
-      householders.remove(household);
-    }
+    DataQuery.getInstance().deleteHousehold(household);
+    householders.remove(household);
   }
 
-  public String selectHousehold(Household h) {
+  public void selectHousehold(Household h) {
     if (manager.setHousehold(userId, h)) {
       selectedHousehold = h;
-      return "";
-//      return "household";
     }
-    return "";
   }
 
-  public void deleteUserFromHousehold(Userinhousehold householdUser) {
+  public void deleteUserFromHousehold(UserInHousehold householdUser) {
     DataQuery.getInstance().deleteUserFromHousehold(householdUser);
+    selectedHousehold.deleteUser(householdUser);
   }
 }

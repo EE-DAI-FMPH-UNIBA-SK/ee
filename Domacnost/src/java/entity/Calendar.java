@@ -1,4 +1,4 @@
-package com.entity;
+package entity;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -26,7 +26,11 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "calendar")
 @XmlRootElement
-@NamedQueries({@NamedQuery(name = "Calendar.findAll", query = "SELECT c FROM Calendar c"), @NamedQuery(name = "Calendar.findById", query = "SELECT c FROM Calendar c WHERE c.id = :id"), @NamedQuery(name = "Calendar.findByName", query = "SELECT c FROM Calendar c WHERE c.name = :name"), @NamedQuery(name = "Calendar.findByVisible", query = "SELECT c FROM Calendar c WHERE c.visible = :visible")})
+@NamedQueries({
+  @NamedQuery(name = "Calendar.findAll", query = "SELECT c FROM Calendar c"),
+  @NamedQuery(name = "Calendar.findById", query = "SELECT c FROM Calendar c WHERE c.id = :id"),
+  @NamedQuery(name = "Calendar.findByName", query = "SELECT c FROM Calendar c WHERE c.name = :name"),
+  @NamedQuery(name = "Calendar.findByVisible", query = "SELECT c FROM Calendar c WHERE c.visible = :visible")})
 public class Calendar implements Serializable {
   private static final long serialVersionUID = 1L;
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Basic(optional = false) @Column(name = "id")
@@ -38,7 +42,7 @@ public class Calendar implements Serializable {
   @JoinColumn(name = "user", referencedColumnName = "id") @ManyToOne
   private User user;
   @OneToMany(mappedBy = "calendar")
-  private Collection<Eventincalendar> eventincalendarCollection;
+  private Collection<EventInCalendar> eventInCalendarCollection;
   //
 
   public Calendar() {
@@ -81,12 +85,12 @@ public class Calendar implements Serializable {
   }
 
   @XmlTransient
-  public Collection<Eventincalendar> getEventincalendarCollection() {
-    return eventincalendarCollection;
+  public Collection<EventInCalendar> getEventInCalendarCollection() {
+    return eventInCalendarCollection;
   }
 
-  public void setEventincalendarCollection(Collection<Eventincalendar> eventincalendarCollection) {
-    this.eventincalendarCollection = eventincalendarCollection;
+  public void setEventInCalendarCollection(Collection<EventInCalendar> eventInCalendarCollection) {
+    this.eventInCalendarCollection = eventInCalendarCollection;
   }
 
   @Override
@@ -111,7 +115,7 @@ public class Calendar implements Serializable {
 
   @Override
   public String toString() {
-    return "com.entity.Calendar[ id=" + id + " ]";
+    return "entity.Calendar[ id=" + id + " ]";
   }
 
 }

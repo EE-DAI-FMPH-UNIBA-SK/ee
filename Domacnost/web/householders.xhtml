@@ -3,7 +3,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
   <h:head>
     <title>Facelet Title</title>
@@ -24,34 +23,53 @@
           </ui:repeat>
         </div>
         <div id="addHousehold">
-          <p:panelGrid columns="2">
+          <h:panelGrid columns="2">
             <f:facet name="header">Vytvoriť novú domácnosť</f:facet>
             <h:outputText value="Názov"/>
-            <p:inputText value="${Household.name}"/>
+            <h:inputText value="${Household.name}"/>
             <f:facet name="footer">
-              <h:commandButton value="Vytvoriť dom" action="#{Household.addHousehold()}">
+              <h:commandButton value="Vytvoriť domácnosť" action="#{Household.addHousehold()}">
                 <f:ajax execute="@form" render="household" />
               </h:commandButton>
             </f:facet>
-          </p:panelGrid>
+          </h:panelGrid>
         </div>
       </h:form>
       <h:form id="householdDetail" rendered="#{Household.selectedHousehold!=null}">
         <h1>${Household.selectedHousehold.name}</h1>
         <div id="householdUsers">
           <h4>Users in householder</h4>
-          <ui:repeat value="${Household.selectedHousehold.userinhouseholdCollection}" var="item" >
-            <h:commandButton value="${item.user.name}"/>
+          <ui:repeat value="${Household.selectedHousehold.userInHouseholdCollection}" var="item" >
+            <h:outputLabel value="${item.user.name}"/>
+            <h:commandButton value="X" action="${Household.deleteUserFromHousehold(item)}" rendered="#{Household.selectedHousehold.isAdmin(Household.userId)}">
+              <f:ajax execute="@form" render="household" />
+            </h:commandButton>
             <br/>
           </ui:repeat>
+          <div id="addUserInHousehold">
+            <h:outputText value="${User.message}"/>
+            <h:panelGrid columns="2">
+              <f:facet name="header">Pridať ďalšieho používateľa</f:facet>
+              <h:outputText value="Email používateľa"/>
+              <h:inputText value="${User.email}"/>
+              <f:facet name="footer">
+                <h:commandButton value="Pridať používateľa" action="#{User.addUserInHousehold()}">
+                  <f:ajax execute="@form" render="household" />
+                </h:commandButton>
+              </f:facet>
+            </h:panelGrid>
+          </div>
         </div>
-        <div id="householdRecipes">
-          <h:commandButton value="Recipes" action="recipes"/>
-        </div>
-        <div id="householdShoppingList">
-          <h:commandButton value="Shopping lists" action="shoppingLists"/>
-        </div>
+        <!--        <div id="householdRecipes">
+                  <h:commandButton value="Recipes" action="recipes"/>
+                </div>
+                <div id="householdShoppingList">
+                  <h:commandButton value="Shopping lists" action="shoppingLists"/>
+                </div>-->
       </h:form>
+      <div id="tasksList">
+        <h:commandButton value="List of tasks" action="recipes"/>
+      </div>
     </h:form>
   </h:body>
 </html>

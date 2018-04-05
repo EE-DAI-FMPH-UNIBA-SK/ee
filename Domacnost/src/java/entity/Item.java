@@ -1,4 +1,4 @@
-package com.entity;
+package entity;
 
 import java.io.Serializable;
 
@@ -22,7 +22,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @Table(name = "item")
 @XmlRootElement
-@NamedQueries({@NamedQuery(name = "Item.findAll", query = "SELECT i FROM Item i"), @NamedQuery(name = "Item.findById", query = "SELECT i FROM Item i WHERE i.id = :id"), @NamedQuery(name = "Item.findByDone", query = "SELECT i FROM Item i WHERE i.done = :done")})
+@NamedQueries({
+  @NamedQuery(name = "Item.findAll", query = "SELECT i FROM Item i"),
+  @NamedQuery(name = "Item.findById", query = "SELECT i FROM Item i WHERE i.id = :id"),
+  @NamedQuery(name = "Item.findByDone", query = "SELECT i FROM Item i WHERE i.done = :done")})
 public class Item implements Serializable {
   private static final long serialVersionUID = 1L;
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Basic(optional = false) @Column(name = "id")
@@ -32,7 +35,7 @@ public class Item implements Serializable {
   @JoinColumn(name = "product", referencedColumnName = "id") @ManyToOne
   private Product product;
   @JoinColumn(name = "shoppingList", referencedColumnName = "id") @ManyToOne
-  private Shoppinglist shoppingList;
+  private ShoppingList shoppingList;
   //
 
   public Item() {
@@ -40,6 +43,11 @@ public class Item implements Serializable {
 
   public Item(Integer id) {
     this.id = id;
+  }
+
+  public Item(Product product, ShoppingList shoppingList) {
+    this.product = product;
+    this.shoppingList = shoppingList;
   }
 
   public Integer getId() {
@@ -66,11 +74,11 @@ public class Item implements Serializable {
     this.product = product;
   }
 
-  public Shoppinglist getShoppingList() {
+  public ShoppingList getShoppingList() {
     return shoppingList;
   }
 
-  public void setShoppingList(Shoppinglist shoppingList) {
+  public void setShoppingList(ShoppingList shoppingList) {
     this.shoppingList = shoppingList;
   }
 
@@ -96,7 +104,7 @@ public class Item implements Serializable {
 
   @Override
   public String toString() {
-    return "com.entity.Item[ id=" + id + " ]";
+    return "entity.Item[ id=" + id + " ]";
   }
 
 }

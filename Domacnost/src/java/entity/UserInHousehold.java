@@ -1,4 +1,4 @@
-package com.entity;
+package entity;
 
 import java.io.Serializable;
 
@@ -23,12 +23,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "userInHousehold")
 @XmlRootElement
 @NamedQueries({
-  @NamedQuery(name = "Userinhousehold.findAll", query = "SELECT u FROM Userinhousehold u"),
-  @NamedQuery(name = "Userinhousehold.findById", query = "SELECT u FROM Userinhousehold u WHERE u.id = :id"),
-  @NamedQuery(name = "Userinhousehold.findByUserId", query = "SELECT u FROM Userinhousehold u WHERE u.user = :user"),
-  @NamedQuery(name = "Userinhousehold.findByHouseholdId", query = "SELECT u FROM Userinhousehold u WHERE u.household = :household")
+  @NamedQuery(name = "UserInHousehold.findAll", query = "SELECT u FROM UserInHousehold u"),
+  @NamedQuery(name = "UserInHousehold.findById", query = "SELECT u FROM UserInHousehold u WHERE u.id = :id"),
+  @NamedQuery(name = "UserInHousehold.findByUserId", query = "SELECT u FROM UserInHousehold u WHERE u.user = :user"),
+  @NamedQuery(name = "UserInHousehold.findByHouseholdId", query = "SELECT u FROM UserInHousehold u WHERE u.household = :household")
 })
-public class Userinhousehold implements Serializable {
+public class UserInHousehold implements Serializable {
   private static final long serialVersionUID = 1L;
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Basic(optional = false) @Column(name = "id")
   private Integer id;
@@ -38,11 +38,16 @@ public class Userinhousehold implements Serializable {
   private Household household;
   //
 
-  public Userinhousehold() {
+  public UserInHousehold() {
   }
 
-  public Userinhousehold(Integer id) {
+  public UserInHousehold(Integer id) {
     this.id = id;
+  }
+
+  public UserInHousehold(User user, Household household) {
+    this.user = user;
+    this.household = household;
   }
 
   public Integer getId() {
@@ -79,10 +84,10 @@ public class Userinhousehold implements Serializable {
   @Override
   public boolean equals(Object object) {
     // TODO: Warning - this method won't work in the case the id fields are not set
-    if (!(object instanceof Userinhousehold)) {
+    if (!(object instanceof UserInHousehold)) {
       return false;
     }
-    Userinhousehold other = (Userinhousehold) object;
+    UserInHousehold other = (UserInHousehold) object;
     if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
       return false;
     }
@@ -91,7 +96,7 @@ public class Userinhousehold implements Serializable {
 
   @Override
   public String toString() {
-    return "com.entity.Userinhousehold[ id=" + id + " ]";
+    return "entity.UserInHousehold[ id=" + id + " ]";
   }
 
 }

@@ -2,22 +2,57 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
   <h:head>
     <title>Shopping lists</title>
   </h:head>
   <h:body>
-    <h3>Shopping lists</h3>
-    <h4>Page under construction</h4>
-    <h:form id="recipes" rendered="#{ShoppingList.selectedHousehold!=null}">
-      <div id="recipesItems">
-        <ui:repeat value="${ShoppingList.selectedHousehold.shoppinglistCollection}" var="item" >
-          <h:commandButton value="#{item.name}"/>
-        </ui:repeat>
-      </div>
-      <div id="addRecipe">
-
-      </div>
+    <h:form id="lists">
+      <h:form id="shoppingLists" rendered="#{ShoppingList.selectedShoppingList==null}">
+        <div id="recipeItems">
+          <ui:repeat value="${ShoppingList.selectedHousehold.shoppingListCollection}" var="item" >
+            <h:commandButton action="${ShoppingList.setSelectedShoppingList(item)}" value="${item.name}">
+              <f:ajax execute="@form" render="lists:shoppingLists" />
+            </h:commandButton>
+            <h:commandButton action="${ShoppingList.deleteShoppingList(item)}" value="X">
+              <f:ajax execute="@form" render="lists:shoppingLists" />
+            </h:commandButton>
+            <br/>
+          </ui:repeat>
+        </div>
+      </h:form>
+      <h:form id="selected" rendered="#{ShoppingList.selectedShoppingList!=null}">
+        <h:outputText value="#{ShoppingList.selectedShoppingList.name}"/>
+        Items:
+        </br>
+        <div>
+          <ui:repeat value="${ShoppingList.selectedShoppingList.itemCollection}" var="item" >
+            <h:commandButton action="${ShoppingList.showItem(item)}" value="${item.name}">
+              <f:ajax execute="@form" render="lists:selected" />
+            </h:commandButton>
+            <h:commandButton action="${ShoppingList.deleteItemFromShoppingList(item)}" value="X">
+              <f:ajax execute="@form" render="lists:selected" />
+            </h:commandButton>
+          </ui:repeat>
+        </div>
+        <div id="newProduct">
+          <h:panelGrid columns="2">
+            <f:facet name="header">Pridať novú položku</f:facet>
+            <h:outputText value="Názov"/>
+            <h:inputText value="${Product.name}"/>
+            <h:outputText value="Balenie(objem)"/>
+            <h:inputText value="${Product.objem}"/>
+            <h:outputText value="Počet kusov"/>
+            <h:inputText value="${Product.count}"/>
+            <f:facet name="footer">
+              <h:commandButton value="Pridať položku zoznamu" action="#{ShoppingList.addNewItem(Product.createProduct())}">
+                <f:ajax execute="@form" render="lists:selected" />
+              </h:commandButton>
+            </f:facet>
+          </h:panelGrid>
+        </div>
+      </h:form>
     </h:form>
   </h:body>
 </html>

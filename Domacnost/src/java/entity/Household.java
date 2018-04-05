@@ -1,4 +1,4 @@
-package com.entity;
+package entity;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -39,11 +39,11 @@ public class Household implements Serializable {
   @Size(max = 20) @Column(name = "name")
   private String name;
   @OneToMany(mappedBy = "household")
-  private Collection<Shoppinglist> shoppinglistCollection;
-  @OneToMany(mappedBy = "household")
-  private Collection<Userinhousehold> userinhouseholdCollection;
+  private Collection<ShoppingList> shoppingListCollection;
   @JoinColumn(name = "admin", referencedColumnName = "id") @ManyToOne
   private User admin;
+  @OneToMany(mappedBy = "household")
+  private Collection<UserInHousehold> userInHouseholdCollection;
   //
 
   public Household() {
@@ -75,22 +75,12 @@ public class Household implements Serializable {
   }
 
   @XmlTransient
-  public Collection<Shoppinglist> getShoppinglistCollection() {
-    return shoppinglistCollection.stream().collect(Collectors.toList());
+  public Collection<ShoppingList> getShoppingListCollection() {
+    return shoppingListCollection.stream().collect(Collectors.toList());
   }
 
-  public void setShoppinglistCollection(Collection<Shoppinglist> shoppinglistCollection) {
-    this.shoppinglistCollection = shoppinglistCollection;
-  }
-
-  @XmlTransient
-  public Collection<Userinhousehold> getUserinhouseholdCollection() {
-    System.out.println(userinhouseholdCollection.size());
-    return userinhouseholdCollection.stream().collect(Collectors.toList());
-  }
-
-  public void setUserinhouseholdCollection(Collection<Userinhousehold> userinhouseholdCollection) {
-    this.userinhouseholdCollection = userinhouseholdCollection;
+  public void setShoppingListCollection(Collection<ShoppingList> shoppingListCollection) {
+    this.shoppingListCollection = shoppingListCollection;
   }
 
   public User getAdmin() {
@@ -103,6 +93,23 @@ public class Household implements Serializable {
 
   public boolean isAdmin(int userId) {
     return admin.getId() == userId;
+  }
+
+  public void addUser(UserInHousehold user) {
+    userInHouseholdCollection.add(user);
+  }
+
+  public void deleteUser(UserInHousehold user) {
+    userInHouseholdCollection.remove(user);
+  }
+
+  @XmlTransient
+  public Collection<UserInHousehold> getUserInHouseholdCollection() {
+    return userInHouseholdCollection.stream().collect(Collectors.toList());
+  }
+
+  public void setUserInHouseholdCollection(Collection<UserInHousehold> userInHouseholdCollection) {
+    this.userInHouseholdCollection = userInHouseholdCollection;
   }
 
   @Override
@@ -127,7 +134,7 @@ public class Household implements Serializable {
 
   @Override
   public String toString() {
-    return "com.entity.Household[ id=" + id + " ]";
+    return "entity.Household[ id=" + id + " ]";
   }
 
 }

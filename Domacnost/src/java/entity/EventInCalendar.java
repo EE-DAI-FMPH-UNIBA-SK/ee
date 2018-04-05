@@ -1,4 +1,4 @@
-package com.entity;
+package entity;
 
 import java.io.Serializable;
 
@@ -20,10 +20,12 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Livia
  */
 @Entity
-@Table(name = "eventincalendar")
+@Table(name = "eventInCalendar")
 @XmlRootElement
-@NamedQueries({@NamedQuery(name = "Eventincalendar.findAll", query = "SELECT e FROM Eventincalendar e"), @NamedQuery(name = "Eventincalendar.findById", query = "SELECT e FROM Eventincalendar e WHERE e.id = :id")})
-public class Eventincalendar implements Serializable {
+@NamedQueries({
+  @NamedQuery(name = "EventInCalendar.findAll", query = "SELECT e FROM EventInCalendar e"),
+  @NamedQuery(name = "EventInCalendar.findById", query = "SELECT e FROM EventInCalendar e WHERE e.id = :id")})
+public class EventInCalendar implements Serializable {
   private static final long serialVersionUID = 1L;
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Basic(optional = false) @Column(name = "id")
   private Integer id;
@@ -33,10 +35,10 @@ public class Eventincalendar implements Serializable {
   private Calendar calendar;
   //
 
-  public Eventincalendar() {
+  public EventInCalendar() {
   }
 
-  public Eventincalendar(Integer id) {
+  public EventInCalendar(Integer id) {
     this.id = id;
   }
 
@@ -74,10 +76,10 @@ public class Eventincalendar implements Serializable {
   @Override
   public boolean equals(Object object) {
     // TODO: Warning - this method won't work in the case the id fields are not set
-    if (!(object instanceof Eventincalendar)) {
+    if (!(object instanceof EventInCalendar)) {
       return false;
     }
-    Eventincalendar other = (Eventincalendar) object;
+    EventInCalendar other = (EventInCalendar) object;
     if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
       return false;
     }
@@ -86,7 +88,7 @@ public class Eventincalendar implements Serializable {
 
   @Override
   public String toString() {
-    return "com.entity.Eventincalendar[ id=" + id + " ]";
+    return "entity.EventInCalendar[ id=" + id + " ]";
   }
 
 }
