@@ -1,4 +1,4 @@
-package com.entity;
+package entity;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -25,12 +25,12 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "user")
 @XmlRootElement
 @NamedQueries({
+  @NamedQuery(name = "User.control", query = "SELECT u FROM User u WHERE u.name = :name and u.password = :password"),
   @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
   @NamedQuery(name = "User.findById", query = "SELECT u FROM User u WHERE u.id = :id"),
   @NamedQuery(name = "User.findByName", query = "SELECT u FROM User u WHERE u.name = :name"),
   @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
-  @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password"),
-  @NamedQuery(name = "User.control", query = "SELECT u FROM User u WHERE u.name = :name and u.password = :password")})
+  @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password")})
 public class User implements Serializable {
   private static final long serialVersionUID = 1L;
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Basic(optional = false) @Column(name = "id")
@@ -45,11 +45,11 @@ public class User implements Serializable {
   @OneToMany(mappedBy = "user")
   private Collection<Calendar> calendarCollection;
   @OneToMany(mappedBy = "user")
-  private Collection<Shoppinglist> shoppinglistCollection;
-  @OneToMany(mappedBy = "user")
-  private Collection<Userinhousehold> userinhouseholdCollection;
+  private Collection<ShoppingList> shoppingListCollection;
   @OneToMany(mappedBy = "admin")
   private Collection<Household> householdCollection;
+  @OneToMany(mappedBy = "user")
+  private Collection<UserInHousehold> userInHouseholdCollection;
   //
 
   public User() {
@@ -101,21 +101,12 @@ public class User implements Serializable {
   }
 
   @XmlTransient
-  public Collection<Shoppinglist> getShoppinglistCollection() {
-    return shoppinglistCollection;
+  public Collection<ShoppingList> getShoppingListCollection() {
+    return shoppingListCollection;
   }
 
-  public void setShoppinglistCollection(Collection<Shoppinglist> shoppinglistCollection) {
-    this.shoppinglistCollection = shoppinglistCollection;
-  }
-
-  @XmlTransient
-  public Collection<Userinhousehold> getUserinhouseholdCollection() {
-    return userinhouseholdCollection;
-  }
-
-  public void setUserinhouseholdCollection(Collection<Userinhousehold> userinhouseholdCollection) {
-    this.userinhouseholdCollection = userinhouseholdCollection;
+  public void setShoppingListCollection(Collection<ShoppingList> shoppingListCollection) {
+    this.shoppingListCollection = shoppingListCollection;
   }
 
   @XmlTransient
@@ -125,6 +116,15 @@ public class User implements Serializable {
 
   public void setHouseholdCollection(Collection<Household> householdCollection) {
     this.householdCollection = householdCollection;
+  }
+
+  @XmlTransient
+  public Collection<UserInHousehold> getUserInHouseholdCollection() {
+    return userInHouseholdCollection;
+  }
+
+  public void setUserInHouseholdCollection(Collection<UserInHousehold> userInHouseholdCollection) {
+    this.userInHouseholdCollection = userInHouseholdCollection;
   }
 
   @Override
@@ -149,7 +149,7 @@ public class User implements Serializable {
 
   @Override
   public String toString() {
-    return "com.entity.User[ id=" + id + " ]";
+    return "entity.User[ id=" + id + " ]";
   }
 
 }

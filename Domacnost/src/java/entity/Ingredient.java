@@ -1,4 +1,4 @@
-package com.entity;
+package entity;
 
 import java.io.Serializable;
 
@@ -22,7 +22,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @Table(name = "ingredient")
 @XmlRootElement
-@NamedQueries({@NamedQuery(name = "Ingredient.findAll", query = "SELECT i FROM Ingredient i"), @NamedQuery(name = "Ingredient.findById", query = "SELECT i FROM Ingredient i WHERE i.id = :id")})
+@NamedQueries({
+  @NamedQuery(name = "Ingredient.findAll", query = "SELECT i FROM Ingredient i"),
+  @NamedQuery(name = "Ingredient.findById", query = "SELECT i FROM Ingredient i WHERE i.id = :id")})
 public class Ingredient implements Serializable {
   private static final long serialVersionUID = 1L;
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Basic(optional = false) @Column(name = "id")
@@ -86,7 +88,7 @@ public class Ingredient implements Serializable {
 
   @Override
   public String toString() {
-    return "com.entity.Ingredient[ id=" + id + " ]";
+    return "entity.Ingredient[ id=" + id + " ]";
   }
 
 }

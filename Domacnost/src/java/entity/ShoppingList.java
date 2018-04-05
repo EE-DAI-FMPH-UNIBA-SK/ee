@@ -1,8 +1,9 @@
-package com.entity;
+package entity;
 
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -30,12 +31,12 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "shoppingList")
 @XmlRootElement
 @NamedQueries({
-  @NamedQuery(name = "Shoppinglist.findAll", query = "SELECT s FROM Shoppinglist s"),
-  @NamedQuery(name = "Shoppinglist.findById", query = "SELECT s FROM Shoppinglist s WHERE s.id = :id"),
-  @NamedQuery(name = "Shoppinglist.findByName", query = "SELECT s FROM Shoppinglist s WHERE s.name = :name"),
-  @NamedQuery(name = "Shoppinglist.findByStart", query = "SELECT s FROM Shoppinglist s WHERE s.start = :start"),
-  @NamedQuery(name = "Shoppinglist.findByFinish", query = "SELECT s FROM Shoppinglist s WHERE s.finish = :finish")})
-public class Shoppinglist implements Serializable {
+  @NamedQuery(name = "ShoppingList.findAll", query = "SELECT s FROM ShoppingList s"),
+  @NamedQuery(name = "ShoppingList.findById", query = "SELECT s FROM ShoppingList s WHERE s.id = :id"),
+  @NamedQuery(name = "ShoppingList.findByName", query = "SELECT s FROM ShoppingList s WHERE s.name = :name"),
+  @NamedQuery(name = "ShoppingList.findByStart", query = "SELECT s FROM ShoppingList s WHERE s.start = :start"),
+  @NamedQuery(name = "ShoppingList.findByFinish", query = "SELECT s FROM ShoppingList s WHERE s.finish = :finish")})
+public class ShoppingList implements Serializable {
   private static final long serialVersionUID = 1L;
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Basic(optional = false) @Column(name = "id")
   private Integer id;
@@ -53,10 +54,10 @@ public class Shoppinglist implements Serializable {
   private User user;
   //
 
-  public Shoppinglist() {
+  public ShoppingList() {
   }
 
-  public Shoppinglist(Integer id) {
+  public ShoppingList(Integer id) {
     this.id = id;
   }
 
@@ -94,7 +95,7 @@ public class Shoppinglist implements Serializable {
 
   @XmlTransient
   public Collection<Item> getItemCollection() {
-    return itemCollection;
+    return itemCollection.stream().collect(Collectors.toList());
   }
 
   public void setItemCollection(Collection<Item> itemCollection) {
@@ -117,6 +118,14 @@ public class Shoppinglist implements Serializable {
     this.user = user;
   }
 
+  public void removeItem(Item item) {
+    itemCollection.remove(item);
+  }
+
+  public void addItem(Item item) {
+    itemCollection.add(item);
+  }
+
   @Override
   public int hashCode() {
     int hash = 0;
@@ -127,10 +136,10 @@ public class Shoppinglist implements Serializable {
   @Override
   public boolean equals(Object object) {
     // TODO: Warning - this method won't work in the case the id fields are not set
-    if (!(object instanceof Shoppinglist)) {
+    if (!(object instanceof ShoppingList)) {
       return false;
     }
-    Shoppinglist other = (Shoppinglist) object;
+    ShoppingList other = (ShoppingList) object;
     if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
       return false;
     }
@@ -139,7 +148,7 @@ public class Shoppinglist implements Serializable {
 
   @Override
   public String toString() {
-    return "com.entity.Shoppinglist[ id=" + id + " ]";
+    return "entity.ShoppingList[ id=" + id + " ]";
   }
 
 }

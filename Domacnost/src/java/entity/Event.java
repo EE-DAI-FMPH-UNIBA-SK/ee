@@ -1,4 +1,4 @@
-package com.entity;
+package entity;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -27,7 +27,17 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "event")
 @XmlRootElement
-@NamedQueries({@NamedQuery(name = "Event.findAll", query = "SELECT e FROM Event e"), @NamedQuery(name = "Event.findById", query = "SELECT e FROM Event e WHERE e.id = :id"), @NamedQuery(name = "Event.findByName", query = "SELECT e FROM Event e WHERE e.name = :name"), @NamedQuery(name = "Event.findByStart", query = "SELECT e FROM Event e WHERE e.start = :start"), @NamedQuery(name = "Event.findByLength", query = "SELECT e FROM Event e WHERE e.length = :length"), @NamedQuery(name = "Event.findByType", query = "SELECT e FROM Event e WHERE e.type = :type"), @NamedQuery(name = "Event.findByState", query = "SELECT e FROM Event e WHERE e.state = :state"), @NamedQuery(name = "Event.findByStartDate", query = "SELECT e FROM Event e WHERE e.startDate = :startDate"), @NamedQuery(name = "Event.findByEndDate", query = "SELECT e FROM Event e WHERE e.endDate = :endDate"), @NamedQuery(name = "Event.findByIter", query = "SELECT e FROM Event e WHERE e.iter = :iter")})
+@NamedQueries({
+  @NamedQuery(name = "Event.findAll", query = "SELECT e FROM Event e"),
+  @NamedQuery(name = "Event.findById", query = "SELECT e FROM Event e WHERE e.id = :id"),
+  @NamedQuery(name = "Event.findByName", query = "SELECT e FROM Event e WHERE e.name = :name"),
+  @NamedQuery(name = "Event.findByStart", query = "SELECT e FROM Event e WHERE e.start = :start"),
+  @NamedQuery(name = "Event.findByLength", query = "SELECT e FROM Event e WHERE e.length = :length"),
+  @NamedQuery(name = "Event.findByType", query = "SELECT e FROM Event e WHERE e.type = :type"),
+  @NamedQuery(name = "Event.findByState", query = "SELECT e FROM Event e WHERE e.state = :state"),
+  @NamedQuery(name = "Event.findByStartDate", query = "SELECT e FROM Event e WHERE e.startDate = :startDate"),
+  @NamedQuery(name = "Event.findByEndDate", query = "SELECT e FROM Event e WHERE e.endDate = :endDate"),
+  @NamedQuery(name = "Event.findByIter", query = "SELECT e FROM Event e WHERE e.iter = :iter")})
 public class Event implements Serializable {
   private static final long serialVersionUID = 1L;
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Basic(optional = false) @Column(name = "id")
@@ -49,7 +59,7 @@ public class Event implements Serializable {
   @Size(max = 20) @Column(name = "iter")
   private String iter;
   @OneToMany(mappedBy = "event")
-  private Collection<Eventincalendar> eventincalendarCollection;
+  private Collection<EventInCalendar> eventInCalendarCollection;
   //
 
   public Event() {
@@ -132,12 +142,12 @@ public class Event implements Serializable {
   }
 
   @XmlTransient
-  public Collection<Eventincalendar> getEventincalendarCollection() {
-    return eventincalendarCollection;
+  public Collection<EventInCalendar> getEventInCalendarCollection() {
+    return eventInCalendarCollection;
   }
 
-  public void setEventincalendarCollection(Collection<Eventincalendar> eventincalendarCollection) {
-    this.eventincalendarCollection = eventincalendarCollection;
+  public void setEventInCalendarCollection(Collection<EventInCalendar> eventInCalendarCollection) {
+    this.eventInCalendarCollection = eventInCalendarCollection;
   }
 
   @Override
@@ -162,7 +172,7 @@ public class Event implements Serializable {
 
   @Override
   public String toString() {
-    return "com.entity.Event[ id=" + id + " ]";
+    return "entity.Event[ id=" + id + " ]";
   }
 
 }

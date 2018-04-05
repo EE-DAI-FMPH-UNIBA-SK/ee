@@ -1,4 +1,4 @@
-package com.entity;
+package entity;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -24,7 +24,12 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "product")
 @XmlRootElement
-@NamedQueries({@NamedQuery(name = "Product.findAll", query = "SELECT p FROM Product p"), @NamedQuery(name = "Product.findById", query = "SELECT p FROM Product p WHERE p.id = :id"), @NamedQuery(name = "Product.findByName", query = "SELECT p FROM Product p WHERE p.name = :name"), @NamedQuery(name = "Product.findByValue", query = "SELECT p FROM Product p WHERE p.value = :value"), @NamedQuery(name = "Product.findByCount", query = "SELECT p FROM Product p WHERE p.count = :count")})
+@NamedQueries({
+  @NamedQuery(name = "Product.findAll", query = "SELECT p FROM Product p"),
+  @NamedQuery(name = "Product.findById", query = "SELECT p FROM Product p WHERE p.id = :id"),
+  @NamedQuery(name = "Product.findByName", query = "SELECT p FROM Product p WHERE p.name = :name"),
+  @NamedQuery(name = "Product.findByValue", query = "SELECT p FROM Product p WHERE p.value = :value"),
+  @NamedQuery(name = "Product.findByCount", query = "SELECT p FROM Product p WHERE p.count = :count")})
 public class Product implements Serializable {
   private static final long serialVersionUID = 1L;
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Basic(optional = false) @Column(name = "id")
@@ -46,6 +51,10 @@ public class Product implements Serializable {
 
   public Product(Integer id) {
     this.id = id;
+  }
+
+  public Product(String name, int objem, int count) {
+    throw new UnsupportedOperationException("Not supported yet.");
   }
 
   public Integer getId() {
@@ -120,7 +129,7 @@ public class Product implements Serializable {
 
   @Override
   public String toString() {
-    return "com.entity.Product[ id=" + id + " ]";
+    return "entity.Product[ id=" + id + " ]";
   }
 
 }

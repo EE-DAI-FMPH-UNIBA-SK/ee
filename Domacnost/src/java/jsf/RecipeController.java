@@ -1,6 +1,7 @@
-package com.jsf;
+package jsf;
 
-import com.entity.Household;
+import entity.Household;
+import entity.Recipe;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -10,16 +11,17 @@ import javax.faces.bean.SessionScoped;
  *
  * @author Livia
  */
-@ManagedBean(name = "ShoppingList")
+@ManagedBean(name = "Recipe")
 @SessionScoped
-public class ShoppingListsController {
+public class RecipeController {
   //
   @ManagedProperty(value = "#{applicationManagers}")
   ApplicationManagers manager;
   private Household selectedHousehold;
   private int userId;
+  private Recipe selectedRecipe;
 
-  public ShoppingListsController() {
+  public RecipeController() {
     userId = SessionUtils.getUserId();
   }
 
@@ -40,4 +42,13 @@ public class ShoppingListsController {
     this.selectedHousehold = selectedHousehold;
     manager.setHousehold(userId, selectedHousehold);
   }
+
+  public Recipe getSelectedRecipe() {
+    return selectedRecipe;
+  }
+
+  public void setSelectedRecipe(Recipe selectedRecipe) {
+    this.selectedRecipe = selectedRecipe;
+  }
+
 }

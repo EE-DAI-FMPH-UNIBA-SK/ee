@@ -1,4 +1,4 @@
-package com.entity;
+package entity;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -24,7 +24,12 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "recipe")
 @XmlRootElement
-@NamedQueries({@NamedQuery(name = "Recipe.findAll", query = "SELECT r FROM Recipe r"), @NamedQuery(name = "Recipe.findById", query = "SELECT r FROM Recipe r WHERE r.id = :id"), @NamedQuery(name = "Recipe.findByName", query = "SELECT r FROM Recipe r WHERE r.name = :name"), @NamedQuery(name = "Recipe.findByCountPortions", query = "SELECT r FROM Recipe r WHERE r.countPortions = :countPortions"), @NamedQuery(name = "Recipe.findByDescription", query = "SELECT r FROM Recipe r WHERE r.description = :description")})
+@NamedQueries({
+  @NamedQuery(name = "Recipe.findAll", query = "SELECT r FROM Recipe r"),
+  @NamedQuery(name = "Recipe.findById", query = "SELECT r FROM Recipe r WHERE r.id = :id"),
+  @NamedQuery(name = "Recipe.findByName", query = "SELECT r FROM Recipe r WHERE r.name = :name"),
+  @NamedQuery(name = "Recipe.findByCountPortions", query = "SELECT r FROM Recipe r WHERE r.countPortions = :countPortions"),
+  @NamedQuery(name = "Recipe.findByDescription", query = "SELECT r FROM Recipe r WHERE r.description = :description")})
 public class Recipe implements Serializable {
   private static final long serialVersionUID = 1L;
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Basic(optional = false) @Column(name = "id")
@@ -109,7 +114,7 @@ public class Recipe implements Serializable {
 
   @Override
   public String toString() {
-    return "com.entity.Recipe[ id=" + id + " ]";
+    return "entity.Recipe[ id=" + id + " ]";
   }
 
 }
