@@ -2,7 +2,7 @@ package com.query;
 
 import com.entity.Calendar;
 import com.entity.Event;
-import com.entity.Eventincalendar;
+import com.entity.EventInCalendar;
 import com.entity.User;
 
 import java.util.Collections;
@@ -117,7 +117,7 @@ public class DataQuery {
     }
   }
 
-  public Eventincalendar addCalendarEvent(Eventincalendar eventList) {
+  public EventInCalendar addCalendarEvent(EventInCalendar eventList) {
     try {
       EntityTransaction et = em.getTransaction();
       if (!et.isActive()) {
@@ -148,9 +148,9 @@ public class DataQuery {
     }
   }
 
-  public Eventincalendar getEventList(Calendar calendarId, Event eventId) {
+  public EventInCalendar getEventList(Calendar calendarId, Event eventId) {
     try {
-      return em.createNamedQuery("Eventincalendar.findByEventCalendarId", Eventincalendar.class).setParameter("calendarId", calendarId).setParameter("eventId", eventId).getSingleResult();
+      return em.createNamedQuery("Eventincalendar.findByEventCalendarId", EventInCalendar.class).setParameter("calendarId", calendarId).setParameter("eventId", eventId).getSingleResult();
     } catch (Exception e) {
       System.out.println(e.getMessage());
       return null;

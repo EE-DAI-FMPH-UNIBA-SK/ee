@@ -1,4 +1,4 @@
-package jsf;
+package session;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;

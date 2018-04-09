@@ -1,5 +1,6 @@
 package jsf;
 
+import session.SessionUtils;
 import entity.Household;
 import entity.Recipe;
 

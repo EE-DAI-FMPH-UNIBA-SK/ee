@@ -4,7 +4,7 @@ import JSON.CallendarJSON;
 import XML.CalendarsXML;
 import com.entity.Calendar;
 import com.entity.Event;
-import com.entity.Eventincalendar;
+import com.entity.EventInCalendar;
 import com.entity.User;
 import com.query.DataQuery;
 
@@ -63,8 +63,15 @@ public class CalendarController implements Serializable {
   private List<Calendar> calendars;
   private Calendar showCalendar;
 
-  private int userId = 1;
+  private int userId;
   private Part file;
+
+  public CalendarController() {
+    int id = SessionUtils.getUserId();
+    if (id != 0) {
+      userId = id;
+    }
+  }
 
   public List<Calendar> getCalendars() {
     calendars = DataQuery.getInstance().getCalendars();
@@ -143,12 +150,12 @@ public class CalendarController implements Serializable {
             Event e2 = DataQuery.getInstance().findEventByName(e.getName());
             if (e2 == null || e2.getType() != e.getType()) {
               e2 = DataQuery.getInstance().addEvent(e);
-              Eventincalendar eL = new Eventincalendar(showCalendar, e2);
+              EventInCalendar eL = new EventInCalendar(showCalendar, e2);
               DataQuery.getInstance().addCalendarEvent(eL);
             } else {
-              Eventincalendar el = DataQuery.getInstance().getEventList(showCalendar, e2);
+              EventInCalendar el = DataQuery.getInstance().getEventList(showCalendar, e2);
               if (el == null) {
-                Eventincalendar eL = new Eventincalendar(showCalendar, e2);
+                EventInCalendar eL = new EventInCalendar(showCalendar, e2);
                 DataQuery.getInstance().addCalendarEvent(eL);
               }
             }
@@ -242,7 +249,7 @@ public class CalendarController implements Serializable {
                   if (e2 == null || e2.getType() != e.getType()) {
                     e2 = DataQuery.getInstance().addEvent(e);
                   }
-                  Eventincalendar eL = new Eventincalendar(c2, e2);
+                  EventInCalendar eL = new EventInCalendar(c2, e2);
                   DataQuery.getInstance().addCalendarEvent(eL);
                 }
               }

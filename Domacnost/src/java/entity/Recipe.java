@@ -1,7 +1,7 @@
 package entity;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -31,6 +33,8 @@ import javax.xml.bind.annotation.XmlTransient;
   @NamedQuery(name = "Recipe.findByCountPortions", query = "SELECT r FROM Recipe r WHERE r.countPortions = :countPortions"),
   @NamedQuery(name = "Recipe.findByDescription", query = "SELECT r FROM Recipe r WHERE r.description = :description")})
 public class Recipe implements Serializable {
+  @JoinColumn(name = "calendar", referencedColumnName = "id") @ManyToOne
+  private Calendar calendar;
   private static final long serialVersionUID = 1L;
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Basic(optional = false) @Column(name = "id")
   private Integer id;
@@ -41,7 +45,7 @@ public class Recipe implements Serializable {
   @Size(max = 20) @Column(name = "description")
   private String description;
   @OneToMany(mappedBy = "recipe")
-  private Collection<Ingredient> ingredientCollection;
+  private List<Ingredient> ingredientCollection;
   //
 
   public Recipe() {
@@ -84,11 +88,11 @@ public class Recipe implements Serializable {
   }
 
   @XmlTransient
-  public Collection<Ingredient> getIngredientCollection() {
+  public List<Ingredient> getIngredientCollection() {
     return ingredientCollection;
   }
 
-  public void setIngredientCollection(Collection<Ingredient> ingredientCollection) {
+  public void setIngredientCollection(List<Ingredient> ingredientCollection) {
     this.ingredientCollection = ingredientCollection;
   }
 
@@ -115,6 +119,14 @@ public class Recipe implements Serializable {
   @Override
   public String toString() {
     return "entity.Recipe[ id=" + id + " ]";
+  }
+
+  public Calendar getCalendar() {
+    return calendar;
+  }
+
+  public void setCalendar(Calendar calendar) {
+    this.calendar = calendar;
   }
 
 }

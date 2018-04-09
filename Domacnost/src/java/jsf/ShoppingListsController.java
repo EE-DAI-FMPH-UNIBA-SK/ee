@@ -1,11 +1,18 @@
 package jsf;
 
-import dataQuery.DataQuery;
+import session.SessionUtils;
 import entity.Household;
 import entity.Item;
 import entity.Product;
 import entity.ShoppingList;
+import session.ItemFacade;
+import session.ShoppingListFacade;
 
+import java.io.Serializable;
+import java.util.Date;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
@@ -16,16 +23,29 @@ import javax.faces.bean.SessionScoped;
  */
 @ManagedBean(name = "ShoppingList")
 @SessionScoped
-public class ShoppingListsController {
+public class ShoppingListsController implements Serializable {
   //
   @ManagedProperty(value = "#{applicationManagers}")
   ApplicationManagers manager;
   private Household selectedHousehold;
   private int userId;
   private ShoppingList selectedShoppingList;
+  private String message;
+  private Product newProduct;
+  private String name;
+  private Date startDate = null;
+  private Date endDate = null;
 
-  public ShoppingListsController() {
+  @EJB
+  private ShoppingListFacade slf;
+  @EJB
+  private ItemFacade ifac;
+
+  @PostConstruct
+  private void init() {
     userId = SessionUtils.getUserId();
+    selectedHousehold = null;
+    manager.setSelectedShoppingList(userId, selectedShoppingList);
   }
 
   public ApplicationManagers getManager() {
@@ -51,25 +71,89 @@ public class ShoppingListsController {
   }
 
   public void setSelectedShoppingList(ShoppingList selectedShoppingList) {
+    setMessage("");
     this.selectedShoppingList = selectedShoppingList;
+    manager.setSelectedShoppingList(userId, selectedShoppingList);
+  }
+
+  public void addShoppingList() {
+    setMessage("");
+    if (name != "" && startDate != null && endDate != null) {
+      ShoppingList newShoppingList = new ShoppingList(name, startDate, endDate, selectedHousehold);
+      slf.create(newShoppingList);
+      selectedHousehold.addShoppingList(newShoppingList);
+      selectedShoppingList = null;
+      setName("");
+      setStartDate(null);
+      setEndDate(null);
+    } else {
+      setMessage("You can not create a household. Check the correctness of the data");
+    }
   }
 
   public void deleteShoppingList(ShoppingList shoppingList) {
-    DataQuery.getInstance().deleteShoppingList(shoppingList);
+    setMessage("");
+    try {
+      slf.deleteShoppingList(shoppingList);
+      selectedHousehold.deleteShoppingList(shoppingList);
+    } catch (Exception e) {
+      setMessage("Unable to delete the selected shopping list");
+    }
   }
 
-  public String showItem(Item item) {
-    return "";
+  public String getMessage() {
+    return message;
+  }
+
+  public void setMessage(String message) {
+    this.message = message;
+  }
+
+  public Product getNewProduct() {
+    return newProduct;
+  }
+
+  public void setNewProduct(Product newProduct) {
+    this.newProduct = newProduct;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public Date getStartDate() {
+    return startDate;
+  }
+
+  public void setStartDate(Date startDate) {
+    this.startDate = startDate;
+  }
+
+  public Date getEndDate() {
+    return endDate;
+  }
+
+  public void setEndDate(Date endDate) {
+    this.endDate = endDate;
+  }
+
+  public void changeItemState(Item item) {
+    ifac.update(item);
   }
 
   public void deleteItemFromShoppingList(Item item) {
-    DataQuery.getInstance().deleteItem(item);
+    ifac.deleteItem(item);
     selectedShoppingList.removeItem(item);
   }
 
-  public void addNewItem(Product p) {
-    Item item = new Item(p, selectedShoppingList);
-    item = DataQuery.getInstance().createItem(item);
+  public void addNewItem() {
+    Item item = new Item(newProduct, selectedShoppingList);
+    item = ifac.createItem(item);
     selectedShoppingList.addItem(item);
   }
+
 }

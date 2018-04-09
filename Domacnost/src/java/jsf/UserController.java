@@ -1,13 +1,12 @@
 package jsf;
 
-import dataQuery.DataQuery;
-import entity.Household;
-import entity.User;
-import entity.UserInHousehold;
+import session.SessionUtils;
+import session.UserFacade;
 
 import java.io.IOException;
 import java.io.Serializable;
 
+import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
@@ -28,6 +27,8 @@ public class UserController implements Serializable {
   private String password;
   private String message;
 
+  @EJB
+  private UserFacade uf;
   private int userId;
 
   public UserController() {
@@ -38,7 +39,7 @@ public class UserController implements Serializable {
   }
 
   public String loginControl() {
-    userId = DataQuery.getInstance().loginControl(email, password);
+    userId = uf.loginControl(email, password);
     if (userId != 0) {
       manager.newUser(userId);
       HttpSession session = SessionUtils.getSession();
@@ -49,16 +50,13 @@ public class UserController implements Serializable {
       return "householders";
     }
     setMessage("Nesprávne meno alebo heslo. Skúste znova.");
-    return "";
+    return "users";
   }
 
   public void checkLoggin() {
-    System.out.println(userId);
     if (userId != 0) {
       manager.setHousehold(userId, null);
       try {
-//        ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
-//        ec.redirect(ec.getRequestContextPath() + "/householders.xhtml");
         String uri = "householders.xhtml";
         FacesContext.getCurrentInstance().getExternalContext().dispatch(uri);
       } catch (IOException ex) {
@@ -67,6 +65,10 @@ public class UserController implements Serializable {
       }
     }
 
+  }
+
+  public UserFacade getUf() {
+    return uf;
   }
 
   public String getEmail() {
@@ -107,19 +109,6 @@ public class UserController implements Serializable {
 
   public void setManager(ApplicationManagers manager) {
     this.manager = manager;
-  }
-
-  public void addUserInHousehold() {
-    User user = DataQuery.getInstance().getUserByEmail(email);
-    if (user != null) {
-      Household h = manager.getSelectHousehold(userId);
-      UserInHousehold uih = new UserInHousehold(user, h);
-      DataQuery.getInstance().addUserInHousehold(uih);
-      h.addUser(uih);
-      setMessage("");
-    } else {
-      setMessage("User does not exist.");
-    }
   }
 
 }

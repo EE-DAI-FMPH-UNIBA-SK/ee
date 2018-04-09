@@ -20,15 +20,15 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Livia
  */
 @Entity
-@Table(name = "eventincalendar")
+@Table(name = "eventInCalendar")
 @XmlRootElement
 @NamedQueries({
-  @NamedQuery(name = "Eventincalendar.findAll", query = "SELECT e FROM Eventincalendar e"),
-  @NamedQuery(name = "Eventincalendar.findById", query = "SELECT e FROM Eventincalendar e WHERE e.id = :id"),
-  @NamedQuery(name = "Eventincalendar.findByCalendarId", query = "SELECT e FROM Eventincalendar e WHERE e.calendar = :calendarId"),
-  @NamedQuery(name = "Eventincalendar.findByEventId", query = "SELECT e FROM Eventincalendar e WHERE e.event = :eventId"),
-  @NamedQuery(name = "Eventincalendar.findByEventCalendarId", query = "SELECT e FROM Eventincalendar e WHERE e.event = :eventId and e.calendar = :calendarId")})
-public class Eventincalendar implements Serializable {
+  @NamedQuery(name = "Eventincalendar.findAll", query = "SELECT e FROM EventInCalendar e"),
+  @NamedQuery(name = "Eventincalendar.findById", query = "SELECT e FROM EventInCalendar e WHERE e.id = :id"),
+  @NamedQuery(name = "Eventincalendar.findByCalendarId", query = "SELECT e FROM EventInCalendar e WHERE e.calendar = :calendarId"),
+  @NamedQuery(name = "Eventincalendar.findByEventId", query = "SELECT e FROM EventInCalendar e WHERE e.event = :eventId"),
+  @NamedQuery(name = "Eventincalendar.findByEventCalendarId", query = "SELECT e FROM EventInCalendar e WHERE e.event = :eventId and e.calendar = :calendarId")})
+public class EventInCalendar implements Serializable {
   private static final long serialVersionUID = 1L;
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Basic(optional = false) @Column(name = "id")
   private Integer id;
@@ -38,14 +38,14 @@ public class Eventincalendar implements Serializable {
   private Calendar calendar;
   //
 
-  public Eventincalendar() {
+  public EventInCalendar() {
   }
 
-  public Eventincalendar(Integer id) {
+  public EventInCalendar(Integer id) {
     this.id = id;
   }
 
-  public Eventincalendar(Calendar calendar, Event event) {
+  public EventInCalendar(Calendar calendar, Event event) {
     this.event = event;
     this.calendar = calendar;
   }
@@ -84,10 +84,10 @@ public class Eventincalendar implements Serializable {
   @Override
   public boolean equals(Object object) {
     // TODO: Warning - this method won't work in the case the id fields are not set
-    if (!(object instanceof Eventincalendar)) {
+    if (!(object instanceof EventInCalendar)) {
       return false;
     }
-    Eventincalendar other = (Eventincalendar) object;
+    EventInCalendar other = (EventInCalendar) object;
     if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
       return false;
     }

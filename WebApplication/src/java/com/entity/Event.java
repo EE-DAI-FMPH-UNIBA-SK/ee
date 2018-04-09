@@ -3,6 +3,7 @@ package com.entity;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -41,6 +42,8 @@ import org.codehaus.jackson.annotate.JsonIgnore;
   @NamedQuery(name = "Event.findByEndDate", query = "SELECT e FROM Event e WHERE e.endDate = :endDate"),
   @NamedQuery(name = "Event.findByIter", query = "SELECT e FROM Event e WHERE e.iter = :iter")})
 public class Event implements Serializable {
+  @OneToMany(mappedBy = "event")
+  private List<EventInCalendar> eventInCalendarList;
   @Size(max = 20) @Column(name = "type")
   private String type;
   private static final long serialVersionUID = 1L;
@@ -61,7 +64,7 @@ public class Event implements Serializable {
   @Size(max = 20) @Column(name = "iter")
   private String iter;
   @OneToMany(mappedBy = "event")
-  private Collection<Eventincalendar> eventincalendarCollection;
+  private Collection<EventInCalendar> eventincalendarCollection;
   //
 
   public Event() {
@@ -103,7 +106,6 @@ public class Event implements Serializable {
     this.length = length;
   }
 
-
   public Integer getState() {
     return state;
   }
@@ -137,11 +139,11 @@ public class Event implements Serializable {
   }
 
   @XmlTransient @JsonIgnore
-  public Collection<Eventincalendar> getEventincalendarCollection() {
+  public Collection<EventInCalendar> getEventincalendarCollection() {
     return eventincalendarCollection;
   }
 
-  public void setEventincalendarCollection(Collection<Eventincalendar> eventincalendarCollection) {
+  public void setEventincalendarCollection(Collection<EventInCalendar> eventincalendarCollection) {
     this.eventincalendarCollection = eventincalendarCollection;
   }
 
@@ -176,6 +178,15 @@ public class Event implements Serializable {
 
   public void setType(String type) {
     this.type = type;
+  }
+
+  @XmlTransient @JsonIgnore
+  public List<EventInCalendar> getEventInCalendarList() {
+    return eventInCalendarList;
+  }
+
+  public void setEventInCalendarList(List<EventInCalendar> eventInCalendarList) {
+    this.eventInCalendarList = eventInCalendarList;
   }
 
 }

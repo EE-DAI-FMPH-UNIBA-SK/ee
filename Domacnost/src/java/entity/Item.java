@@ -48,6 +48,7 @@ public class Item implements Serializable {
   public Item(Product product, ShoppingList shoppingList) {
     this.product = product;
     this.shoppingList = shoppingList;
+    this.done = false;
   }
 
   public Integer getId() {

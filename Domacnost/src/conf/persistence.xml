@@ -3,6 +3,10 @@
   <persistence-unit name="DomacnostPU" transaction-type="JTA">
     <jta-data-source>java:app/domacnost</jta-data-source>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
-    <properties/>
+    <properties>
+      <property name="eclipselink.cache.shared.default" value="false"/>
+      <property name="eclipselink.query-results-cache" value="false"/>
+      <property name="eclipselink.refresh" value="true"/>
+    </properties>
   </persistence-unit>
 </persistence>

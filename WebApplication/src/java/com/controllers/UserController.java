@@ -2,14 +2,14 @@ package com.controllers;
 
 import com.query.DataQuery;
 
+import java.io.IOException;
 import java.io.Serializable;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-
-import org.primefaces.context.RequestContext;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -19,21 +19,47 @@ import org.primefaces.context.RequestContext;
 @SessionScoped
 public class UserController implements Serializable {
   //
-
+  @ManagedProperty(value = "#{applicationManager}")
+  ApplicationManager manager;
   private String email;
   private String password;
+  private String message;
 
   private int userId;
 
+  public UserController() {
+    int id = SessionUtils.getUserId();
+    if (id != 0) {
+      userId = id;
+    }
+  }
+
   public String loginControl() {
-    FacesContext context = FacesContext.getCurrentInstance();
     userId = DataQuery.getInstance().loginControl(email, password);
     if (userId != 0) {
+      manager.newUser(userId);
+      HttpSession session = SessionUtils.getSession();
+      session.setAttribute("userid", userId);
+      message = "";
+      email = "";
+      password = "";
       return "calendars";
     }
-    RequestContext.getCurrentInstance().update("growl");
-    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Email or password invalid!" + email + password));
-    return "";
+    setMessage("Nesprávne meno alebo heslo. Skúste znova.");
+    return "users";
+  }
+
+  public void checkLoggin() {
+    if (userId != 0) {
+      manager.setCalendar(userId, null);
+      try {
+        String uri = "calendars.xhtml";
+        FacesContext.getCurrentInstance().getExternalContext().dispatch(uri);
+      } catch (IOException ex) {
+        ex.printStackTrace();
+        System.out.println(ex.getMessage());
+      }
+    }
   }
 
   public String getEmail() {
@@ -50,6 +76,22 @@ public class UserController implements Serializable {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  public String getMessage() {
+    return message;
+  }
+
+  public void setMessage(String message) {
+    this.message = message;
+  }
+
+  public ApplicationManager getManager() {
+    return manager;
+  }
+
+  public void setManager(ApplicationManager manager) {
+    this.manager = manager;
   }
 
   public int getUserId() {

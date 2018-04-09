@@ -46,12 +46,6 @@ public class User implements Serializable {
   private String password;
   @OneToMany(mappedBy = "user")
   private Collection<Calendar> calendarCollection;
-  @OneToMany(mappedBy = "user")
-  private Collection<Shoppinglist> shoppinglistCollection;
-  @OneToMany(mappedBy = "user")
-  private Collection<Userinhousehold> userinhouseholdCollection;
-  @OneToMany(mappedBy = "admin")
-  private Collection<Household> householdCollection;
   //
 
   public User() {
@@ -100,33 +94,6 @@ public class User implements Serializable {
 
   public void setCalendarCollection(Collection<Calendar> calendarCollection) {
     this.calendarCollection = calendarCollection;
-  }
-
-  @XmlTransient @JsonIgnore
-  public Collection<Shoppinglist> getShoppinglistCollection() {
-    return shoppinglistCollection;
-  }
-
-  public void setShoppinglistCollection(Collection<Shoppinglist> shoppinglistCollection) {
-    this.shoppinglistCollection = shoppinglistCollection;
-  }
-
-  @XmlTransient @JsonIgnore
-  public Collection<Userinhousehold> getUserinhouseholdCollection() {
-    return userinhouseholdCollection;
-  }
-
-  public void setUserinhouseholdCollection(Collection<Userinhousehold> userinhouseholdCollection) {
-    this.userinhouseholdCollection = userinhouseholdCollection;
-  }
-
-  @XmlTransient @JsonIgnore
-  public Collection<Household> getHouseholdCollection() {
-    return householdCollection;
-  }
-
-  public void setHouseholdCollection(Collection<Household> householdCollection) {
-    this.householdCollection = householdCollection;
   }
 
   @Override

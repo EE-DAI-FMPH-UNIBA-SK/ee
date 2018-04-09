@@ -1,6 +1,8 @@
 package jsf;
 
 import entity.Household;
+import entity.ShoppingList;
+import websocket.FindWebsocket;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -17,18 +19,18 @@ import javax.faces.bean.ManagedBean;
 @ApplicationScoped
 public class ApplicationManagers implements Serializable {
   //
-
   String version = "1.0";
 
   private Map<Integer, Household> usersHousholder;
+  private Map<Integer, FindWebsocket> userToWs;
 
   public ApplicationManagers() {
     usersHousholder = new HashMap<>();
+    userToWs = new HashMap<>();
   }
 
   public void newUser(int id) {
     usersHousholder.put(id, null);
-//    System.err.println("nastavene");
   }
 
   public String getVersion() {
@@ -52,5 +54,38 @@ public class ApplicationManagers implements Serializable {
       return usersHousholder.get(userId);
     }
     return null;
+  }
+
+  public void setSelectedShoppingList(int userId, ShoppingList shoppingList) {
+    if (usersHousholder.containsKey(userId)) {
+      usersHousholder.get(userId).setSelectedShoppingList(shoppingList);
+    }
+  }
+
+  public ShoppingList getSelectedShoppingList(int userId) {
+    if (usersHousholder.containsKey(userId)) {
+      return usersHousholder.get(userId).getSelectedShoppingList();
+    }
+    return null;
+  }
+
+  void addUserIdtoWs(int userId, FindWebsocket wsRef) {
+    userToWs.put(userId, wsRef);
+  }
+
+  void removeWsRef(FindWebsocket wsRef) {
+    for (Map.Entry<Integer, FindWebsocket> e : userToWs.entrySet()) {
+      if (e.getValue() == wsRef) {
+        userToWs.remove(e.getKey());
+        break;
+      }
+    }
+  }
+
+  public void reply(int userId, String result) {
+    FindWebsocket ws = userToWs.get(userId);
+    if (ws != null) {
+      ws.reply(result);
+    }
   }
 }
