@@ -1,12 +1,12 @@
 package com.controllers;
 
+import com.entity.User;
 import com.query.DataQuery;
 
 import java.io.IOException;
 import java.io.Serializable;
 
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
@@ -19,8 +19,6 @@ import javax.servlet.http.HttpSession;
 @SessionScoped
 public class UserController implements Serializable {
   //
-  @ManagedProperty(value = "#{applicationManager}")
-  ApplicationManager manager;
   private String email;
   private String password;
   private String message;
@@ -37,7 +35,6 @@ public class UserController implements Serializable {
   public String loginControl() {
     userId = DataQuery.getInstance().loginControl(email, password);
     if (userId != 0) {
-      manager.newUser(userId);
       HttpSession session = SessionUtils.getSession();
       session.setAttribute("userid", userId);
       message = "";
@@ -51,8 +48,8 @@ public class UserController implements Serializable {
 
   public void checkLoggin() {
     if (userId != 0) {
-      manager.setCalendar(userId, null);
       try {
+        User user = DataQuery.getInstance().getUserById(userId);
         String uri = "calendars.xhtml";
         FacesContext.getCurrentInstance().getExternalContext().dispatch(uri);
       } catch (IOException ex) {
@@ -84,14 +81,6 @@ public class UserController implements Serializable {
 
   public void setMessage(String message) {
     this.message = message;
-  }
-
-  public ApplicationManager getManager() {
-    return manager;
-  }
-
-  public void setManager(ApplicationManager manager) {
-    this.manager = manager;
   }
 
   public int getUserId() {

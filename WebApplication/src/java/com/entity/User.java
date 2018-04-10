@@ -1,5 +1,7 @@
 package com.entity;
 
+import com.query.DataQuery;
+
 import java.io.Serializable;
 import java.util.Collection;
 
@@ -13,6 +15,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -47,6 +50,9 @@ public class User implements Serializable {
   @OneToMany(mappedBy = "user")
   private Collection<Calendar> calendarCollection;
   //
+
+  @Transient
+  private Calendar selectedCalendar;
 
   public User() {
   }
@@ -94,6 +100,22 @@ public class User implements Serializable {
 
   public void setCalendarCollection(Collection<Calendar> calendarCollection) {
     this.calendarCollection = calendarCollection;
+  }
+
+  public Calendar getSelectedCalendar() {
+    return selectedCalendar;
+  }
+
+  public void setSelectedCalendar(Calendar selectedCalendar) {
+    this.selectedCalendar = selectedCalendar;
+  }
+
+  public void setSelectedCalendar(int calendarId) {
+    this.selectedCalendar = DataQuery.getInstance().getCalendarById(calendarId);
+  }
+
+  public void addCalendar(Calendar newCalendar) {
+    calendarCollection.add(newCalendar);
   }
 
   @Override

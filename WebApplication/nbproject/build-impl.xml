@@ -796,9 +796,9 @@ or ant -Dj2ee.platform.classpath=&lt;server_classpath&gt; (where no properties f
     <target name="-init-taskdefs">
         <fail unless="libs.CopyLibs.classpath">
 The libs.CopyLibs.classpath property is not set up.
-This property must point to 
+This property must point to
 org-netbeans-modules-java-j2seproject-copylibstask.jar file which is part
-of NetBeans IDE installation and is usually located at 
+of NetBeans IDE installation and is usually located at
 &lt;netbeans_installation&gt;/java&lt;version&gt;/ant/extra folder.
 Either open the project in the IDE and make sure CopyLibs library
 exists or setup the property manually. For example like this:
@@ -1004,6 +1004,7 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.jackson-all-1.9.0.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.json-simple-1.1.1.jar}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${libs.javaee-api-7.0.classpath}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${libs.MySQLDriver.classpath}" iftldtodir="${build.web.dir}/WEB-INF" todir="${dist.ear.dir}/lib"/>
         <mkdir dir="${build.web.dir}/META-INF"/>
         <manifest file="${build.web.dir}/META-INF/MANIFEST.MF" mode="update"/>
     </target>
@@ -1011,10 +1012,10 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${libs.primefaces.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${libs.jsf20.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${libs.eclipselink.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
-        <copyfiles files="${file.reference.mysql-connector-java-5.1.45-bin.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.jackson-all-1.9.0.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${file.reference.json-simple-1.1.1.jar}" todir="${build.web.dir}/WEB-INF/lib"/>
         <copyfiles files="${libs.javaee-api-7.0.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
+        <copyfiles files="${libs.MySQLDriver.classpath}" todir="${build.web.dir}/WEB-INF/lib"/>
     </target>
     <target depends="init" if="dist.ear.dir" name="-clean-webinf-lib">
         <delete dir="${build.web.dir}/WEB-INF/lib"/>
@@ -1327,7 +1328,7 @@ exists or setup the property manually. For example like this:
     </target>
     <target depends="init,javadoc-build,javadoc-browse" description="Build Javadoc." name="javadoc"/>
     <!--
-                
+
                 TEST COMPILATION SECTION
             -->
     <target depends="init,compile" if="have.tests" name="-pre-pre-compile-test">
@@ -1366,7 +1367,7 @@ exists or setup the property manually. For example like this:
     </target>
     <target depends="init,compile,-pre-pre-compile-test,-pre-compile-test-single,-do-compile-test-single,-post-compile-test-single" name="compile-test-single"/>
     <!--
-                
+
                 TEST EXECUTION SECTION
             -->
     <target depends="init" if="have.tests" name="-pre-test-run">
@@ -1402,7 +1403,7 @@ exists or setup the property manually. For example like this:
     </target>
     <target depends="init,compile-test-single,-pre-test-run-single,-do-test-run-single-method,-post-test-run-single-method" description="Run single unit test." name="test-single-method"/>
     <!--
-                
+
                 TEST DEBUGGING SECTION
             -->
     <target depends="init,compile-test-single,-pre-test-run-single" if="have.tests" name="-debug-start-debuggee-test">
@@ -1424,33 +1425,33 @@ exists or setup the property manually. For example like this:
     </target>
     <target depends="init,-pre-debug-fix,-do-debug-fix-test" if="netbeans.home" name="debug-fix-test"/>
     <!--
-                
-                CLEANUP SECTION
-            -->
-    <target depends="init" name="deps-clean" unless="no.deps"/>
-    <target depends="init" name="do-clean">
-        <condition property="build.dir.to.clean" value="${build.web.dir}">
-            <isset property="dist.ear.dir"/>
-        </condition>
-        <property name="build.dir.to.clean" value="${build.web.dir}"/>
-        <delete includeEmptyDirs="true" quiet="true">
-            <fileset dir="${build.dir.to.clean}/WEB-INF/lib"/>
-        </delete>
-        <delete dir="${build.dir}"/>
-        <available file="${build.dir.to.clean}/WEB-INF/lib" property="status.clean-failed" type="dir"/>
-        <delete dir="${dist.dir}"/>
-    </target>
-    <target depends="do-clean" if="status.clean-failed" name="check-clean">
-        <echo message="Warning: unable to delete some files in ${build.web.dir}/WEB-INF/lib - they are probably locked by the J2EE server. "/>
-        <echo level="info" message="To delete all files undeploy the module from Server Registry in Runtime tab and then use Clean again."/>
-    </target>
-    <target depends="init" if="netbeans.home" name="undeploy-clean">
-        <nbundeploy failOnError="false" startServer="false"/>
-    </target>
-    <target name="-post-clean">
-        <!-- Empty placeholder for easier customization. -->
-        <!-- You can override this target in the ../build.xml file. -->
-    </target>
-    <target depends="init,undeploy-clean,deps-clean,do-clean,check-clean,-post-clean" description="Clean build products." name="clean"/>
-    <target depends="clean" description="Clean build products." name="clean-ear"/>
+
+      CLEANUP SECTION
+  -->
+  <target depends="init" name="deps-clean" unless="no.deps"/>
+  <target depends="init" name="do-clean">
+    <condition property="build.dir.to.clean" value="${build.web.dir}">
+      <isset property="dist.ear.dir"/>
+    </condition>
+    <property name="build.dir.to.clean" value="${build.web.dir}"/>
+    <delete includeEmptyDirs="true" quiet="true">
+      <fileset dir="${build.dir.to.clean}/WEB-INF/lib"/>
+    </delete>
+    <delete dir="${build.dir}"/>
+    <available file="${build.dir.to.clean}/WEB-INF/lib" property="status.clean-failed" type="dir"/>
+    <delete dir="${dist.dir}"/>
+  </target>
+  <target depends="do-clean" if="status.clean-failed" name="check-clean">
+    <echo message="Warning: unable to delete some files in ${build.web.dir}/WEB-INF/lib - they are probably locked by the J2EE server. "/>
+    <echo level="info" message="To delete all files undeploy the module from Server Registry in Runtime tab and then use Clean again."/>
+  </target>
+  <target depends="init" if="netbeans.home" name="undeploy-clean">
+    <nbundeploy failOnError="false" startServer="false"/>
+  </target>
+  <target name="-post-clean">
+    <!-- Empty placeholder for easier customization. -->
+    <!-- You can override this target in the ../build.xml file. -->
+  </target>
+  <target depends="init,undeploy-clean,deps-clean,do-clean,check-clean,-post-clean" description="Clean build products." name="clean"/>
+  <target depends="clean" description="Clean build products." name="clean-ear"/>
 </project>

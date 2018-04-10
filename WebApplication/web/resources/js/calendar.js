@@ -14,6 +14,8 @@ function connect() {
 }
 
 function onMessage(evt) {
+  userId = document.getElementById("form:userId").innerText;
+  console.log(userId);
   var data = evt.data.split(";");
   if (data[0] === "calendarEvents") {
     jsonData = data[1];
@@ -23,25 +25,30 @@ function onMessage(evt) {
     showCalendars(xmlData);
   } else if (data[0] === "calendar") {
     if (data[1] != 0) {
-      wsocket.send("calendars");
+      wsocket.send("calendars;" + userId);
     }
   } else if (data[0] === "importXML") {
     if (data[1] != 0) {
-      wsocket.send("refresh;");
+      wsocket.send("refresh;" + userId);
     }
   } else if (data[0] === "importJson") {
     if (data[1] != 0) {
-      wsocket.send("calendars;");
+      wsocket.send("calendars;" + userId);
     }
   }
 }
 
 function initCalendars() {
-  wsocket.send("calendars");
+  console.log("ssss");
+  userId = document.getElementById("form:userId").innerText;
+  console.log(userId);
+  wsocket.send("calendars;" + userId);
 }
 
 function showCalendarsEvents(id, name) {
-  wsocket.send("events;" + id);
+  userId = document.getElementById("form:userId").innerText;
+  console.log(userId);
+  wsocket.send("events;" + id + ";" + userId);
   document.getElementById("calendarName").innerHTML = name;
 }
 
@@ -103,17 +110,23 @@ function showCalendars(dataXML) {
 function addCalendar() {
   name = document.getElementById("form:name").value;
   visible = document.getElementById("form:public").value;
-  wsocket.send("addCalendar;name:" + name + ";visible:" + visible);
+  userId = document.getElementById("form:userId").innerText;
+  console.log(userId);
+  wsocket.send("addCalendar;name:" + name + ";visible:" + visible + ";" + userId);
   document.getElementById("form:name").innerHTML = "";
   document.getElementById("form:public").innerHTML = "";
 }
 
 function importEvents() {
   file = document.getElementById("form:importXML:xmlFile").files[0];
-  wsocket.send("importXML;" + file.name);
+  userId = document.getElementById("form:userId").innerText;
+  console.log(userId);
+  wsocket.send("importXML;" + file.name + ";" + userId);
 }
 
 function importJson() {
   file = document.getElementById("form:importJson:jsonFile").files[0];
-  wsocket.send("importJson;" + file.name);
+  userId = document.getElementById("form:userId").innerText;
+  console.log(userId);
+  wsocket.send("importJson;" + file.name + ";" + userId);
 }

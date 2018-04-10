@@ -1,11 +1,9 @@
 package XML;
 
 import com.entity.Calendar;
-import com.query.DataQuery;
 
 import java.io.StringWriter;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -45,10 +43,10 @@ public class CalendarsXML {
       doc.appendChild(rootElement);
       Element calendarsElement = doc.createElement("calendars");
 
-      if (calendars == null || calendars.isEmpty()) {
-        calendars = DataQuery.getInstance().getCalendars();
-      }
-      calendars = calendars.stream().filter(cal -> cal.getUser().getId() == id).collect(Collectors.toList());
+//      if (calendars == null || calendars.isEmpty()) {
+//        calendars = DataQuery.getInstance().getCalendars();
+//      }
+//      calendars = calendars.stream().filter(cal -> cal.getUser().getId() == id).collect(Collectors.toList());
       for (Calendar c : calendars) {
         Element calendar = doc.createElement("calendar");
 

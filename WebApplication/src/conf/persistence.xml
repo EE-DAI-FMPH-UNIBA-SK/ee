@@ -3,17 +3,10 @@
   <persistence-unit name="WebApplicationPU" transaction-type="RESOURCE_LOCAL">
     <class>com.entity.Calendar</class>
     <class>com.entity.Event</class>
-    <class>com.entity.Household</class>
-    <class>com.entity.Ingredient</class>
-    <class>com.entity.Item</class>
-    <class>com.entity.Product</class>
-    <class>com.entity.Recipe</class>
     <class>com.entity.User</class>
     <class>com.entity.EventInCalendar</class>
-    <class>com.entity.UserInHousehold</class>
-    <class>com.entity.ShoppingList</class>
     <properties>
-      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://kempelen.dai.fmph.uniba.sk:3306/domacnost?zeroDateTimeBehavior=convertToNull"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://kempelen.ii.fmph.uniba.sk:3306/domacnost?zeroDateTimeBehavior=convertToNull"/>
       <property name="javax.persistence.jdbc.user" value="domacnost"/>
       <property name="javax.persistence.jdbc.password" value="SamyTunel"/>
       <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
