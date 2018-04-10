@@ -1,7 +1,7 @@
 package entity;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -41,9 +41,9 @@ public class Product implements Serializable {
   @Column(name = "count")
   private Integer count;
   @OneToMany(mappedBy = "product")
-  private Collection<Item> itemCollection;
+  private List<Item> itemCollection;
   @OneToMany(mappedBy = "product")
-  private Collection<Ingredient> ingredientCollection;
+  private List<Ingredient> ingredientCollection;
   //
 
   public Product() {
@@ -54,7 +54,9 @@ public class Product implements Serializable {
   }
 
   public Product(String name, int objem, int count) {
-    throw new UnsupportedOperationException("Not supported yet.");
+    this.name = name;
+    this.value = objem;
+    this.count = count;
   }
 
   public Integer getId() {
@@ -90,20 +92,20 @@ public class Product implements Serializable {
   }
 
   @XmlTransient
-  public Collection<Item> getItemCollection() {
+  public List<Item> getItemCollection() {
     return itemCollection;
   }
 
-  public void setItemCollection(Collection<Item> itemCollection) {
+  public void setItemCollection(List<Item> itemCollection) {
     this.itemCollection = itemCollection;
   }
 
   @XmlTransient
-  public Collection<Ingredient> getIngredientCollection() {
+  public List<Ingredient> getIngredientCollection() {
     return ingredientCollection;
   }
 
-  public void setIngredientCollection(Collection<Ingredient> ingredientCollection) {
+  public void setIngredientCollection(List<Ingredient> ingredientCollection) {
     this.ingredientCollection = ingredientCollection;
   }
 

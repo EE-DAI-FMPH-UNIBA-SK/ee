@@ -2,6 +2,7 @@ package com.entity;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -34,6 +35,9 @@ import org.codehaus.jackson.annotate.JsonIgnore;
   @NamedQuery(name = "Calendar.findByName", query = "SELECT c FROM Calendar c WHERE c.name = :name"),
   @NamedQuery(name = "Calendar.findByVisible", query = "SELECT c FROM Calendar c WHERE c.visible = :visible")})
 public class Calendar implements Serializable {
+  @OneToMany(mappedBy = "calendar")
+  private List<EventInCalendar> eventInCalendarList;
+  @OneToMany(mappedBy = "calendar")
   private static final long serialVersionUID = 1L;
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Basic(optional = false) @Column(name = "id")
   private Integer id;
@@ -44,7 +48,7 @@ public class Calendar implements Serializable {
   @JoinColumn(name = "user", referencedColumnName = "id") @ManyToOne
   private User user;
   @OneToMany(mappedBy = "calendar")
-  private Collection<Eventincalendar> eventincalendarCollection;
+  private Collection<EventInCalendar> eventincalendarCollection;
   //
 
   public Calendar() {
@@ -92,11 +96,11 @@ public class Calendar implements Serializable {
   }
 
   @XmlTransient @JsonIgnore
-  public Collection<Eventincalendar> getEventincalendarCollection() {
+  public Collection<EventInCalendar> getEventincalendarCollection() {
     return eventincalendarCollection;
   }
 
-  public void setEventincalendarCollection(Collection<Eventincalendar> eventincalendarCollection) {
+  public void setEventincalendarCollection(Collection<EventInCalendar> eventincalendarCollection) {
     this.eventincalendarCollection = eventincalendarCollection;
   }
 
@@ -123,6 +127,15 @@ public class Calendar implements Serializable {
   @Override
   public String toString() {
     return "com.entity.Calendar[ id=" + id + " ]";
+  }
+
+  @XmlTransient @JsonIgnore
+  public List<EventInCalendar> getEventInCalendarList() {
+    return eventInCalendarList;
+  }
+
+  public void setEventInCalendarList(List<EventInCalendar> eventInCalendarList) {
+    this.eventInCalendarList = eventInCalendarList;
   }
 
 }

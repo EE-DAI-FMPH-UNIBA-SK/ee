@@ -1,5 +1,7 @@
 package com.entity;
 
+import com.query.DataQuery;
+
 import java.io.Serializable;
 import java.util.Collection;
 
@@ -13,6 +15,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -46,13 +49,10 @@ public class User implements Serializable {
   private String password;
   @OneToMany(mappedBy = "user")
   private Collection<Calendar> calendarCollection;
-  @OneToMany(mappedBy = "user")
-  private Collection<Shoppinglist> shoppinglistCollection;
-  @OneToMany(mappedBy = "user")
-  private Collection<Userinhousehold> userinhouseholdCollection;
-  @OneToMany(mappedBy = "admin")
-  private Collection<Household> householdCollection;
   //
+
+  @Transient
+  private Calendar selectedCalendar;
 
   public User() {
   }
@@ -102,31 +102,20 @@ public class User implements Serializable {
     this.calendarCollection = calendarCollection;
   }
 
-  @XmlTransient @JsonIgnore
-  public Collection<Shoppinglist> getShoppinglistCollection() {
-    return shoppinglistCollection;
+  public Calendar getSelectedCalendar() {
+    return selectedCalendar;
   }
 
-  public void setShoppinglistCollection(Collection<Shoppinglist> shoppinglistCollection) {
-    this.shoppinglistCollection = shoppinglistCollection;
+  public void setSelectedCalendar(Calendar selectedCalendar) {
+    this.selectedCalendar = selectedCalendar;
   }
 
-  @XmlTransient @JsonIgnore
-  public Collection<Userinhousehold> getUserinhouseholdCollection() {
-    return userinhouseholdCollection;
+  public void setSelectedCalendar(int calendarId) {
+    this.selectedCalendar = DataQuery.getInstance().getCalendarById(calendarId);
   }
 
-  public void setUserinhouseholdCollection(Collection<Userinhousehold> userinhouseholdCollection) {
-    this.userinhouseholdCollection = userinhouseholdCollection;
-  }
-
-  @XmlTransient @JsonIgnore
-  public Collection<Household> getHouseholdCollection() {
-    return householdCollection;
-  }
-
-  public void setHouseholdCollection(Collection<Household> householdCollection) {
-    this.householdCollection = householdCollection;
+  public void addCalendar(Calendar newCalendar) {
+    calendarCollection.add(newCalendar);
   }
 
   @Override

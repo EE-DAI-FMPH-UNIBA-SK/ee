@@ -9,45 +9,102 @@
   </h:head>
   <h:body>
     <h:form id="lists">
+      <div id="navigations">
+        <div id="householdRecipes">
+          <h:commandButton value="Recipes" action="recipes"/>
+        </div>
+        <div id="householdShoppingList">
+          <h:commandButton value="Householders list" action="householders"/>
+        </div>
+        <div id="tasksList">
+          <h:commandButton value="List of tasks" action="tasks"/>
+        </div>
+
+      </div>
+      <div id="newSL">
+        <h:outputText value="${ShoppingList.message}"/>
+        <h:panelGrid columns="2">
+          <f:facet name="header">Create new shopping list</f:facet>
+          <h:outputText value="Name"/>
+          <h:inputText value="${ShoppingList.name}">
+          </h:inputText>
+          <h:outputText value="Start date"/>
+          <h:inputText id = "startDate" value = "${ShoppingList.startDate}">
+            <f:convertDateTime pattern = "dd.mm.yyyy" />
+          </h:inputText>
+          <h:outputText value="End date"/>
+          <h:inputText id = "endDate" value = "${ShoppingList.endDate}">
+            <f:convertDateTime pattern = "dd.mm.yyyy" />
+          </h:inputText>
+          <f:facet name="footer">
+            <h:message for="selectOneMenu" />
+            <h:commandButton value="Add new shopping list" action="#{ShoppingList.addShoppingList()}">
+              <f:ajax execute="@form" render="lists" />
+            </h:commandButton>
+          </f:facet>
+        </h:panelGrid>
+      </div>
+
       <h:form id="shoppingLists" rendered="#{ShoppingList.selectedShoppingList==null}">
         <div id="recipeItems">
           <ui:repeat value="${ShoppingList.selectedHousehold.shoppingListCollection}" var="item" >
             <h:commandButton action="${ShoppingList.setSelectedShoppingList(item)}" value="${item.name}">
-              <f:ajax execute="@form" render="lists:shoppingLists" />
+              <f:ajax execute="@form" render="lists" />
             </h:commandButton>
             <h:commandButton action="${ShoppingList.deleteShoppingList(item)}" value="X">
-              <f:ajax execute="@form" render="lists:shoppingLists" />
+              <f:ajax execute="@form" render="lists" />
             </h:commandButton>
             <br/>
           </ui:repeat>
         </div>
       </h:form>
+
       <h:form id="selected" rendered="#{ShoppingList.selectedShoppingList!=null}">
         <h:outputText value="#{ShoppingList.selectedShoppingList.name}"/>
-        Items:
-        </br>
+        <br/>
+        Products:
+        <br/>
         <div>
           <ui:repeat value="${ShoppingList.selectedShoppingList.itemCollection}" var="item" >
-            <h:commandButton action="${ShoppingList.showItem(item)}" value="${item.name}">
-              <f:ajax execute="@form" render="lists:selected" />
-            </h:commandButton>
+            <h:selectBooleanCheckbox value = "${item.done}" title="${item.product.name}">
+              <f:ajax listener="#{ShoppingList.changeItemState(item)}" render="@form" />
+            </h:selectBooleanCheckbox>
+            <h:outputLabel value="${item.product.name}"/>
             <h:commandButton action="${ShoppingList.deleteItemFromShoppingList(item)}" value="X">
-              <f:ajax execute="@form" render="lists:selected" />
+              <f:ajax execute="@form" render="lists" />
             </h:commandButton>
+            <br/>
           </ui:repeat>
+        </div>
+        <div id="newItem">
+          <h:outputText value="${ShoppingList.message}"/>
+          <h:panelGrid columns="2">
+            <f:facet name="header">Add item in shopping list</f:facet>
+            <h:outputText value="Product"/>
+            <h:selectOneMenu id="selectOneMenu" value="#{ShoppingList.newProduct}" converter="#{productConverterBean}" >
+              <f:selectItem itemLabel="-- Select --" noSelectionOption="true" />
+              <f:selectItems value="#{Product.allProducts}" var="product" itemValue="#{product}" itemLabel="#{product.name}" />
+            </h:selectOneMenu>
+            <f:facet name="footer">
+              <h:message for="selectOneMenu" />
+              <h:commandButton value="Add item" action="#{ShoppingList.addNewItem()}">
+                <f:ajax execute="@form" render="lists" />
+              </h:commandButton>
+            </f:facet>
+          </h:panelGrid>
         </div>
         <div id="newProduct">
           <h:panelGrid columns="2">
-            <f:facet name="header">Pridať novú položku</f:facet>
-            <h:outputText value="Názov"/>
+            <f:facet name="header">Pridať nový product</f:facet>
+            <h:outputText value="Name"/>
             <h:inputText value="${Product.name}"/>
-            <h:outputText value="Balenie(objem)"/>
-            <h:inputText value="${Product.objem}"/>
-            <h:outputText value="Počet kusov"/>
+            <h:outputText value="Value"/>
+            <h:inputText value="${Product.value}"/>
+            <h:outputText value="Count"/>
             <h:inputText value="${Product.count}"/>
             <f:facet name="footer">
-              <h:commandButton value="Pridať položku zoznamu" action="#{ShoppingList.addNewItem(Product.createProduct())}">
-                <f:ajax execute="@form" render="lists:selected" />
+              <h:commandButton value="Create new product položku zoznamu" action="#{Product.createProduct()}">
+                <f:ajax execute="@form" render="lists" />
               </h:commandButton>
             </f:facet>
           </h:panelGrid>

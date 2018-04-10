@@ -10,7 +10,11 @@
   </h:head>
   <h:body>
     <h:form id="household" >
+
+      <h:outputText value="${Household.message}"/>
+
       <h:form id="householders" rendered="#{Household.selectedHousehold==null}">
+
         <div id="householderItems">
           <ui:repeat value="${Household.householders}" var="item" >
             <h:commandButton action="${Household.selectHousehold(item)}" value="${item.name}">
@@ -22,6 +26,7 @@
             <br/>
           </ui:repeat>
         </div>
+
         <div id="addHousehold">
           <h:panelGrid columns="2">
             <f:facet name="header">Vytvoriť novú domácnosť</f:facet>
@@ -34,42 +39,70 @@
             </f:facet>
           </h:panelGrid>
         </div>
+
       </h:form>
+
       <h:form id="householdDetail" rendered="#{Household.selectedHousehold!=null}">
+
+        <div id="navigations">
+          <div id="householdRecipes">
+            <h:commandButton value="Recipes" action="recipes"/>
+          </div>
+          <div id="householdShoppingList">
+            <h:commandButton value="Shopping lists" action="shoppingLists"/>
+          </div>
+          <div id="tasksList">
+            <h:commandButton value="List of tasks" action="tasks"/>
+          </div>
+          <div id="allHouseholders">
+            <h:commandButton value="All householders" action="#{Household.selectHousehold(null)}">
+              <f:ajax execute="@form" render="household" />
+            </h:commandButton>
+          </div>
+        </div>
+
         <h1>${Household.selectedHousehold.name}</h1>
+
         <div id="householdUsers">
           <h4>Users in householder</h4>
+
           <ui:repeat value="${Household.selectedHousehold.userInHouseholdCollection}" var="item" >
             <h:outputLabel value="${item.user.name}"/>
-            <h:commandButton value="X" action="${Household.deleteUserFromHousehold(item)}" rendered="#{Household.selectedHousehold.isAdmin(Household.userId)}">
+            <h:commandButton value="X" action="${Household.deleteUserFromHousehold(item)}" rendered="#{Household.selectedHousehold.admin.equals(Household.user)}">
               <f:ajax execute="@form" render="household" />
             </h:commandButton>
             <br/>
           </ui:repeat>
+
           <div id="addUserInHousehold">
-            <h:outputText value="${User.message}"/>
             <h:panelGrid columns="2">
               <f:facet name="header">Pridať ďalšieho používateľa</f:facet>
-              <h:outputText value="Email používateľa"/>
-              <h:inputText value="${User.email}"/>
+              <h:outputText value="Používateľ"/>
+              <h:selectOneMenu id="selectOneMenu" value="#{Household.newUser}" converter="#{userConverterBean}" >
+                <f:selectItem itemLabel="-- Select --" noSelectionOption="true" />
+                <f:selectItems value="#{Household.allUsers}" var="user" itemValue="#{user}" itemLabel="#{user.name}" />
+              </h:selectOneMenu>
               <f:facet name="footer">
-                <h:commandButton value="Pridať používateľa" action="#{User.addUserInHousehold()}">
+                <h:message for="selectOneMenu" />
+                <h:commandButton value="Pridať používateľa" action="#{Household.addUserInHousehold()}">
                   <f:ajax execute="@form" render="household" />
                 </h:commandButton>
               </f:facet>
             </h:panelGrid>
           </div>
         </div>
-        <!--        <div id="householdRecipes">
-                  <h:commandButton value="Recipes" action="recipes"/>
-                </div>
-                <div id="householdShoppingList">
-                  <h:commandButton value="Shopping lists" action="shoppingLists"/>
-                </div>-->
+
+        <div id="jms">
+          <h:inputText id = "startDate" value = "${Household.startDate}">
+            <f:convertDateTime pattern = "dd.MM.yyyy HH:mm" />
+          </h:inputText>
+          <h:inputText id = "endDate" value = "${Household.endDate}">
+            <f:convertDateTime pattern = "dd.MM.yyyy HH:mm" />
+          </h:inputText>
+          <h:inputText value="${Household.length}"/>
+          <h:commandButton action="${Household.findTime}" value="Find free time"/>
+        </div>
       </h:form>
-      <div id="tasksList">
-        <h:commandButton value="List of tasks" action="recipes"/>
-      </div>
     </h:form>
   </h:body>
 </html>

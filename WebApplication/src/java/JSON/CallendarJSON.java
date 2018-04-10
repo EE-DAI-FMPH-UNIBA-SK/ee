@@ -4,7 +4,7 @@ import XML.HolidayXML;
 import XML.NamesXML;
 import com.entity.Calendar;
 import com.entity.Event;
-import com.entity.Eventincalendar;
+import com.entity.EventInCalendar;
 import com.query.DataQuery;
 
 import java.io.InputStream;
@@ -33,7 +33,7 @@ public class CallendarJSON {
     Calendar calendar = DataQuery.getInstance().getCalendarById(calendarId);
     JSONArray events = new JSONArray();
     if (calendar != null) {
-      for (Eventincalendar el : calendar.getEventincalendarCollection()) {
+      for (EventInCalendar el : calendar.getEventincalendarCollection()) {
         Event e = el.getEvent();
         if (e != null) {
           JSONObject event = new JSONObject();

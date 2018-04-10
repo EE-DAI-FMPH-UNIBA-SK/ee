@@ -1,8 +1,8 @@
 package entity;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -59,7 +59,7 @@ public class Event implements Serializable {
   @Size(max = 20) @Column(name = "iter")
   private String iter;
   @OneToMany(mappedBy = "event")
-  private Collection<EventInCalendar> eventInCalendarCollection;
+  private List<EventInCalendar> eventInCalendarCollection;
   //
 
   public Event() {
@@ -142,11 +142,11 @@ public class Event implements Serializable {
   }
 
   @XmlTransient
-  public Collection<EventInCalendar> getEventInCalendarCollection() {
+  public List<EventInCalendar> getEventInCalendarCollection() {
     return eventInCalendarCollection;
   }
 
-  public void setEventInCalendarCollection(Collection<EventInCalendar> eventInCalendarCollection) {
+  public void setEventInCalendarCollection(List<EventInCalendar> eventInCalendarCollection) {
     this.eventInCalendarCollection = eventInCalendarCollection;
   }
 

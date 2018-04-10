@@ -1,8 +1,7 @@
 package entity;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.stream.Collectors;
+import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -16,6 +15,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -39,12 +39,14 @@ public class Household implements Serializable {
   @Size(max = 20) @Column(name = "name")
   private String name;
   @OneToMany(mappedBy = "household")
-  private Collection<ShoppingList> shoppingListCollection;
+  private List<ShoppingList> shoppingListCollection;
   @JoinColumn(name = "admin", referencedColumnName = "id") @ManyToOne
   private User admin;
   @OneToMany(mappedBy = "household")
-  private Collection<UserInHousehold> userInHouseholdCollection;
+  private List<UserInHousehold> userInHouseholdCollection;
   //
+  @Transient
+  private ShoppingList selectedShoppingList;
 
   public Household() {
   }
@@ -74,12 +76,28 @@ public class Household implements Serializable {
     this.name = name;
   }
 
-  @XmlTransient
-  public Collection<ShoppingList> getShoppingListCollection() {
-    return shoppingListCollection.stream().collect(Collectors.toList());
+  public ShoppingList getSelectedShoppingList() {
+    return selectedShoppingList;
   }
 
-  public void setShoppingListCollection(Collection<ShoppingList> shoppingListCollection) {
+  public void setSelectedShoppingList(ShoppingList selectedShoppingList) {
+    this.selectedShoppingList = selectedShoppingList;
+  }
+
+  public void addShoppingList(ShoppingList sl) {
+    shoppingListCollection.add(sl);
+  }
+
+  public void deleteShoppingList(ShoppingList sl) {
+    shoppingListCollection.remove(sl);
+  }
+
+  @XmlTransient
+  public List<ShoppingList> getShoppingListCollection() {
+    return shoppingListCollection;
+  }
+
+  public void setShoppingListCollection(List<ShoppingList> shoppingListCollection) {
     this.shoppingListCollection = shoppingListCollection;
   }
 
@@ -104,11 +122,11 @@ public class Household implements Serializable {
   }
 
   @XmlTransient
-  public Collection<UserInHousehold> getUserInHouseholdCollection() {
-    return userInHouseholdCollection.stream().collect(Collectors.toList());
+  public List<UserInHousehold> getUserInHouseholdCollection() {
+    return userInHouseholdCollection;
   }
 
-  public void setUserInHouseholdCollection(Collection<UserInHousehold> userInHouseholdCollection) {
+  public void setUserInHouseholdCollection(List<UserInHousehold> userInHouseholdCollection) {
     this.userInHouseholdCollection = userInHouseholdCollection;
   }
 

@@ -1,7 +1,7 @@
 package entity;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -43,13 +43,13 @@ public class User implements Serializable {
   @Size(max = 20) @Column(name = "password")
   private String password;
   @OneToMany(mappedBy = "user")
-  private Collection<Calendar> calendarCollection;
+  private List<Calendar> calendarCollection;
   @OneToMany(mappedBy = "user")
-  private Collection<ShoppingList> shoppingListCollection;
+  private List<ShoppingList> shoppingListCollection;
   @OneToMany(mappedBy = "admin")
-  private Collection<Household> householdCollection;
+  private List<Household> householdCollection;
   @OneToMany(mappedBy = "user")
-  private Collection<UserInHousehold> userInHouseholdCollection;
+  private List<UserInHousehold> userInHouseholdCollection;
   //
 
   public User() {
@@ -92,38 +92,38 @@ public class User implements Serializable {
   }
 
   @XmlTransient
-  public Collection<Calendar> getCalendarCollection() {
+  public List<Calendar> getCalendarCollection() {
     return calendarCollection;
   }
 
-  public void setCalendarCollection(Collection<Calendar> calendarCollection) {
+  public void setCalendarCollection(List<Calendar> calendarCollection) {
     this.calendarCollection = calendarCollection;
   }
 
   @XmlTransient
-  public Collection<ShoppingList> getShoppingListCollection() {
+  public List<ShoppingList> getShoppingListCollection() {
     return shoppingListCollection;
   }
 
-  public void setShoppingListCollection(Collection<ShoppingList> shoppingListCollection) {
+  public void setShoppingListCollection(List<ShoppingList> shoppingListCollection) {
     this.shoppingListCollection = shoppingListCollection;
   }
 
   @XmlTransient
-  public Collection<Household> getHouseholdCollection() {
+  public List<Household> getHouseholdCollection() {
     return householdCollection;
   }
 
-  public void setHouseholdCollection(Collection<Household> householdCollection) {
+  public void setHouseholdCollection(List<Household> householdCollection) {
     this.householdCollection = householdCollection;
   }
 
   @XmlTransient
-  public Collection<UserInHousehold> getUserInHouseholdCollection() {
+  public List<UserInHousehold> getUserInHouseholdCollection() {
     return userInHouseholdCollection;
   }
 
-  public void setUserInHouseholdCollection(Collection<UserInHousehold> userInHouseholdCollection) {
+  public void setUserInHouseholdCollection(List<UserInHousehold> userInHouseholdCollection) {
     this.userInHouseholdCollection = userInHouseholdCollection;
   }
 

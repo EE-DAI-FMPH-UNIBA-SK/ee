@@ -1,7 +1,7 @@
 package entity;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -32,6 +32,8 @@ import javax.xml.bind.annotation.XmlTransient;
   @NamedQuery(name = "Calendar.findByName", query = "SELECT c FROM Calendar c WHERE c.name = :name"),
   @NamedQuery(name = "Calendar.findByVisible", query = "SELECT c FROM Calendar c WHERE c.visible = :visible")})
 public class Calendar implements Serializable {
+  @OneToMany(mappedBy = "calendar")
+  private List<Recipe> recipeList;
   private static final long serialVersionUID = 1L;
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Basic(optional = false) @Column(name = "id")
   private Integer id;
@@ -42,7 +44,7 @@ public class Calendar implements Serializable {
   @JoinColumn(name = "user", referencedColumnName = "id") @ManyToOne
   private User user;
   @OneToMany(mappedBy = "calendar")
-  private Collection<EventInCalendar> eventInCalendarCollection;
+  private List<EventInCalendar> eventInCalendarCollection;
   //
 
   public Calendar() {
@@ -85,11 +87,11 @@ public class Calendar implements Serializable {
   }
 
   @XmlTransient
-  public Collection<EventInCalendar> getEventInCalendarCollection() {
+  public List<EventInCalendar> getEventInCalendarCollection() {
     return eventInCalendarCollection;
   }
 
-  public void setEventInCalendarCollection(Collection<EventInCalendar> eventInCalendarCollection) {
+  public void setEventInCalendarCollection(List<EventInCalendar> eventInCalendarCollection) {
     this.eventInCalendarCollection = eventInCalendarCollection;
   }
 
@@ -116,6 +118,15 @@ public class Calendar implements Serializable {
   @Override
   public String toString() {
     return "entity.Calendar[ id=" + id + " ]";
+  }
+
+  @XmlTransient
+  public List<Recipe> getRecipeList() {
+    return recipeList;
+  }
+
+  public void setRecipeList(List<Recipe> recipeList) {
+    this.recipeList = recipeList;
   }
 
 }

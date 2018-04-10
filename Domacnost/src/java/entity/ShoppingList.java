@@ -1,9 +1,8 @@
 package entity;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
-import java.util.stream.Collectors;
+import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -47,7 +46,7 @@ public class ShoppingList implements Serializable {
   @Column(name = "finish") @Temporal(TemporalType.DATE)
   private Date finish;
   @OneToMany(mappedBy = "shoppingList")
-  private Collection<Item> itemCollection;
+  private List<Item> itemCollection;
   @JoinColumn(name = "household", referencedColumnName = "id") @ManyToOne
   private Household household;
   @JoinColumn(name = "user", referencedColumnName = "id") @ManyToOne
@@ -59,6 +58,13 @@ public class ShoppingList implements Serializable {
 
   public ShoppingList(Integer id) {
     this.id = id;
+  }
+
+  public ShoppingList(String name, Date starDate, Date endDate, Household household) {
+    this.name = name;
+    this.start = starDate;
+    this.finish = endDate;
+    this.household = household;
   }
 
   public Integer getId() {
@@ -94,11 +100,11 @@ public class ShoppingList implements Serializable {
   }
 
   @XmlTransient
-  public Collection<Item> getItemCollection() {
-    return itemCollection.stream().collect(Collectors.toList());
+  public List<Item> getItemCollection() {
+    return itemCollection;
   }
 
-  public void setItemCollection(Collection<Item> itemCollection) {
+  public void setItemCollection(List<Item> itemCollection) {
     this.itemCollection = itemCollection;
   }
 

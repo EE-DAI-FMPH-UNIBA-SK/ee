@@ -9,18 +9,18 @@
     <h:outputScript  library="js" name="user.js" />
   </h:head>
   <h:body>
-    <p:growl id="growl" sticky="true" showDetail="true"/>
+    <f:event type="preRenderView" listener="#{User.checkLoggin}" />
+    <h:outputText value="#{User.message}"/>
     <h:form>
-      <p:panelGrid columns="2">
-        <f:facet name="header">Login form </f:facet>
+      <h3>Login form</h3>
+      <h:panelGrid columns="2">
         <h:outputText value="Email"/>
-        <p:inputText value="#{User.email}"/>
+        <h:inputText value="#{User.email}"/>
+
         <h:outputText value="Password"/>
-        <p:password value="#{User.password}"/>
-        <f:facet name="footer">
-          <p:commandButton value="Login" action="#{User.loginControl()}"/>
-        </f:facet>
-      </p:panelGrid>
+        <h:inputSecret value="#{User.password}"/>
+      </h:panelGrid>
+      <h:commandButton value="Login" action="#{User.loginControl()}"/>
 
     </h:form>
   </h:body>

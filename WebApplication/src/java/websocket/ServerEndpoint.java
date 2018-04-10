@@ -1,6 +1,8 @@
 package websocket;
 
-import com.controllers.CalendarController;
+import com.controllers.ApplicationManager;
+import com.entity.User;
+import com.query.DataQuery;
 
 import java.io.IOException;
 
@@ -22,43 +24,45 @@ public class ServerEndpoint {
   //
   Session mySession;
   @Inject
-  CalendarController calendar;
+  ApplicationManager manager;
 
   //protokol komunikacie
   // client -> server
-  //  "calendars" -> daj mi kalendare pre pouzivatela
-  //  "events" -> daj mi eventy pre show calendar
-  //  "addCalendar;name:xx;visible:yy" -> pridaj novy kalendar s menom xx a visible yy pre
-  //  "importJson;fileName" -> importni kalendar a jeho eventy zo suboru s nazvom fileName
-  //  "importXML;fileName" -> importni eventy zo suboru s nazvom fileName
+  //  "calendars;userId" -> daj mi kalendare pre pouzivatela s userId
+  //  "events;calendarId;userId" -> daj mi eventy pre calendar s id
+  //  "addCalendar;name:xx;visible:yy;userId" -> pridaj novy kalendar s menom xx a visible yy pre userId
+  //  "importJson;fileName;userId" -> importni kalendar a jeho eventy zo suboru s nazvom fileName pre pouzivatela s id userId
+  //  "importXML;fileName;userId" -> importni eventy zo suboru s nazvom fileName do vybraneho kalendara pouzivatela s id userId
   //
   // server -> client
   //  "calendars;xml" -> kalendare pouzivatela
   //  "calendar;id" -> pridany kalendar
   //  "calendarEvents;JSON" -> eventy pre calendar
-  //  "editEvent;" -> zmena eventu
   //  "importJson" -> importnute data z JSON
   //  "importXML" -> importnute data z XML
   @OnOpen
   public void open(Session session, EndpointConfig conf) {
+    System.out.println("websocket.ServerEndpoint.open()");
     mySession = session;
     final RemoteEndpoint.Basic remote = session.getBasicRemote();
   }
 
   @OnMessage
   public void onMessage(String text, Session session) {
+    System.err.println(text);
     final RemoteEndpoint.Basic remote = session.getBasicRemote();
     String[] t = text.split(";");
     if (t[0].equals("events")) {
       try {
-        String pom = calendar.getEvents(Integer.valueOf(t[1]));
+        String pom = manager.getEvents(Integer.valueOf(t[1]));
+        DataQuery.getInstance().getUserById(Integer.valueOf(t[2])).setSelectedCalendar(Integer.valueOf(t[1]));
         remote.sendText("calendarEvents;" + pom);
       } catch (IOException ioe) {
         System.err.println(ioe.getMessage());
       }
     } else if (t[0].equals("calendars")) {
       try {
-        remote.sendText("calendars;" + calendar.getShowCalendars());
+        remote.sendText("calendars;" + manager.getShowCalendars(Integer.valueOf(t[1])));
       } catch (IOException ioe) {
         System.err.println(ioe.getMessage());
       }
@@ -66,7 +70,7 @@ public class ServerEndpoint {
       try {
         String name = t[1].split(":")[1];
         boolean visible = Boolean.valueOf(t[2].split(":")[1]);
-        remote.sendText("calendar;" + calendar.addCalendar(name, visible));
+        remote.sendText("calendar;" + manager.addCalendar(name, visible, Integer.valueOf(t[3])));
 
       } catch (IOException ioe) {
         System.err.println(ioe.getMessage());
@@ -74,7 +78,7 @@ public class ServerEndpoint {
     } else if (t[0].equals("importXML")) {
       try {
         String name = t[1];
-        calendar.importXmlData(name);
+        manager.importXmlData(name, Integer.valueOf(t[2]));
         remote.sendText("importXML");
 
       } catch (IOException ioe) {
@@ -83,7 +87,7 @@ public class ServerEndpoint {
     } else if (t[0].equals("importJson")) {
       try {
         String name = t[1];
-        calendar.importJsonData(name);
+        manager.importJsonData(name, Integer.valueOf(t[2]));
         remote.sendText("importJson");
 
       } catch (IOException ioe) {
@@ -91,8 +95,9 @@ public class ServerEndpoint {
       }
     } else if (t[0].equals("refresh")) {
       try {
-        if (calendar.getShowCalendar() != null) {
-          remote.sendText("calendarEvents;" + calendar.getEvents(calendar.getShowCalendar().getId()));
+        User u = DataQuery.getInstance().getUserById(Integer.valueOf(t[1]));
+        if (u.getSelectedCalendar() != null) {
+          remote.sendText("calendarEvents;" + manager.getEvents(u.getSelectedCalendar().getId()));
         }
       } catch (IOException ioe) {
         System.err.println(ioe.getMessage());
@@ -104,4 +109,5 @@ public class ServerEndpoint {
   public void onClose(Session session, CloseReason reason) throws IOException {
     //prepare the endpoint for closing.
   }
+
 }
