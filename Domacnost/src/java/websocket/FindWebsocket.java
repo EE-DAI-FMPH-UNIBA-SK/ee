@@ -4,8 +4,6 @@ import jsf.ApplicationManagers;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.websocket.CloseReason;
@@ -50,7 +48,8 @@ public class FindWebsocket {
     try {
       mySession.getBasicRemote().sendText(text);
     } catch (IOException ex) {
-      Logger.getLogger(FindWebsocket.class.getName()).log(Level.SEVERE, null, ex);
+      System.out.println(ex.getMessage());
+      ex.printStackTrace();
     }
 
   }

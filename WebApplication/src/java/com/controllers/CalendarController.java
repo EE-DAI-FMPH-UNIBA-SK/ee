@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
 import javax.servlet.http.Part;
 
 /**
@@ -38,6 +39,14 @@ public class CalendarController implements Serializable {
       userId = id;
       user = DataQuery.getInstance().getUserById(userId);
       calendars = user.getCalendarCollection().stream().collect(Collectors.toList());
+    } else {
+      try {
+        String uri = "users.xhtml";
+        FacesContext.getCurrentInstance().getExternalContext().dispatch(uri);
+      } catch (IOException ex) {
+        System.out.println(ex.getMessage());
+        ex.printStackTrace();
+      }
     }
   }
 

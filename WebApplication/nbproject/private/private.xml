@@ -5,8 +5,10 @@
         <group name="Diplomovka">
             <file>file:/C:/Users/Livia/Documents/Skola/Diplomovka/repozit/WebApplication/src/java/com/controllers/ApplicationManager.java</file>
             <file>file:/C:/Users/Livia/Documents/Skola/Diplomovka/repozit/WebApplication/src/java/com/entity/Event.java</file>
+            <file>file:/C:/Users/Livia/Documents/Skola/Diplomovka/repozit/WebApplication/web/resources/js/calendar.js</file>
             <file>file:/C:/Users/Livia/Documents/Skola/Diplomovka/repozit/WebApplication/src/java/websocket/ServerEndpoint.java</file>
             <file>file:/C:/Users/Livia/Documents/Skola/Diplomovka/repozit/WebApplication/src/java/JSON/CallendarJSON.java</file>
+            <file>file:/C:/Users/Livia/Documents/Skola/Diplomovka/repozit/WebApplication/web/calendars.xhtml</file>
             <file>file:/C:/Users/Livia/Documents/Skola/Diplomovka/repozit/WebApplication/src/java/jms/FindReader.java</file>
         </group>
     </open-files>

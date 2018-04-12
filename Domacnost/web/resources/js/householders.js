@@ -29,5 +29,6 @@ function onMessage(evt) {
   } else if (data[0] === "event") {
     document.getElementById("freeTimeForm").style.visibility = "hidden";
     document.getElementById("household:message").innerHTML = data[1];
+    document.getElementById('freeTime').innerHTML = "";
   }
 }

@@ -57,6 +57,7 @@ public class HouseholdController implements Serializable {
   private Date eventTime;
   private int lengthEvent;
   private String eventName;
+  private boolean waitEvent = false;
 
   @Resource(lookup = "jms/topicfactory")
   private TopicConnectionFactory connectionFactory;
@@ -222,6 +223,14 @@ public class HouseholdController implements Serializable {
     this.eventName = eventName;
   }
 
+  public boolean isWaitEvent() {
+    return waitEvent;
+  }
+
+  public void setWaitEvent(boolean waitEvent) {
+    this.waitEvent = waitEvent;
+  }
+
   public List<User> getAllUsers() {
     List<User> result = uf.getAllUsers();
     result.removeAll(selectedHousehold.getUserInHouseholdCollection().stream().map(uih -> uih.getUser()).collect(Collectors.toList()));
@@ -271,9 +280,9 @@ public class HouseholdController implements Serializable {
     selectedHousehold.deleteUser(householdUser);
   }
 
+//userId##freeTime#users:#id users in householder;startDate;endDate;length
   public void findFreeTime() {
-    System.out.println("jsf.HouseholdController.findFreeTime()");
-    if (selectedHousehold != null && startDate != null && endDate != null) {
+    if (!waitEvent && selectedHousehold != null && startDate != null && endDate != null) {
       try {
         String msg = user.getId() + "#freeTime#users:";
         for (UserInHousehold uih : selectedHousehold.getUserInHouseholdCollection()) {
@@ -292,20 +301,26 @@ public class HouseholdController implements Serializable {
         return;
       }
       message = "Task submitted. Waiting for evaluation.";
+      waitEvent = true;
+      startDateEvent = null;
+      eventTime = null;
+      eventName = "";
+      lengthEvent = 0;
     } else {
-      message = "Select householder";
+      //message = "Select householder";
     }
   }
 
 //userId#event#id users in householder;name;startDate;start;length
   public void createJointEvent() {
-    if (selectedHousehold != null && startDateEvent != null && eventTime != null) {
+    if (waitEvent && selectedHousehold != null && startDateEvent != null && eventTime != null) {
       try {
         String msg = userId + "#event#";
         for (UserInHousehold uih : selectedHousehold.getUserInHouseholdCollection()) {
           msg += uih.getUser().getId();
           msg += ",";
         }
+        eventTime.setTime(eventTime.getTime() - 3600000);
         msg += selectedHousehold.getAdmin().getId() + ";";
         msg += eventName + ";";
         msg += sdf.format(startDateEvent) + ";";
@@ -320,6 +335,7 @@ public class HouseholdController implements Serializable {
       endDate = null;
       length = 0;
       message = "Task submitted. Waiting for evaluation.";
+      waitEvent = false;
     } else {
       message = "";
     }

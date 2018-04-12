@@ -112,8 +112,8 @@
             </f:facet>
           </h:panelGrid>
           <div id="freeTime"></div>
-          <div id="freeTimeForm" style="visibility: hidden">
-            <h:panelGrid columns="2" >
+          <div id="freeTimeForm">
+            <h:panelGrid columns="2" rendered="#{Household.waitEvent}">
               <f:facet name="header">Create a joint event</f:facet>
               <h:outputText value="Name:"/>
               <h:inputText id = "name" value = "${Household.eventName}">
@@ -129,7 +129,7 @@
               <h:outputText value="Length:"/>
               <h:inputText value="${Household.lengthEvent}"/>
               <f:facet name="footer">
-                <h:commandButton value="Create joint event" action="#{Household.findFreeTime()}"/>
+                <h:commandButton value="Create joint event" action="#{Household.createJointEvent()}"/>
               </f:facet>
             </h:panelGrid>
           </div>

@@ -389,9 +389,12 @@ public class ApplicationManager implements Serializable {
     String result = "event;";
     try {
       String[] msgValue = msg.split(";");
-      String[] usersId = msgValue[0].substring(6).split(",");
+      String[] usersId = msgValue[0].split(",");
       String name = msgValue[1];
       Date startDate = finderSdf.parse(msgValue[2]);
+      java.util.Calendar endDate = java.util.Calendar.getInstance();
+      endDate.setTime(startDate);
+      endDate.add(java.util.Calendar.DAY_OF_YEAR, 1);
       Date start = finderSdf.parse(msgValue[3]);
       int length = Integer.valueOf(msgValue[4]);
       Event e = new Event();
@@ -400,6 +403,8 @@ public class ApplicationManager implements Serializable {
       e.setStart(start);
       e.setLength(length);
       e.setIter("");
+      e.setState(0);
+      e.setEndDate(endDate.getTime());
       e = DataQuery.getInstance().addEvent(e);
       for (int i = 0; i < usersId.length; i++) {
         User u = DataQuery.getInstance().getUserById(Integer.valueOf(usersId[i]));
