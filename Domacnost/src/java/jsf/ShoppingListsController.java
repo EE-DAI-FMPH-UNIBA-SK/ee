@@ -1,11 +1,11 @@
 package jsf;
 
-import session.SessionUtils;
 import entity.Household;
 import entity.Item;
 import entity.Product;
 import entity.ShoppingList;
 import session.ItemFacade;
+import session.SessionUtils;
 import session.ShoppingListFacade;
 
 import java.io.Serializable;
@@ -14,8 +14,8 @@ import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.inject.Inject;
 
 /**
  *
@@ -25,7 +25,7 @@ import javax.faces.bean.SessionScoped;
 @SessionScoped
 public class ShoppingListsController implements Serializable {
   //
-  @ManagedProperty(value = "#{applicationManagers}")
+  @Inject
   ApplicationManagers manager;
   private Household selectedHousehold;
   private int userId;

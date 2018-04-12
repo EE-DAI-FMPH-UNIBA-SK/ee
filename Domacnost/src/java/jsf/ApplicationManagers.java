@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.faces.bean.ApplicationScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 
 /**
@@ -69,11 +69,11 @@ public class ApplicationManagers implements Serializable {
     return null;
   }
 
-  void addUserIdtoWs(int userId, FindWebsocket wsRef) {
+  public void addUserIdtoWs(int userId, FindWebsocket wsRef) {
     userToWs.put(userId, wsRef);
   }
 
-  void removeWsRef(FindWebsocket wsRef) {
+  public void removeWsRef(FindWebsocket wsRef) {
     for (Map.Entry<Integer, FindWebsocket> e : userToWs.entrySet()) {
       if (e.getValue() == wsRef) {
         userToWs.remove(e.getKey());

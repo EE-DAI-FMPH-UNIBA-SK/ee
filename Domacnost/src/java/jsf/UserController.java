@@ -8,9 +8,9 @@ import java.io.Serializable;
 
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -21,7 +21,7 @@ import javax.servlet.http.HttpSession;
 @SessionScoped
 public class UserController implements Serializable {
   //
-  @ManagedProperty(value = "#{applicationManagers}")
+  @Inject
   ApplicationManagers manager;
   private String email;
   private String password;
@@ -32,6 +32,7 @@ public class UserController implements Serializable {
   private int userId;
 
   public UserController() {
+    java.util.Calendar c = java.util.Calendar.getInstance();
     int id = SessionUtils.getUserId();
     if (id != 0) {
       userId = id;

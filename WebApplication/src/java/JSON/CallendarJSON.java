@@ -46,18 +46,18 @@ public class CallendarJSON {
           cal.add(java.util.Calendar.MINUTE, -1);
           event.put("end", sdf2.format(cal.getTime()));
           JSONArray dow = new JSONArray();
-          for (String i : e.getIter().split(",")) {
-            dow.add(Integer.valueOf(i));
+          if (!e.getIter().equals("")) {
+            for (String i : e.getIter().split(",")) {
+              dow.add(Integer.valueOf(i));
+            }
+            event.put("dow", dow);
           }
-          event.put("dow", dow);
-          if (dow != null) {
-            JSONArray ranges = new JSONArray();
-            JSONObject range = new JSONObject();
-            range.put("start", sdf1.format(e.getStartDate()));
-            range.put("end", sdf1.format(e.getEndDate()));
-            ranges.add(range);
-            event.put("ranges", ranges);
-          }
+          JSONArray ranges = new JSONArray();
+          JSONObject range = new JSONObject();
+          range.put("start", sdf1.format(e.getStartDate()));
+          range.put("end", sdf1.format(e.getEndDate()));
+          ranges.add(range);
+          event.put("ranges", ranges);
           events.add(event);
         }
       }

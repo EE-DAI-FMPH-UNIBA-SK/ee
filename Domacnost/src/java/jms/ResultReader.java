@@ -2,9 +2,6 @@ package jms;
 
 import jsf.ApplicationManagers;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
 import javax.inject.Inject;
@@ -35,7 +32,8 @@ public class ResultReader implements MessageListener {
       String[] result = message.getBody(String.class).split("#");
       appBean.reply(Integer.valueOf(result[0]), result[1]);
     } catch (JMSException ex) {
-      Logger.getLogger(ResultReader.class.getName()).log(Level.SEVERE, null, ex);
+      System.out.println(ex.getMessage());
+      ex.printStackTrace();
     }
   }
 }

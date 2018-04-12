@@ -7,11 +7,12 @@
   <h:head>
     <title>Facelet Title</title>
     <h:outputStylesheet name="css/household.css"/>
+    <h:outputScript  library="js" name="householders.js" />
   </h:head>
   <h:body>
     <h:form id="household" >
-
-      <h:outputText value="${Household.message}"/>
+      <h:outputText id="userId" value="${Household.userId}" />
+      <h:outputText id="message" value="${Household.message}"/>
 
       <h:form id="householders" rendered="#{Household.selectedHousehold==null}">
 
@@ -93,14 +94,45 @@
         </div>
 
         <div id="jms">
-          <h:inputText id = "startDate" value = "${Household.startDate}">
-            <f:convertDateTime pattern = "dd.MM.yyyy HH:mm" />
-          </h:inputText>
-          <h:inputText id = "endDate" value = "${Household.endDate}">
-            <f:convertDateTime pattern = "dd.MM.yyyy HH:mm" />
-          </h:inputText>
-          <h:inputText value="${Household.length}"/>
-          <h:commandButton action="${Household.findTime}" value="Find free time"/>
+          <h:panelGrid columns="2" >
+            <f:facet name="header">Find free time all users in husehold</f:facet>
+            <h:outputText value="From:"/>
+            <h:inputText id = "startDate" value = "${Household.startDate}">
+              <f:convertDateTime pattern = "dd.MM.yyyy HH:mm" />
+            </h:inputText>
+            <h:outputText value="To:"/>
+            <h:inputText id = "endDate" value = "${Household.endDate}">
+              <f:convertDateTime pattern = "dd.MM.yyyy HH:mm" />
+            </h:inputText>
+            <h:outputText value="Length:"/>
+            <h:inputText value="${Household.length}"/>
+            <f:facet name="footer">
+              <h:message for="endDate" />
+              <h:commandButton value="Find free time" action="#{Household.findFreeTime()}"/>
+            </f:facet>
+          </h:panelGrid>
+          <div id="freeTime"></div>
+          <div id="freeTimeForm">
+            <h:panelGrid columns="2" rendered="#{Household.waitEvent}">
+              <f:facet name="header">Create a joint event</f:facet>
+              <h:outputText value="Name:"/>
+              <h:inputText id = "name" value = "${Household.eventName}">
+              </h:inputText>
+              <h:outputText value="Start date:"/>
+              <h:inputText id = "startDateEvent" value = "${Household.startDateEvent}">
+                <f:convertDateTime pattern = "dd.MM.yyyy" />
+              </h:inputText>
+              <h:outputText value="Time:"/>
+              <h:inputText id = "eventTime" value = "${Household.eventTime}">
+                <f:convertDateTime pattern = "HH:mm" />
+              </h:inputText>
+              <h:outputText value="Length:"/>
+              <h:inputText value="${Household.lengthEvent}"/>
+              <f:facet name="footer">
+                <h:commandButton value="Create joint event" action="#{Household.createJointEvent()}"/>
+              </f:facet>
+            </h:panelGrid>
+          </div>
         </div>
       </h:form>
     </h:form>

@@ -15,7 +15,6 @@ function connect() {
 
 function onMessage(evt) {
   userId = document.getElementById("form:userId").innerText;
-  console.log(userId);
   var data = evt.data.split(";");
   if (data[0] === "calendarEvents") {
     jsonData = data[1];
@@ -39,15 +38,12 @@ function onMessage(evt) {
 }
 
 function initCalendars() {
-  console.log("ssss");
   userId = document.getElementById("form:userId").innerText;
-  console.log(userId);
   wsocket.send("calendars;" + userId);
 }
 
 function showCalendarsEvents(id, name) {
   userId = document.getElementById("form:userId").innerText;
-  console.log(userId);
   wsocket.send("events;" + id + ";" + userId);
   document.getElementById("calendarName").innerHTML = name;
 }
@@ -111,7 +107,6 @@ function addCalendar() {
   name = document.getElementById("form:name").value;
   visible = document.getElementById("form:public").value;
   userId = document.getElementById("form:userId").innerText;
-  console.log(userId);
   wsocket.send("addCalendar;name:" + name + ";visible:" + visible + ";" + userId);
   document.getElementById("form:name").innerHTML = "";
   document.getElementById("form:public").innerHTML = "";
@@ -120,13 +115,11 @@ function addCalendar() {
 function importEvents() {
   file = document.getElementById("form:importXML:xmlFile").files[0];
   userId = document.getElementById("form:userId").innerText;
-  console.log(userId);
   wsocket.send("importXML;" + file.name + ";" + userId);
 }
 
 function importJson() {
   file = document.getElementById("form:importJson:jsonFile").files[0];
   userId = document.getElementById("form:userId").innerText;
-  console.log(userId);
   wsocket.send("importJson;" + file.name + ";" + userId);
 }
