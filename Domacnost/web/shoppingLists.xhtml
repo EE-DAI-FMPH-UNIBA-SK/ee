@@ -13,11 +13,16 @@
         <div id="householdRecipes">
           <h:commandButton value="Recipes" action="recipes"/>
         </div>
-        <div id="householdShoppingList">
+        <div id="household">
           <h:commandButton value="Householders list" action="householders"/>
         </div>
         <div id="tasksList">
           <h:commandButton value="List of tasks" action="tasks"/>
+        </div>
+        <div id="shoppingLists">
+          <h:commandButton value="All shopping lists" action="#{ShoppingList.setSelectedShoppingList(null)}">
+            <f:ajax execute="@form" render="lists" />
+          </h:commandButton>
         </div>
 
       </div>
@@ -95,7 +100,7 @@
         </div>
         <div id="newProduct">
           <h:panelGrid columns="2">
-            <f:facet name="header">Pridať nový product</f:facet>
+            <f:facet name="header">Add new product</f:facet>
             <h:outputText value="Name"/>
             <h:inputText value="${Product.name}"/>
             <h:outputText value="Value"/>
@@ -103,7 +108,7 @@
             <h:outputText value="Count"/>
             <h:inputText value="${Product.count}"/>
             <f:facet name="footer">
-              <h:commandButton value="Create new product položku zoznamu" action="#{Product.createProduct()}">
+              <h:commandButton value="Create new product" action="#{Product.createProduct()}">
                 <f:ajax execute="@form" render="lists" />
               </h:commandButton>
             </f:facet>

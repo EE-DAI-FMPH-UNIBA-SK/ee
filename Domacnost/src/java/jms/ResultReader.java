@@ -32,6 +32,8 @@ public class ResultReader implements MessageListener {
   @Override
   public void onMessage(Message message) {
     try {
+      System.err.println("*****************************");
+      System.err.println(message);
       String[] result = message.getBody(String.class).split("#");
       appBean.reply(Integer.valueOf(result[0]), result[1]);
     } catch (JMSException ex) {

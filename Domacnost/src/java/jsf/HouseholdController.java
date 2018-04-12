@@ -19,8 +19,8 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.inject.Inject;
 import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -40,7 +40,7 @@ public class HouseholdController implements Serializable {
   @PersistenceContext(unitName = "DomacnostPU")
   private EntityManager em;
 
-  @ManagedProperty(value = "#{applicationManagers}")
+  @Inject
   ApplicationManagers manager;
   private User user;
   private User newUser;
@@ -53,7 +53,10 @@ public class HouseholdController implements Serializable {
   private Date startDate;
   private Date endDate;
   private int length;
-  private List<List<Date>> freeTimes;
+  private Date startDateEvent;
+  private Date eventTime;
+  private int lengthEvent;
+  private String eventName;
 
   @Resource(lookup = "jms/topicfactory")
   private TopicConnectionFactory connectionFactory;
@@ -77,6 +80,7 @@ public class HouseholdController implements Serializable {
 
   @PostConstruct
   private void init() {
+    java.util.Calendar c = java.util.Calendar.getInstance();
     userId = SessionUtils.getUserId();
     user = uf.getUserById(userId);
     selectedHousehold = null;
@@ -186,12 +190,36 @@ public class HouseholdController implements Serializable {
     this.length = length;
   }
 
-  public List<List<Date>> getFreeTimes() {
-    return freeTimes;
+  public Date getStartDateEvent() {
+    return startDateEvent;
   }
 
-  public void setFreeTimes(List<List<Date>> freeTimes) {
-    this.freeTimes = freeTimes;
+  public void setStartDateEvent(Date startDateEvent) {
+    this.startDateEvent = startDateEvent;
+  }
+
+  public Date getEventTime() {
+    return eventTime;
+  }
+
+  public void setEventTime(Date eventTime) {
+    this.eventTime = eventTime;
+  }
+
+  public int getLengthEvent() {
+    return lengthEvent;
+  }
+
+  public void setLengthEvent(int lengthEvent) {
+    this.lengthEvent = lengthEvent;
+  }
+
+  public String getEventName() {
+    return eventName;
+  }
+
+  public void setEventName(String eventName) {
+    this.eventName = eventName;
   }
 
   public List<User> getAllUsers() {
@@ -243,34 +271,58 @@ public class HouseholdController implements Serializable {
     selectedHousehold.deleteUser(householdUser);
   }
 
-  public void setWebsocketReference(FindWebsocket ws) {
-    wsRef = ws;
-    if (userId != 0) {
-      manager.addUserIdtoWs(userId, ws);
-    }
-  }
-
-  public void removeWebsocketReference(FindWebsocket aThis) {
-    manager.removeWsRef(wsRef);
-  }
-
-  public void getFindTime() {
-    try {
-      String msg = user + "#users:";
-      for (UserInHousehold uih : selectedHousehold.getUserInHouseholdCollection()) {
-        msg += uih.getUser().getId();
-        msg += ",";
+  public void findFreeTime() {
+    System.out.println("jsf.HouseholdController.findFreeTime()");
+    if (selectedHousehold != null && startDate != null && endDate != null) {
+      try {
+        String msg = user.getId() + "#freeTime#users:";
+        for (UserInHousehold uih : selectedHousehold.getUserInHouseholdCollection()) {
+          msg += uih.getUser().getId();
+          msg += ",";
+        }
+        msg += selectedHousehold.getAdmin().getId() + ";";
+        startDate.setTime(startDate.getTime() - 3600000);
+        endDate.setTime(endDate.getTime() - 3600000);
+        msg += sdf.format(startDate) + ";";
+        msg += sdf.format(endDate) + ";";
+        msg += length;
+        sendTask(msg);
+      } catch (JMSException ex) {
+        message = ex.getLocalizedMessage();
+        return;
       }
-      msg += selectedHousehold.getAdmin().getId() + ";";
-      msg += sdf.format(startDate) + ";";
-      msg += sdf.format(endDate) + ";";
-      msg += length;
-      sendTask(msg);
-    } catch (JMSException ex) {
-      message = ex.getLocalizedMessage();
-      return;
+      message = "Task submitted. Waiting for evaluation.";
+    } else {
+      message = "Select householder";
     }
-    message = "Task submitted. Waiting for evaluation.";
+  }
+
+//userId#event#id users in householder;name;startDate;start;length
+  public void createJointEvent() {
+    if (selectedHousehold != null && startDateEvent != null && eventTime != null) {
+      try {
+        String msg = userId + "#event#";
+        for (UserInHousehold uih : selectedHousehold.getUserInHouseholdCollection()) {
+          msg += uih.getUser().getId();
+          msg += ",";
+        }
+        msg += selectedHousehold.getAdmin().getId() + ";";
+        msg += eventName + ";";
+        msg += sdf.format(startDateEvent) + ";";
+        msg += sdf.format(eventTime) + ";";
+        msg += lengthEvent + ";";
+        sendTask(msg);
+      } catch (JMSException ex) {
+        message = ex.getLocalizedMessage();
+        return;
+      }
+      startDate = null;
+      endDate = null;
+      length = 0;
+      message = "Task submitted. Waiting for evaluation.";
+    } else {
+      message = "";
+    }
   }
 
   private void sendTask(String task) throws JMSException {
