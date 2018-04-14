@@ -28,18 +28,16 @@ import javax.xml.bind.annotation.XmlTransient;
   @NamedQuery(name = "Product.findAll", query = "SELECT p FROM Product p"),
   @NamedQuery(name = "Product.findById", query = "SELECT p FROM Product p WHERE p.id = :id"),
   @NamedQuery(name = "Product.findByName", query = "SELECT p FROM Product p WHERE p.name = :name"),
-  @NamedQuery(name = "Product.findByValue", query = "SELECT p FROM Product p WHERE p.value = :value"),
-  @NamedQuery(name = "Product.findByCount", query = "SELECT p FROM Product p WHERE p.count = :count")})
+  @NamedQuery(name = "Product.findByValue", query = "SELECT p FROM Product p WHERE p.value = :value")})
 public class Product implements Serializable {
+  // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+  @Column(name = "value")
+  private Double value;
   private static final long serialVersionUID = 1L;
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Basic(optional = false) @Column(name = "id")
   private Integer id;
   @Size(max = 20) @Column(name = "name")
   private String name;
-  @Column(name = "value")
-  private Integer value;
-  @Column(name = "count")
-  private Integer count;
   @OneToMany(mappedBy = "product")
   private List<Item> itemCollection;
   @OneToMany(mappedBy = "product")
@@ -53,10 +51,9 @@ public class Product implements Serializable {
     this.id = id;
   }
 
-  public Product(String name, int objem, int count) {
+  public Product(String name, double objem) {
     this.name = name;
     this.value = objem;
-    this.count = count;
   }
 
   public Integer getId() {
@@ -75,20 +72,8 @@ public class Product implements Serializable {
     this.name = name;
   }
 
-  public Integer getValue() {
-    return value;
-  }
-
-  public void setValue(Integer value) {
-    this.value = value;
-  }
-
-  public Integer getCount() {
-    return count;
-  }
-
-  public void setCount(Integer count) {
-    this.count = count;
+  public String getDescription() {
+    return name + "(" + value + " ml/g/piece)";
   }
 
   @XmlTransient
@@ -107,6 +92,14 @@ public class Product implements Serializable {
 
   public void setIngredientCollection(List<Ingredient> ingredientCollection) {
     this.ingredientCollection = ingredientCollection;
+  }
+
+  public Double getValue() {
+    return value;
+  }
+
+  public void setValue(Double value) {
+    this.value = value;
   }
 
   @Override
@@ -133,5 +126,4 @@ public class Product implements Serializable {
   public String toString() {
     return "entity.Product[ id=" + id + " ]";
   }
-
 }

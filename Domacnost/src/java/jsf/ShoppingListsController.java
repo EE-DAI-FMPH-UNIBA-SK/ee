@@ -32,6 +32,7 @@ public class ShoppingListsController implements Serializable {
   private ShoppingList selectedShoppingList;
   private String message;
   private Product newProduct;
+  private double count;
   private String name;
   private Date startDate = null;
   private Date endDate = null;
@@ -117,8 +118,24 @@ public class ShoppingListsController implements Serializable {
     this.newProduct = newProduct;
   }
 
+  public double getCount() {
+    return count;
+  }
+
+  public void setCount(double count) {
+    this.count = count;
+  }
+
   public String getName() {
     return name;
+  }
+
+  public int getUserId() {
+    return userId;
+  }
+
+  public void setUserId(int userId) {
+    this.userId = userId;
   }
 
   public void setName(String name) {
@@ -151,7 +168,7 @@ public class ShoppingListsController implements Serializable {
   }
 
   public void addNewItem() {
-    Item item = new Item(newProduct, selectedShoppingList);
+    Item item = new Item(newProduct, selectedShoppingList, count);
     item = ifac.createItem(item);
     selectedShoppingList.addItem(item);
   }

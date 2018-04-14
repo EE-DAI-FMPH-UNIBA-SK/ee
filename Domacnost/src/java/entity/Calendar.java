@@ -32,8 +32,6 @@ import javax.xml.bind.annotation.XmlTransient;
   @NamedQuery(name = "Calendar.findByName", query = "SELECT c FROM Calendar c WHERE c.name = :name"),
   @NamedQuery(name = "Calendar.findByVisible", query = "SELECT c FROM Calendar c WHERE c.visible = :visible")})
 public class Calendar implements Serializable {
-  @OneToMany(mappedBy = "calendar")
-  private List<Recipe> recipeList;
   private static final long serialVersionUID = 1L;
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Basic(optional = false) @Column(name = "id")
   private Integer id;
@@ -118,15 +116,6 @@ public class Calendar implements Serializable {
   @Override
   public String toString() {
     return "entity.Calendar[ id=" + id + " ]";
-  }
-
-  @XmlTransient
-  public List<Recipe> getRecipeList() {
-    return recipeList;
-  }
-
-  public void setRecipeList(List<Recipe> recipeList) {
-    this.recipeList = recipeList;
   }
 
 }

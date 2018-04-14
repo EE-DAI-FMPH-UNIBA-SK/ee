@@ -33,8 +33,6 @@ import javax.xml.bind.annotation.XmlTransient;
   @NamedQuery(name = "Recipe.findByCountPortions", query = "SELECT r FROM Recipe r WHERE r.countPortions = :countPortions"),
   @NamedQuery(name = "Recipe.findByDescription", query = "SELECT r FROM Recipe r WHERE r.description = :description")})
 public class Recipe implements Serializable {
-  @JoinColumn(name = "calendar", referencedColumnName = "id") @ManyToOne
-  private Calendar calendar;
   private static final long serialVersionUID = 1L;
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Basic(optional = false) @Column(name = "id")
   private Integer id;
@@ -42,10 +40,12 @@ public class Recipe implements Serializable {
   private String name;
   @Column(name = "count_portions")
   private Integer countPortions;
-  @Size(max = 20) @Column(name = "description")
+  @Size(max = 2000) @Column(name = "description")
   private String description;
+  @JoinColumn(name = "household", referencedColumnName = "id") @ManyToOne
+  private Household household;
   @OneToMany(mappedBy = "recipe")
-  private List<Ingredient> ingredientCollection;
+  private List<Ingredient> ingredientList;
   //
 
   public Recipe() {
@@ -53,6 +53,13 @@ public class Recipe implements Serializable {
 
   public Recipe(Integer id) {
     this.id = id;
+  }
+
+  public Recipe(String name, String description, int portion, Household household) {
+    this.name = name;
+    this.description = description;
+    countPortions = portion;
+    this.household = household;
   }
 
   public Integer getId() {
@@ -87,13 +94,29 @@ public class Recipe implements Serializable {
     this.description = description;
   }
 
-  @XmlTransient
-  public List<Ingredient> getIngredientCollection() {
-    return ingredientCollection;
+  public Household getHousehold() {
+    return household;
   }
 
-  public void setIngredientCollection(List<Ingredient> ingredientCollection) {
-    this.ingredientCollection = ingredientCollection;
+  public void setHousehold(Household household) {
+    this.household = household;
+  }
+
+  @XmlTransient
+  public List<Ingredient> getIngredientList() {
+    return ingredientList;
+  }
+
+  public void setIngredientList(List<Ingredient> ingredientList) {
+    this.ingredientList = ingredientList;
+  }
+
+  public void addIngredient(Ingredient i) {
+    ingredientList.add(i);
+  }
+
+  public void deleteIngredient(Ingredient i) {
+    ingredientList.remove(i);
   }
 
   @Override
@@ -119,14 +142,6 @@ public class Recipe implements Serializable {
   @Override
   public String toString() {
     return "entity.Recipe[ id=" + id + " ]";
-  }
-
-  public Calendar getCalendar() {
-    return calendar;
-  }
-
-  public void setCalendar(Calendar calendar) {
-    this.calendar = calendar;
   }
 
 }

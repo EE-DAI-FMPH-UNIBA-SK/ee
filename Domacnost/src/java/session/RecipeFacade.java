@@ -25,4 +25,7 @@ public class RecipeFacade extends AbstractFacade<Recipe> {
     super(Recipe.class);
   }
 
+  public void deleteRecipe(Recipe recipe) {
+    em.remove(em.merge(recipe));
+  }
 }

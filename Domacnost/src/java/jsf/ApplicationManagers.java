@@ -1,15 +1,20 @@
 package jsf;
 
 import entity.Household;
+import entity.Recipe;
 import entity.ShoppingList;
+import session.SessionUtils;
 import websocket.FindWebsocket;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -30,7 +35,27 @@ public class ApplicationManagers implements Serializable {
   }
 
   public void newUser(int id) {
+    System.out.println("jsf.ApplicationManagers.newUser()");
     usersHousholder.put(id, null);
+  }
+
+  public void logout(int userId) {
+    System.out.println("jsf.ApplicationManagers.logout()");
+    HttpSession session = SessionUtils.getSession();
+    session.setAttribute("userid", 0);
+    usersHousholder.remove(userId);
+  }
+
+  public void checkLoggin(int userId) {
+    if (!usersHousholder.containsKey(userId)) {
+      try {
+        String uri = "users.xhtml";
+        FacesContext.getCurrentInstance().getExternalContext().redirect(uri);
+      } catch (IOException ex) {
+        ex.printStackTrace();
+        System.out.println(ex.getMessage());
+      }
+    }
   }
 
   public String getVersion() {
@@ -65,6 +90,19 @@ public class ApplicationManagers implements Serializable {
   public ShoppingList getSelectedShoppingList(int userId) {
     if (usersHousholder.containsKey(userId)) {
       return usersHousholder.get(userId).getSelectedShoppingList();
+    }
+    return null;
+  }
+
+  public void setSelectedRecipe(int userId, Recipe recipe) {
+    if (usersHousholder.containsKey(userId)) {
+      usersHousholder.get(userId).setSelectedRecipe(recipe);
+    }
+  }
+
+  public Recipe getSelectedRecipe(int userId) {
+    if (usersHousholder.containsKey(userId)) {
+      return usersHousholder.get(userId).getSelectedRecipe();
     }
     return null;
   }

@@ -11,9 +11,12 @@
   </h:head>
   <h:body>
     <h:form id="household" >
+      <f:event type="preRenderView" listener="#{Household.manager.checkLoggin(Household.userId)}" />
       <h:outputText id="userId" value="${Household.userId}" />
       <h:outputText id="message" value="${Household.message}"/>
-
+      <div id="logout">
+        <h:commandButton value="Log out" action="#{Household.manager.logout(Household.userId)}"/>
+      </div>
       <h:form id="householders" rendered="#{Household.selectedHousehold==null}">
 
         <div id="householderItems">
@@ -30,11 +33,11 @@
 
         <div id="addHousehold">
           <h:panelGrid columns="2">
-            <f:facet name="header">Vytvoriť novú domácnosť</f:facet>
-            <h:outputText value="Názov"/>
+            <f:facet name="header">Create new householder</f:facet>
+            <h:outputText value="Name"/>
             <h:inputText value="${Household.name}"/>
             <f:facet name="footer">
-              <h:commandButton value="Vytvoriť domácnosť" action="#{Household.addHousehold()}">
+              <h:commandButton value="Create household" action="#{Household.addHousehold()}">
                 <f:ajax execute="@form" render="household" />
               </h:commandButton>
             </f:facet>
@@ -77,15 +80,15 @@
 
           <div id="addUserInHousehold">
             <h:panelGrid columns="2">
-              <f:facet name="header">Pridať ďalšieho používateľa</f:facet>
-              <h:outputText value="Používateľ"/>
+              <f:facet name="header">Add other user</f:facet>
+              <h:outputText value="User"/>
               <h:selectOneMenu id="selectOneMenu" value="#{Household.newUser}" converter="#{userConverterBean}" >
                 <f:selectItem itemLabel="-- Select --" noSelectionOption="true" />
                 <f:selectItems value="#{Household.allUsers}" var="user" itemValue="#{user}" itemLabel="#{user.name}" />
               </h:selectOneMenu>
               <f:facet name="footer">
                 <h:message for="selectOneMenu" />
-                <h:commandButton value="Pridať používateľa" action="#{Household.addUserInHousehold()}">
+                <h:commandButton value="Add user" action="#{Household.addUserInHousehold()}">
                   <f:ajax execute="@form" render="household" />
                 </h:commandButton>
               </f:facet>

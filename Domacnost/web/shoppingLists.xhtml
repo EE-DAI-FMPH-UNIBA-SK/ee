@@ -9,6 +9,7 @@
   </h:head>
   <h:body>
     <h:form id="lists">
+      <f:event type="preRenderView" listener="#{ShoppingList.manager.checkLoggin(ShoppingList.userId)}" />
       <div id="navigations">
         <div id="householdRecipes">
           <h:commandButton value="Recipes" action="recipes"/>
@@ -24,15 +25,16 @@
             <f:ajax execute="@form" render="lists" />
           </h:commandButton>
         </div>
-
+        <div id="logout">
+          <h:commandButton value="Log out" action="#{ShoppingList.manager.logout(ShoppingList.userId)}"/>
+        </div>
       </div>
       <div id="newSL">
         <h:outputText value="${ShoppingList.message}"/>
         <h:panelGrid columns="2">
           <f:facet name="header">Create new shopping list</f:facet>
           <h:outputText value="Name"/>
-          <h:inputText value="${ShoppingList.name}">
-          </h:inputText>
+          <h:inputText value="${ShoppingList.name}"/>
           <h:outputText value="Start date"/>
           <h:inputText id = "startDate" value = "${ShoppingList.startDate}">
             <f:convertDateTime pattern = "dd.mm.yyyy" />
@@ -51,7 +53,7 @@
       </div>
 
       <h:form id="shoppingLists" rendered="#{ShoppingList.selectedShoppingList==null}">
-        <div id="recipeItems">
+        <div id="Items">
           <ui:repeat value="${ShoppingList.selectedHousehold.shoppingListCollection}" var="item" >
             <h:commandButton action="${ShoppingList.setSelectedShoppingList(item)}" value="${item.name}">
               <f:ajax execute="@form" render="lists" />
@@ -74,7 +76,8 @@
             <h:selectBooleanCheckbox value = "${item.done}" title="${item.product.name}">
               <f:ajax listener="#{ShoppingList.changeItemState(item)}" render="@form" />
             </h:selectBooleanCheckbox>
-            <h:outputLabel value="${item.product.name}"/>
+            <h:outputLabel value="${item.count}"/>
+            <h:outputLabel value="${item.product.description}"/>
             <h:commandButton action="${ShoppingList.deleteItemFromShoppingList(item)}" value="X">
               <f:ajax execute="@form" render="lists" />
             </h:commandButton>
@@ -85,11 +88,13 @@
           <h:outputText value="${ShoppingList.message}"/>
           <h:panelGrid columns="2">
             <f:facet name="header">Add item in shopping list</f:facet>
-            <h:outputText value="Product"/>
+            <h:outputText value="Product:"/>
             <h:selectOneMenu id="selectOneMenu" value="#{ShoppingList.newProduct}" converter="#{productConverterBean}" >
               <f:selectItem itemLabel="-- Select --" noSelectionOption="true" />
-              <f:selectItems value="#{Product.allProducts}" var="product" itemValue="#{product}" itemLabel="#{product.name}" />
+              <f:selectItems value="#{Product.allProducts}" var="product" itemValue="#{product}" itemLabel="#{product.description}" />
             </h:selectOneMenu>
+            <h:outputText value="Count:"/>
+            <h:inputText value="#{ShoppingList.count}"/>
             <f:facet name="footer">
               <h:message for="selectOneMenu" />
               <h:commandButton value="Add item" action="#{ShoppingList.addNewItem()}">
@@ -99,15 +104,17 @@
           </h:panelGrid>
         </div>
         <div id="newProduct">
-          <h:panelGrid columns="2">
+          <h:panelGrid columns="3">
             <f:facet name="header">Add new product</f:facet>
             <h:outputText value="Name"/>
             <h:inputText value="${Product.name}"/>
+            <h:outputText/>
             <h:outputText value="Value"/>
             <h:inputText value="${Product.value}"/>
-            <h:outputText value="Count"/>
-            <h:inputText value="${Product.count}"/>
+            <h:outputText value="ml/g/piece"/>
+            <h:outputText/>
             <f:facet name="footer">
+              <h:message for="newProduct" />
               <h:commandButton value="Create new product" action="#{Product.createProduct()}">
                 <f:ajax execute="@form" render="lists" />
               </h:commandButton>

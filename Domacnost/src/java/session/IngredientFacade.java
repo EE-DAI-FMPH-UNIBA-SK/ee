@@ -25,4 +25,7 @@ public class IngredientFacade extends AbstractFacade<Ingredient> {
     super(Ingredient.class);
   }
 
+  public void deleteIngredient(Ingredient ingredient) {
+    em.remove(em.merge(ingredient));
+  }
 }
