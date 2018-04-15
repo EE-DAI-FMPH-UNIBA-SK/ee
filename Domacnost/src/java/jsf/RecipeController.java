@@ -8,6 +8,8 @@ import session.IngredientFacade;
 import session.ProductFacade;
 import session.RecipeFacade;
 import session.SessionUtils;
+import webservice.client.Prepocet;
+import webservice.client.Prepocet_Service;
 
 import java.io.Serializable;
 import java.util.List;
@@ -18,6 +20,7 @@ import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.inject.Inject;
+import javax.xml.ws.WebServiceRef;
 
 /**
  *
@@ -41,6 +44,9 @@ public class RecipeController implements Serializable {
 
   private Product newProduct;
   private double productCount;
+
+  private int portion;
+  private List<Ingredient> ingredients;
 //
   @EJB
   private RecipeFacade rf;
@@ -48,6 +54,9 @@ public class RecipeController implements Serializable {
   private ProductFacade pf;
   @EJB
   private IngredientFacade inf;
+
+  @WebServiceRef(wsdlLocation = "http://localhost:8080/PrepocetWS/Prepocet?wsdl")
+  private Prepocet_Service prepocetService;
 
   public RecipeController() {
     userId = SessionUtils.getUserId();
@@ -92,6 +101,13 @@ public class RecipeController implements Serializable {
 
   public void setSelectedRecipe(Recipe selectedRecipe) {
     this.selectedRecipe = selectedRecipe;
+    portion = 0;
+    if (selectedRecipe != null) {
+      ingredients = selectedRecipe.getIngredientList();
+      countPortions = selectedRecipe.getCountPortions();
+    } else {
+      countPortions = 0;
+    }
   }
 
   public Household getSelectedHousehold() {
@@ -152,6 +168,22 @@ public class RecipeController implements Serializable {
     this.productCount = productCount;
   }
 
+  public int getPortion() {
+    return portion;
+  }
+
+  public void setPortion(int portion) {
+    this.portion = portion;
+  }
+
+  public List<Ingredient> getIngredients() {
+    return ingredients;
+  }
+
+  public void setIngredients(List<Ingredient> ingredients) {
+    this.ingredients = ingredients;
+  }
+
   public List<Product> getAllProducts() {
     List<Product> result = pf.getAllProduct();
     result.removeAll(selectedRecipe.getIngredientList().stream().map(i -> i.getProduct()).collect(Collectors.toList()));
@@ -195,5 +227,16 @@ public class RecipeController implements Serializable {
   public void deleteIngredient(Ingredient ingredient) {
     inf.deleteIngredient(ingredient);
     selectedRecipe.deleteIngredient(ingredient);
+    ingredients.remove(ingredient);
+  }
+
+  public void calculateIngredient() {
+    Prepocet prepocet = prepocetService.getPrepocetPort();
+    List<Double> ingredients = this.ingredients.stream().map(i -> i.getCount()).collect(Collectors.toList());
+    ingredients = prepocet.prepocet(countPortions, portion, ingredients);
+    countPortions = portion;
+    for (int i = 0; i < this.ingredients.size(); i++) {
+      this.ingredients.get(i).setCount(ingredients.get(i));
+    }
   }
 }

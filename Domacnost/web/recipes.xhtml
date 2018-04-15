@@ -78,9 +78,10 @@
         </div>
 
         <h1>${Recipe.selectedRecipe.name}</h1>
-
+        <h:outputLabel value="Portions:"/>
+        <h:inputText value="${Recipe.countPortions}" id="portionscount"/>
         <div id="ingredient">
-          <ui:repeat value="${Recipe.selectedRecipe.ingredientList}" var="item" >
+          <ui:repeat value="${Recipe.ingredients}" var="item" >
             <h:outputLabel value="${item.count}"/>
             <h:outputLabel value="${item.product.description}"/>
             <h:commandButton value="X" action="${Recipe.deleteIngredient(item)}" rendered="#{Recipe.selectedHousehold.isAdmin(Recipe.userId)}">
@@ -130,6 +131,13 @@
               </h:commandButton>
             </f:facet>
           </h:panelGrid>
+        </div>
+        <div id="calculate">
+          <h:outputText value="New portion count:"/>
+          <h:inputText value="#{Recipe.portion}"/>
+          <h:commandButton id="calculate" value="Calculate ingredients value" action="${Recipe.calculateIngredient()}">
+            <f:ajax execute="@form" render="mainForm" />
+          </h:commandButton>
         </div>
       </h:form>
     </h:form>
