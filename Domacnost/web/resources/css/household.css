@@ -3,7 +3,7 @@
   float: left;
 }
 
-#addHousehold, #householdRecipes, #householdShoppingList{
+#addHousehold{
   width: 50%;
   float: right;
 }
