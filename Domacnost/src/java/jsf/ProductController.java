@@ -1,8 +1,8 @@
 package jsf;
 
-import session.SessionUtils;
 import entity.Product;
 import session.ProductFacade;
+import session.SessionUtils;
 
 import java.io.Serializable;
 import java.util.List;
@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.inject.Inject;
 
 /**
  *
@@ -21,11 +21,10 @@ import javax.faces.bean.SessionScoped;
 @SessionScoped
 public class ProductController implements Serializable {
   //
-  @ManagedProperty(value = "#{applicationManagers}")
+  @Inject
   ApplicationManagers manager;
   private String name;
-  private int value;
-  private int count;
+  private double value;
   private int userId;
 
   @EJB
@@ -40,40 +39,28 @@ public class ProductController implements Serializable {
   }
 
   public void setManager(ApplicationManagers manager) {
-    System.out.println("jsf.ProductController.setManager()");
     this.manager = manager;
   }
 
   public String getName() {
-    System.out.println("jsf.ProductController.getName()");
     return name;
   }
 
   public void setName(String name) {
-    System.out.println("jsf.ProductController.setName()");
     this.name = name;
   }
 
-  public int getValue() {
+  public double getValue() {
     return value;
   }
 
-  public void setValue(int value) {
+  public void setValue(double value) {
     this.value = value;
   }
 
-  public int getCount() {
-    return count;
-  }
-
-  public void setCount(int count) {
-    this.count = count;
-  }
-
   public Product createProduct() {
-    Product p = new Product(name, value, count);
+    Product p = new Product(name, value);
     setName("");
-    setCount(0);
     setValue(0);
     return pf.createProduct(p);
   }

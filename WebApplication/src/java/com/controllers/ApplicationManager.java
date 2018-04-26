@@ -126,7 +126,6 @@ public class ApplicationManager implements Serializable {
     User user = DataQuery.getInstance().getUserById(userId);
     newCalendar.setUser(user);
     newCalendar = DataQuery.getInstance().addCalendar(newCalendar, true);
-    user.addCalendar(newCalendar);
     return newCalendar.getId();
   }
 
@@ -223,7 +222,6 @@ public class ApplicationManager implements Serializable {
                 if (c2 == null) {
                   c.setUser(DataQuery.getInstance().getUserById(userId));
                   c2 = DataQuery.getInstance().addCalendar(c, false);
-                  u.addCalendar(c2);
                 }
                 while (jParser.nextToken() != JsonToken.END_ARRAY) {
                   Event e = new Event();

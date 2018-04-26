@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -33,6 +34,8 @@ public class Ingredient implements Serializable {
   private Recipe recipe;
   @JoinColumn(name = "product", referencedColumnName = "id") @ManyToOne
   private Product product;
+  @Basic(optional = false) @NotNull @Column(name = "count")
+  private double count;
   //
 
   public Ingredient() {
@@ -40,6 +43,12 @@ public class Ingredient implements Serializable {
 
   public Ingredient(Integer id) {
     this.id = id;
+  }
+
+  public Ingredient(Recipe recipe, Product product, double count) {
+    this.recipe = recipe;
+    this.product = product;
+    this.count = count;
   }
 
   public Integer getId() {
@@ -89,6 +98,14 @@ public class Ingredient implements Serializable {
   @Override
   public String toString() {
     return "entity.Ingredient[ id=" + id + " ]";
+  }
+
+  public double getCount() {
+    return count;
+  }
+
+  public void setCount(double count) {
+    this.count = count;
   }
 
 }

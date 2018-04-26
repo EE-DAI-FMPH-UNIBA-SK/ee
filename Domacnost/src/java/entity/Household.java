@@ -33,6 +33,8 @@ import javax.xml.bind.annotation.XmlTransient;
   @NamedQuery(name = "Household.findByAdmin", query = "SELECT h FROM Household h WHERE h.admin = :admin"),
   @NamedQuery(name = "Household.findByName", query = "SELECT h FROM Household h WHERE h.name = :name")})
 public class Household implements Serializable {
+  @OneToMany(mappedBy = "household")
+  private List<Recipe> recipeList;
   private static final long serialVersionUID = 1L;
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Basic(optional = false) @Column(name = "id")
   private Integer id;
@@ -47,6 +49,8 @@ public class Household implements Serializable {
   //
   @Transient
   private ShoppingList selectedShoppingList;
+  @Transient
+  private Recipe selectedRecipe;
 
   public Household() {
   }
@@ -128,6 +132,31 @@ public class Household implements Serializable {
 
   public void setUserInHouseholdCollection(List<UserInHousehold> userInHouseholdCollection) {
     this.userInHouseholdCollection = userInHouseholdCollection;
+  }
+
+  public Recipe getSelectedRecipe() {
+    return selectedRecipe;
+  }
+
+  public void setSelectedRecipe(Recipe selectedRecipe) {
+    this.selectedRecipe = selectedRecipe;
+  }
+
+  public void addRecipe(Recipe r) {
+    recipeList.add(r);
+  }
+
+  public void deleteRecipe(Recipe r) {
+    recipeList.remove(r);
+  }
+
+  @XmlTransient
+  public List<Recipe> getRecipeList() {
+    return recipeList;
+  }
+
+  public void setRecipeList(List<Recipe> recipeList) {
+    this.recipeList = recipeList;
   }
 
   @Override

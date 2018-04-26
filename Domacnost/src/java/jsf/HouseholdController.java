@@ -81,7 +81,6 @@ public class HouseholdController implements Serializable {
 
   @PostConstruct
   private void init() {
-    java.util.Calendar c = java.util.Calendar.getInstance();
     userId = SessionUtils.getUserId();
     user = uf.getUserById(userId);
     selectedHousehold = null;

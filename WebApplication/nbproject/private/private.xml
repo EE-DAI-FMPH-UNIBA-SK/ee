@@ -3,13 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group name="Diplomovka">
-            <file>file:/C:/Users/Livia/Documents/Skola/Diplomovka/repozit/WebApplication/src/java/com/controllers/ApplicationManager.java</file>
+            <file>file:/C:/Users/Livia/Documents/Skola/Diplomovka/repozit/WebApplication/src/java/com/query/DataQuery.java</file>
+            <file>file:/C:/Users/Livia/Documents/Skola/Diplomovka/repozit/WebApplication/src/java/service/ApplicationConfig.java</file>
             <file>file:/C:/Users/Livia/Documents/Skola/Diplomovka/repozit/WebApplication/src/java/com/entity/Event.java</file>
-            <file>file:/C:/Users/Livia/Documents/Skola/Diplomovka/repozit/WebApplication/web/resources/js/calendar.js</file>
-            <file>file:/C:/Users/Livia/Documents/Skola/Diplomovka/repozit/WebApplication/src/java/websocket/ServerEndpoint.java</file>
-            <file>file:/C:/Users/Livia/Documents/Skola/Diplomovka/repozit/WebApplication/src/java/JSON/CallendarJSON.java</file>
-            <file>file:/C:/Users/Livia/Documents/Skola/Diplomovka/repozit/WebApplication/web/calendars.xhtml</file>
-            <file>file:/C:/Users/Livia/Documents/Skola/Diplomovka/repozit/WebApplication/src/java/jms/FindReader.java</file>
+            <file>file:/C:/Users/Livia/Documents/Skola/Diplomovka/repozit/WebApplication/src/java/service/CreateEventResource.java</file>
+            <file>file:/C:/Users/Livia/Documents/Skola/Diplomovka/repozit/WebApplication/src/java/com/entity/Calendar.java</file>
         </group>
     </open-files>
 </project-private>

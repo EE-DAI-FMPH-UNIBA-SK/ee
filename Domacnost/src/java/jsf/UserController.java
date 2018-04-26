@@ -56,6 +56,10 @@ public class UserController implements Serializable {
 
   public void checkLoggin() {
     if (userId != 0) {
+      int id = SessionUtils.getUserId();
+      if (id == 0) {
+        return;
+      }
       manager.setHousehold(userId, null);
       try {
         String uri = "householders.xhtml";
@@ -65,7 +69,6 @@ public class UserController implements Serializable {
         System.out.println(ex.getMessage());
       }
     }
-
   }
 
   public UserFacade getUf() {

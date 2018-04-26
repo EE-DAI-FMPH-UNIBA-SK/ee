@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -27,6 +28,8 @@ import javax.xml.bind.annotation.XmlRootElement;
   @NamedQuery(name = "Item.findById", query = "SELECT i FROM Item i WHERE i.id = :id"),
   @NamedQuery(name = "Item.findByDone", query = "SELECT i FROM Item i WHERE i.done = :done")})
 public class Item implements Serializable {
+  @Basic(optional = false) @NotNull @Column(name = "count")
+  private double count;
   private static final long serialVersionUID = 1L;
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Basic(optional = false) @Column(name = "id")
   private Integer id;
@@ -45,9 +48,10 @@ public class Item implements Serializable {
     this.id = id;
   }
 
-  public Item(Product product, ShoppingList shoppingList) {
+  public Item(Product product, ShoppingList shoppingList, double count) {
     this.product = product;
     this.shoppingList = shoppingList;
+    this.count = count;
     this.done = false;
   }
 
@@ -106,6 +110,14 @@ public class Item implements Serializable {
   @Override
   public String toString() {
     return "entity.Item[ id=" + id + " ]";
+  }
+
+  public double getCount() {
+    return count;
+  }
+
+  public void setCount(double count) {
+    this.count = count;
   }
 
 }
