@@ -11,7 +11,7 @@ import javax.jms.MessageListener;
 
 /**
  *
- * @author MaX
+ * @author Livia
  */
 @MessageDriven(activationConfig = {
   @ActivationConfigProperty(propertyName = "clientId", propertyValue = "jms/topic"),

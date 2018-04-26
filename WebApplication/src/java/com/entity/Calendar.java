@@ -138,4 +138,11 @@ public class Calendar implements Serializable {
     this.eventInCalendarList = eventInCalendarList;
   }
 
+  public void addEventInCalendar(EventInCalendar eic) {
+    eventInCalendarList.add(eic);
+  }
+
+  public void removeEventInCalendar(EventInCalendar eic) {
+    eventInCalendarList.remove(eic);
+  }
 }

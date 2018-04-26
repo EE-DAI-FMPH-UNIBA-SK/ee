@@ -74,6 +74,19 @@ public class Event implements Serializable {
     this.id = id;
   }
 
+  public Event(String name, Date startDate, Date start, int length) {
+    this.name = name;
+    this.startDate = startDate;
+    this.start = start;
+    this.length = length;
+    iter = "";
+    state = 0;
+    java.util.Calendar endDate = java.util.Calendar.getInstance();
+    endDate.setTime(startDate);
+    endDate.add(java.util.Calendar.DAY_OF_YEAR, 1);
+    this.endDate = endDate.getTime();
+  }
+
   public Integer getId() {
     return id;
   }

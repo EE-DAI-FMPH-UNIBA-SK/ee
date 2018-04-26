@@ -80,6 +80,7 @@ public class DataQuery {
       }
       em.persist(calendar);
       et.commit();
+      calendar.getUser().addCalendar(calendar);
       return calendar;
     } catch (Exception e) {
       System.out.println(e.getMessage());
@@ -125,6 +126,7 @@ public class DataQuery {
       }
       em.persist(eventList);
       et.commit();
+      eventList.getCalendar().addEventInCalendar(eventList);
       return eventList;
     } catch (Exception e) {
       System.out.println(e.getMessage());

@@ -43,8 +43,6 @@ public class User implements Serializable {
   @Size(max = 20) @Column(name = "password")
   private String password;
   @OneToMany(mappedBy = "user")
-  private List<Calendar> calendarCollection;
-  @OneToMany(mappedBy = "user")
   private List<ShoppingList> shoppingListCollection;
   @OneToMany(mappedBy = "admin")
   private List<Household> householdCollection;
@@ -89,15 +87,6 @@ public class User implements Serializable {
 
   public void setPassword(String password) {
     this.password = password;
-  }
-
-  @XmlTransient
-  public List<Calendar> getCalendarCollection() {
-    return calendarCollection;
-  }
-
-  public void setCalendarCollection(List<Calendar> calendarCollection) {
-    this.calendarCollection = calendarCollection;
   }
 
   @XmlTransient

@@ -114,8 +114,27 @@
             <h:outputText value="ml/g/piece"/>
             <h:outputText/>
             <f:facet name="footer">
-              <h:message for="newProduct" />
               <h:commandButton value="Create new product" action="#{Product.createProduct()}">
+                <f:ajax execute="@form" render="lists" />
+              </h:commandButton>
+            </f:facet>
+          </h:panelGrid>
+        </div>
+        <div id="webservice">
+          <h:panelGrid columns="2">
+            <h:outputText value="Date of shopping"/>
+            <h:inputText id = "shoppingDate" value = "#{ShoppingList.shoppingDate}">
+              <f:convertDateTime pattern = "dd.MM.yyyy" />
+            </h:inputText>
+            <h:outputText value="Time of shopping"/>
+            <h:inputText id = "shoppingTime" value = "#{ShoppingList.shoppingTime}">
+              <f:convertDateTime pattern = "HH:mm" />
+            </h:inputText>
+            <h:outputText value="Length shopping"/>
+            <h:inputText id = "shoppingLong" value = "#{ShoppingList.shoppingLength}">
+            </h:inputText>
+            <f:facet name="footer">
+              <h:commandButton value="Add shopping list to calendar" action="#{ShoppingList.createShoppingEvent()}">
                 <f:ajax execute="@form" render="lists" />
               </h:commandButton>
             </f:facet>
