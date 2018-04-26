@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
-import javax.faces.bean.ManagedBean;
+import javax.inject.Named;
 import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -56,7 +56,7 @@ import static java.util.stream.Collectors.toList;
  *
  * @author Livia
  */
-@ManagedBean
+@Named
 @ApplicationScoped
 public class ApplicationManager implements Serializable {
   private static final SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm");
