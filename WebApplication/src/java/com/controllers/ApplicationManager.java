@@ -22,8 +22,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -35,22 +33,17 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Topic;
 import javax.jms.TopicConnectionFactory;
+import javax.json.Json;
+import javax.json.stream.JsonParser;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  *
@@ -196,97 +189,137 @@ public class ApplicationManager implements Serializable {
   public void importJsonData(String fileName, int userId) {
     try {
       User u = DataQuery.getInstance().getUserById(userId);
-      JsonFactory jfactory = new JsonFactory();
+      boolean readCalendars = false;
+      boolean readEvents = false;
+      List<Event> events = new ArrayList<>();
+      Event e = new Event();
+      Calendar c = new Calendar();
       InputStream is = new FileInputStream(System.getProperty("java.io.tmpdir") + "/" + fileName);
 
-      JsonParser jParser = jfactory.createJsonParser(is);
+      JsonParser jParser = Json.createParser(is);
+      String keyName = null;
 
-      while (jParser.nextToken() != JsonToken.END_OBJECT) {
-        String fieldname = jParser.getCurrentName();
-        if ("calendars".equals(fieldname)) {
-          while (jParser.nextToken() != JsonToken.END_ARRAY) {
-            Calendar c = new Calendar();
-            while (jParser.nextToken() != JsonToken.END_OBJECT) {
-              String fieldname2 = jParser.getCurrentName();
-              if ("calendarName".equals(fieldname2)) {
-                jParser.nextToken();
-                c.setName(jParser.getText());
-              }
-              if ("visible".equals(fieldname2)) {
-                jParser.nextToken();
-                c.setVisible(jParser.getBooleanValue());
-              }
-              c.setUser(u);
-              if ("events".equals(fieldname2)) {
-                Calendar c2 = DataQuery.getInstance().findCalendarsByName(c.getName());
-                if (c2 == null) {
-                  c.setUser(DataQuery.getInstance().getUserById(userId));
-                  c2 = DataQuery.getInstance().addCalendar(c, false);
-                }
-                while (jParser.nextToken() != JsonToken.END_ARRAY) {
-                  Event e = new Event();
-                  while (jParser.nextToken() != JsonToken.END_OBJECT) {
-                    String fieldname3 = jParser.getCurrentName();
-                    if ("name".equals(fieldname3)) {
-                      jParser.nextToken();
-                      e.setName(jParser.getText());
-                    }
-                    if ("start_date".equals(fieldname3)) {
-                      jParser.nextToken();
-                      e.setStartDate(sdfDate.parse(jParser.getText()));
-                    }
-                    if ("end_date".equals(fieldname3)) {
-                      jParser.nextToken();
-                      e.setEndDate(sdfDate.parse(jParser.getText()));
-                    }
-                    if ("start".equals(fieldname3)) {
-                      jParser.nextToken();
-                      e.setStart(sdfTime.parse(jParser.getText()));
-                    }
-                    if ("length".equals(fieldname3)) {
-                      jParser.nextToken();
-                      e.setLength(jParser.getIntValue());
-                    }
-                    if ("type".equals(fieldname3)) {
-                      jParser.nextToken();
-                      e.setType(jParser.getText());
-                    }
-                    if ("state".equals(fieldname3)) {
-                      jParser.nextToken();
-                      e.setState(jParser.getIntValue());
-                    }
-                    if ("iter".equals(fieldname3)) {
-                      jParser.nextToken();
-                      e.setIter(jParser.getText());
-                    }
-                  }
-                  Event e2 = DataQuery.getInstance().findEventByName(e.getName());
-                  if (e2 == null || e2.getType() != e.getType()) {
-                    e2 = DataQuery.getInstance().addEvent(e);
-                  }
-                  EventInCalendar eL = new EventInCalendar(c2, e2);
-                  DataQuery.getInstance().addCalendarEvent(eL);
-                }
-              }
+      while (jParser.hasNext()) {
+        javax.json.stream.JsonParser.Event event = jParser.next();
+        switch (event) {
+          case START_ARRAY:
+            if (readCalendars) {
+              readEvents = true;
+            } else {
+              readCalendars = true;
             }
-          }
+            break;
+          case START_OBJECT:
+            if (readEvents) {
+              e = new Event();
+            } else {
+              c = new Calendar();
+            }
+            break;
+          case END_ARRAY:
+            if (readEvents) {
+              readEvents = false;
+            } else {
+              readCalendars = false;
+            }
+            break;
+          case END_OBJECT:
+            if (readEvents) {
+              events.add(e);
+            } else {
+              Calendar c2 = DataQuery.getInstance().findCalendarsByName(c.getName());
+              if (c2 == null) {
+                c.setUser(DataQuery.getInstance().getUserById(userId));
+                c2 = DataQuery.getInstance().addCalendar(c, false);
+              }
+              for (Event e1 : events) {
+                Event e2 = DataQuery.getInstance().findEventByName(e1.getName());
+                if (e2 == null || e2.getType() != e.getType()) {
+                  e2 = DataQuery.getInstance().addEvent(e1);
+                }
+                EventInCalendar eL = new EventInCalendar(c2, e2);
+                DataQuery.getInstance().addCalendarEvent(eL);
+              }
+              events = new ArrayList<>();
+            }
+            break;
+          case KEY_NAME:
+            keyName = jParser.getString();
+            break;
+          case VALUE_STRING:
+            setStringValues(c, e, keyName, jParser.getString());
+            break;
+          case VALUE_NUMBER:
+            setNumberValues(e, keyName, jParser.getInt());
+            break;
+          case VALUE_FALSE:
+            c.setVisible(false);
+            break;
+          case VALUE_TRUE:
+            c.setVisible(true);
+            break;
+          case VALUE_NULL:
+            break;
+          default:
         }
       }
+      is.close();
       jParser.close();
-    } catch (JsonGenerationException e) {
+    } catch (IOException ex) {
+      System.out.println(ex.getMessage());
+    }
+  }
 
-      e.printStackTrace();
+  private static void setStringValues(Calendar c, Event e, String key, String value) {
+    switch (key) {
+      case "calendarName":
+        c.setName(value);
+        break;
+      case "name":
+        e.setName(value);
+        break;
+      case "start_date":
+        try {
+          e.setStartDate(sdfDate.parse(value));
+        } catch (ParseException ex) {
+          System.out.println(ex.getMessage());
+        }
+        break;
+      case "end_date":
+        try {
+          e.setEndDate(sdfDate.parse(value));
+        } catch (ParseException ex) {
+          System.out.println(ex.getMessage());
+        }
+        break;
+      case "start":
+        try {
+          e.setStart(sdfTime.parse(value));
+        } catch (ParseException ex) {
+          System.out.println(ex.getMessage());
+        }
+        break;
+      case "type":
+        e.setType(value);
+        break;
+      case "iter":
+        e.setIter(value);
+        break;
+      default:
+        System.out.println("Unknown Key=" + key);
+    }
+  }
 
-    } catch (JsonMappingException e) {
-
-      e.printStackTrace();
-
-    } catch (IOException e) {
-
-      e.printStackTrace();
-
-    } catch (ParseException ex) {
-      ex.printStackTrace();
+  private static void setNumberValues(Event e, String keyName, int value) {
+    switch (keyName) {
+      case "length":
+        e.setLength(value);
+        break;
+      case "state":
+        e.setState(value);
+        break;
+      default:
+        System.out.println("Unknown element with key=" + keyName);
     }
   }
 
@@ -310,7 +343,7 @@ public class ApplicationManager implements Serializable {
       for (int i = 0; i < usersId.length; i++) {
         User u = DataQuery.getInstance().getUserById(Integer.valueOf(usersId[i]));
         events.addAll(u.getCalendarCollection().stream()
-            .map(c -> c.getEventincalendarCollection().stream().collect(toList()))
+            .map(c -> c.getEventincalendarCollection().stream().collect(Collectors.toList()))
             .flatMap(List::stream)
             .map(eic -> eic.getEvent())
             .collect(Collectors.toSet()));
@@ -378,12 +411,13 @@ public class ApplicationManager implements Serializable {
         result += msgValue[1] + "-" + msgValue[2];
       }
       sendResponse(result, msgId);
+
     } catch (ParseException ex) {
-      Logger.getLogger(ApplicationManager.class.getName()).log(Level.SEVERE, null, ex);
+      System.out.println(ex.getMessage());
     }
   }
 
-  public void addJointEvent(String msg, String msgId) throws JMSException {
+  public void addJoinEvent(String msg, String msgId) throws JMSException {
     String result = "event;";
     try {
       String[] msgValue = msg.split(";");
@@ -417,5 +451,8 @@ public class ApplicationManager implements Serializable {
       result += "Error. Event was not created.";
     }
     sendResponse(result, msgId);
+  }
+
+  public void showShoppingListDetail() {
   }
 }

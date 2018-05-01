@@ -3,7 +3,6 @@ package XML;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -18,7 +17,8 @@ import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
-import org.json.simple.JSONObject;
+import javax.json.Json;
+import javax.json.JsonObjectBuilder;
 
 /**
  *
@@ -30,20 +30,21 @@ public class HolidayXML {
   private static String HOLIDAY = "sviatok";
   static final SimpleDateFormat sdfOut = new SimpleDateFormat("yyyy-MM-dd");
   static final SimpleDateFormat sdfIn = new SimpleDateFormat("dd.MM.");
-  private Set<JSONObject> holidaysList = new HashSet<>();
+  private Set<JsonObjectBuilder> holidaysList = new HashSet<>();
   private boolean readEvent;
   private boolean readName;
   private boolean readDate;
   private boolean readLength;
 
   //parsovanie XML pomocou StAX metody
-  public Collection<JSONObject> getHolidays() {
+  public Set<JsonObjectBuilder> getHolidays() {
 
     try {
       XMLInputFactory factory = XMLInputFactory.newInstance();
       InputStream is = HolidayXML.class.getResourceAsStream("/udalosti.xml");
       XMLEventReader eventReader = factory.createXMLEventReader(is);
-      JSONObject jsonObject = new JSONObject();
+
+      JsonObjectBuilder jsonObject = Json.createObjectBuilder();
       Date date = new Date();
 
       while (eventReader.hasNext()) {
@@ -60,7 +61,7 @@ public class HolidayXML {
               String type = attributes.next().getValue();
               if (type.equals(HOLIDAY)) {
                 readEvent = true;
-                jsonObject = new JSONObject();
+                jsonObject = Json.createObjectBuilder();
               }
             } else if (readEvent && name.equalsIgnoreCase("nazov")) {
               readName = true;
@@ -74,7 +75,7 @@ public class HolidayXML {
           case XMLStreamConstants.CHARACTERS:
             Characters characters = event.asCharacters();
             if (readEvent && readName) {
-              jsonObject.put("title", characters.getData());
+              jsonObject.add("title", characters.getData());
               readName = false;
             }
             if (readEvent && readDate) {
@@ -84,7 +85,7 @@ public class HolidayXML {
                 cal.setTime(sdfIn.parse(characters.getData()));
                 cal.set(Calendar.YEAR, year);
                 date = cal.getTime();
-                jsonObject.put("start", sdfOut.format(date));
+                jsonObject.add("start", sdfOut.format(date));
               } catch (Exception e) {
               }
               readDate = false;
@@ -95,9 +96,9 @@ public class HolidayXML {
               int length = Integer.valueOf(characters.getData());
               if (length != 24) {
                 cal.add(Calendar.HOUR, Integer.valueOf(length));
-                jsonObject.put("end", sdfOut.format(cal.getTime()));
+                jsonObject.add("end", sdfOut.format(cal.getTime()));
               } else {
-                jsonObject.put("allDay", true);
+                jsonObject.add("allDay", true);
               }
               readLength = false;
             }

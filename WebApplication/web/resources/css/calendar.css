@@ -42,3 +42,18 @@
 .down{
   top: 160px;
 }
+
+h1{
+  text-align: center;
+  color: #1b4079;
+}
+
+.message{
+  color: red;
+}
+
+.table, h4{
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}

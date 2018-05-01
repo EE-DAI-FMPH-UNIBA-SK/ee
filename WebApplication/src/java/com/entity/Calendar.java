@@ -20,8 +20,6 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-
 /**
  *
  * @author Livia
@@ -95,7 +93,7 @@ public class Calendar implements Serializable {
     this.user = user;
   }
 
-  @XmlTransient @JsonIgnore
+  @XmlTransient
   public Collection<EventInCalendar> getEventincalendarCollection() {
     return eventincalendarCollection;
   }
@@ -129,7 +127,7 @@ public class Calendar implements Serializable {
     return "com.entity.Calendar[ id=" + id + " ]";
   }
 
-  @XmlTransient @JsonIgnore
+  @XmlTransient
   public List<EventInCalendar> getEventInCalendarList() {
     return eventInCalendarList;
   }

@@ -22,7 +22,7 @@ import javax.inject.Inject;
 public class ProductController implements Serializable {
   //
   @Inject
-  ApplicationManagers manager;
+  ApplicationManager manager;
   private String name;
   private double value;
   private int userId;
@@ -34,11 +34,11 @@ public class ProductController implements Serializable {
     userId = SessionUtils.getUserId();
   }
 
-  public ApplicationManagers getManager() {
+  public ApplicationManager getManager() {
     return manager;
   }
 
-  public void setManager(ApplicationManagers manager) {
+  public void setManager(ApplicationManager manager) {
     this.manager = manager;
   }
 

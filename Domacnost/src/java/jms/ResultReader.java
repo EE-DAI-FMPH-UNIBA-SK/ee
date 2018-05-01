@@ -1,6 +1,6 @@
 package jms;
 
-import jsf.ApplicationManagers;
+import jsf.ApplicationManager;
 
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
@@ -24,7 +24,7 @@ public class ResultReader implements MessageListener {
   //
 
   @Inject
-  ApplicationManagers appBean;
+  ApplicationManager appBean;
 
   @Override
   public void onMessage(Message message) {

@@ -15,17 +15,17 @@
   </h:head>
   <h:body >
     <h:form id="form" enctype="multipart/form-data">
-      <h:outputText id="userId" value="${Calendar.userId}"/>
+      <h:inputHidden id="userId" value="${Calendar.userId}" />
       <div class="up">
         <div id="addCalendar">
           <p:panelGrid columns="2">
-            <f:facet name="header">Pridať nový kalendár</f:facet>
-            <h:outputText value="Meno"/>
+            <f:facet name="header">Add new calendar</f:facet>
+            <h:outputText value="Name"/>
             <p:inputText id="name"/>
-            <h:outputText value="Verejný kalendár:"/>
+            <h:outputText value="Public calendar:"/>
             <h:selectBooleanCheckbox id="public"/>
             <f:facet name="footer">
-              <input type="button" value="Vytvoriť kalendár" onclick="addCalendar()"/>
+              <input type="button" value="Create calendar" onclick="addCalendar()"/>
             </f:facet>
           </p:panelGrid>
         </div>
@@ -34,19 +34,19 @@
             <h:inputFile value="#{Calendar.file}" id="xmlFile">
               <f:ajax listener="#{Calendar.saveFile()}" />
             </h:inputFile>
-            <input type="button"  value="Import XML dát" onclick="importEvents()" />
+            <input type="button"  value="Import XML data" onclick="importEvents()" />
           </h:form>
           <h:form enctype="multipart/form-data"  id="importJson">
             <h:inputFile value="#{Calendar.file}" id="jsonFile">
               <f:ajax listener="#{Calendar.saveFile()}" />
             </h:inputFile>
-            <input type="button" value="Import JSON dát" onclick="importJson()"/>
+            <input type="button" value="Import JSON data" onclick="importJson()"/>
           </h:form>
         </div>
       </div>
       <div class="down">
         <div class="leftSite">
-          <h3>Kalendáre</h3>
+          <h3>Calendars</h3>
           <div id="calendars"/>
         </div>
         <div class="rightSite" id="showCalendar">

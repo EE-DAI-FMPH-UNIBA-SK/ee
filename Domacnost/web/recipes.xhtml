@@ -6,17 +6,19 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
   <h:head>
     <title>Recipes</title>
+    <h:outputStylesheet name="css/household.css"/>
   </h:head>
   <h:body>
     <h:form id="mainForm" >
       <f:event type="preRenderView" listener="#{Recipe.manager.checkLoggin(Recipe.userId)}" />
-      <h:outputText id="userId" value="${Recipe.userId}" />
-      <h:outputText id="message" value="${Recipe.message}"/>
+      <h:outputText class="message" value="${Recipe.message}"/>
+      <h:inputHidden id="userId" value="${Recipe.userId}" />
       <div id="logout">
         <h:commandButton value="Log out" action="#{Recipe.manager.logout(Recipe.userId)}"/>
       </div>
+
       <h:form id="recipes" rendered="#{Recipe.selectedRecipe==null}">
-        <div id="navigations">
+        <nav id="navigations">
           <div id="householders">
             <h:commandButton value="Householders" action="householders"/>
           </div>
@@ -26,20 +28,10 @@
           <div id="tasksList">
             <h:commandButton value="List of tasks" action="tasks"/>
           </div>
-        </div>
-        <div id="recipeItems">
-          <ui:repeat value="${Recipe.recipes}" var="item" >
-            <h:commandButton action="${Recipe.setSelectedRecipe(item)}" value="${item.name}">
-              <f:ajax execute="@form" render="mainForm" />
-            </h:commandButton>
-            <h:commandButton action="${Recipe.deleteRecipe(item)}" value="X" rendered="${Recipe.selectedHousehold.isAdmin(Recipe.userId)}">
-              <f:ajax execute="@form" render="mainForm" />
-            </h:commandButton>
-            <br/>
-          </ui:repeat>
-        </div>
+        </nav>
 
         <div id="addRecipe">
+          <br/>
           <h:panelGrid columns="2">
             <f:facet name="header">Create new recipe</f:facet>
             <h:outputText value="Name"/>
@@ -56,11 +48,25 @@
           </h:panelGrid>
         </div>
 
+        <div id="recipeItems">
+          <h2>All recipes</h2>
+          <br/>
+          <ui:repeat value="${Recipe.recipes}" var="item" >
+            <h:commandButton action="${Recipe.setSelectedRecipe(item)}" value="${item.name}">
+              <f:ajax execute="@form" render="mainForm" />
+            </h:commandButton>
+            <h:commandButton action="${Recipe.deleteRecipe(item)}" value="X" rendered="${Recipe.selectedHousehold.isAdmin(Recipe.userId)}">
+              <f:ajax execute="@form" render="mainForm" />
+            </h:commandButton>
+            <br/>
+          </ui:repeat>
+        </div>
+
       </h:form>
 
       <h:form id="recipeDetail" rendered="#{Recipe.selectedRecipe!=null}">
 
-        <div id="navigations">
+        <nav id="navigations">
           <div id="householders">
             <h:commandButton value="Householders" action="householders"/>
           </div>
@@ -75,28 +81,29 @@
               <f:ajax execute="@form" render="mainForm" />
             </h:commandButton>
           </div>
-        </div>
+        </nav>
 
         <h1>${Recipe.selectedRecipe.name}</h1>
         <h:outputLabel value="Portions:"/>
-        <h:inputText value="${Recipe.countPortions}" id="portionscount"/>
+        <h:outputText value="${Recipe.countPortions}" id="portionscount"/><br/>
+        <h:outputLabel value="Ingredients:"/>
         <div id="ingredient">
-          <ui:repeat value="${Recipe.ingredients}" var="item" >
-            <h:outputLabel value="${item.count}"/>
-            <h:outputLabel value="${item.product.description}"/>
+          <ui:repeat value="${Recipe.selectedRecipe.ingredientList}" var="item" >
+            <h:outputText value="${item.count} "/>
+            <h:outputText value="${item.product.description}"/>
             <h:commandButton value="X" action="${Recipe.deleteIngredient(item)}" rendered="#{Recipe.selectedHousehold.isAdmin(Recipe.userId)}">
               <f:ajax execute="@form" render="mainForm" />
             </h:commandButton>
             <br/>
           </ui:repeat>
         </div>
-
+        <br/>
         <div id="description">
           <h:outputLabel value="Description:"/>
           <br/>
-          <h:outputLabel value="#{Recipe.selectedRecipe.description}"/>
+          <h:outputText value="#{Recipe.selectedRecipe.description}"/>
         </div>
-
+        <br/>
         <div id="addIngredient">
           <h:panelGrid columns="2">
             <f:facet name="header">Add other ingredient</f:facet>
@@ -133,11 +140,19 @@
           </h:panelGrid>
         </div>
         <div id="calculate">
-          <h:outputText value="New portion count:"/>
+          <h:outputLabel value="New portion count:"/>
           <h:inputText value="#{Recipe.portion}"/>
           <h:commandButton id="calculate" value="Calculate ingredients value" action="${Recipe.calculateIngredient()}">
             <f:ajax execute="@form" render="mainForm" />
           </h:commandButton>
+        </div>
+        <h:outputLabel value="Ingredients:" rendered="${Recipe.portion!=0}"/>
+        <div id="ingredient">
+          <ui:repeat value="#{Recipe.ingredients}" var="item" rendered="#{Recipe.portion!=0}">
+            <h:outputText value="${item.count} "/>
+            <h:outputText value="${item.product.description}"/>
+            <br/>
+          </ui:repeat>
         </div>
       </h:form>
     </h:form>

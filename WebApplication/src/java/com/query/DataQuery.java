@@ -150,6 +150,15 @@ public class DataQuery {
     }
   }
 
+  public Event getEventById(int id) {
+    try {
+      return em.createNamedQuery("Event.findById", Event.class).setParameter("id", id).getSingleResult();
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      return null;
+    }
+  }
+
   public EventInCalendar getEventList(Calendar calendarId, Event eventId) {
     try {
       return em.createNamedQuery("Eventincalendar.findByEventCalendarId", EventInCalendar.class).setParameter("calendarId", calendarId).setParameter("eventId", eventId).getSingleResult();

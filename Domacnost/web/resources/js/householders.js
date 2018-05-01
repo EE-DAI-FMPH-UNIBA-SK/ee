@@ -9,7 +9,7 @@ function connect() {
   wsocket.onmessage = onMessage;
   wsocket.onopen = function (e) {
     console.log("Connection established!");
-    userId = document.getElementById("household:userId").innerText;
+    userId = document.getElementById("household:userId").value;
     console.log(userId);
     wsocket.send("userId;" + userId);
   };

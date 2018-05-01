@@ -31,7 +31,7 @@ public class ShoppingListsController implements Serializable {
   static final SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm");
   //
   @Inject
-  ApplicationManagers manager;
+  ApplicationManager manager;
   private Household selectedHousehold;
   private int userId;
   private ShoppingList selectedShoppingList;
@@ -58,11 +58,11 @@ public class ShoppingListsController implements Serializable {
     manager.setSelectedShoppingList(userId, selectedShoppingList);
   }
 
-  public ApplicationManagers getManager() {
+  public ApplicationManager getManager() {
     return manager;
   }
 
-  public void setManager(ApplicationManagers manager) {
+  public void setManager(ApplicationManager manager) {
     this.manager = manager;
   }
 
@@ -169,13 +169,18 @@ public class ShoppingListsController implements Serializable {
   public void addShoppingList() {
     setMessage("");
     if (name != "" && startDate != null && endDate != null) {
-      ShoppingList newShoppingList = new ShoppingList(name, startDate, endDate, selectedHousehold);
-      slf.create(newShoppingList);
-      selectedHousehold.addShoppingList(newShoppingList);
-      selectedShoppingList = null;
-      setName("");
-      setStartDate(null);
-      setEndDate(null);
+      ShoppingList existShoppingList = slf.findByName(name);
+      if (existShoppingList == null) {
+        ShoppingList newShoppingList = new ShoppingList(name, startDate, endDate, selectedHousehold);
+        slf.create(newShoppingList);
+        selectedHousehold.addShoppingList(newShoppingList);
+        selectedShoppingList = null;
+        setName("");
+        setStartDate(null);
+        setEndDate(null);
+      } else {
+        setMessage("The shopping list with this name already exists, change the name");
+      }
     } else {
       setMessage("You can not create a household. Check the correctness of the data");
     }
@@ -211,7 +216,6 @@ public class ShoppingListsController implements Serializable {
     boolean vysledok = false;
     client.register(ShoppingListsController.class);
     try {
-      System.out.println(shoppingDate);
       vysledok = client
           .target("http://localhost:8080/KalendarDomacnost/webresources/createEvent")
           .path("{name}/{date}/{time}/{length}/{userId}")
@@ -222,7 +226,6 @@ public class ShoppingListsController implements Serializable {
           .resolveTemplate("userId", userId)
           .request()
           .get(Boolean.class);
-      System.out.println(sdfDate.format(shoppingDate));
     } catch (Exception e) {
       e.printStackTrace();
       message = "chyba: " + e.getMessage();

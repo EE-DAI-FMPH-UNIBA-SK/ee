@@ -3,13 +3,14 @@ package XML;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.json.simple.JSONObject;
+import javax.json.Json;
+import javax.json.JsonObjectBuilder;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -19,7 +20,7 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class NamesXML extends DefaultHandler {
   //
-  private Set<JSONObject> namesList = new HashSet<>();
+  private Set<JsonObjectBuilder> namesList = new HashSet<>();
   private boolean readEvent;
   private boolean readName;
   private boolean readDate;
@@ -30,10 +31,10 @@ public class NamesXML extends DefaultHandler {
   private static String NAME = "meniny";
   static final SimpleDateFormat sdfOut = new SimpleDateFormat("yyyy-MM-dd");
   static final SimpleDateFormat sdfIn = new SimpleDateFormat("dd.MM.");
-  private JSONObject jsonObject = new JSONObject();
+  private JsonObjectBuilder jsonObject = Json.createObjectBuilder();
 
   //parsovanie XML pomocou SAX metody
-  public Collection<JSONObject> getNames() {
+  public Set<JsonObjectBuilder> getNames() {
     System.out.println(namesList.size());
     return namesList;
   }
@@ -48,7 +49,7 @@ public class NamesXML extends DefaultHandler {
     if (qName.equals("udalost")) {
       if (atts.getValue("type").equals(NAME)) {
         readEvent = true;
-        jsonObject = new JSONObject();
+        jsonObject = Json.createObjectBuilder();
       }
     } else if (qName.equals("meno") == true && readEvent) {
       readName = true;
@@ -66,23 +67,17 @@ public class NamesXML extends DefaultHandler {
   public void endElement(String uri, String localName, String qName) {
     if (qName.equals("udalost") && readEvent) {
       readEvent = false;
-      jsonObject.put("title", name.toString());
+      jsonObject.add("title", name.toString());
       Calendar cal = Calendar.getInstance();
       int rok = cal.get(Calendar.YEAR);
       try {
         cal.setTime(sdfIn.parse(date.toString()));
         cal.set(Calendar.YEAR, rok);
-        jsonObject.put("start", sdfOut.format(cal.getTime()));
+        jsonObject.add("start", sdfOut.format(cal.getTime()));
       } catch (ParseException ex) {
         Logger.getLogger(NamesXML.class.getName()).log(Level.SEVERE, null, ex);
       }
-      int length = Integer.valueOf(this.length.toString());
-      if (length != 24) {
-        cal.add(Calendar.HOUR, length);
-        jsonObject.put("end", sdfOut.format(cal.getTime()));
-      } else {
-        jsonObject.put("allDay", true);
-      }
+      jsonObject.add("allDay", true);
       namesList.add(jsonObject);
     } else if (qName.equals("meno") == true && readEvent) {
       readName = false;

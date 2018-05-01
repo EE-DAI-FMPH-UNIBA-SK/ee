@@ -17,8 +17,6 @@ import java.text.SimpleDateFormat;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriInfo;
 
 /**
  * REST Web Service
@@ -27,8 +25,6 @@ import javax.ws.rs.core.UriInfo;
  */
 @Path("createEvent")
 public class CreateEventResource {
-  @Context
-  private UriInfo context;
 
   /** Creates a new instance of CreateEventResource */
   public CreateEventResource() {
@@ -45,8 +41,8 @@ public class CreateEventResource {
       @PathParam("length") int length,
       @PathParam("userId") int userId) {
     try {
-      System.out.println(sdfDate.parse(date));
       Event entity = new Event(name, sdfDate.parse(date), sdfTime.parse(time), length);
+      entity.setType("shoppingList");
       entity = DataQuery.getInstance().addEvent(entity);
       User user = DataQuery.getInstance().getUserById(userId);
       for (Calendar c : user.getCalendarCollection()) {

@@ -31,7 +31,7 @@ public class FindReader implements MessageListener {
       if (comp[1].equals("freeTime")) {
         manager.findFreeTime(comp[2], comp[0]);
       } else if (comp[1].equals("event")) {
-        manager.addJointEvent(comp[2], comp[0]);
+        manager.addJoinEvent(comp[2], comp[0]);
       }
     } catch (JMSException ex) {
       ex.printStackTrace();

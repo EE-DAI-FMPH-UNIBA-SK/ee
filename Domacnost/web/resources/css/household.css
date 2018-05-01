@@ -1,9 +1,63 @@
-#householderItems, #householdUsers{
+#addHousehold, #householdUsers, #addRecipe, #newSL{
   width: 50%;
   float: left;
 }
 
-#addHousehold{
+#householderItems, #recipeItems, #slItems{
   width: 50%;
   float: right;
+}
+
+input[type="submit"]{
+  margin-right: 5px;
+}
+
+.table, h4{
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+#logout{
+  width:100%;
+  float: left;
+}
+
+#logout input{
+  float:right;
+}
+
+nav div{
+  display: inline-block;
+}
+
+#addIngredient,#newProduct,#newItem{
+  display: inline-block;
+  width: 49%;
+  padding-bottom: 20px;
+}
+
+label{
+  padding-right: 5px;
+  font-weight: bold;
+}
+
+.message{
+  color: red;
+}
+
+body{
+  background-color: #5fbff9;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  margin-left: 30px;
+  margin-right: 30px;
+}
+
+th,h1,h2,h3,h4{
+  color: #1b4079;
+}
+
+h1{
+  text-align: center;
 }
