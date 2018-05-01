@@ -1,6 +1,6 @@
 package websocket;
 
-import jsf.ApplicationManagers;
+import jsf.ApplicationManager;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -22,7 +22,7 @@ public class FindWebsocket {
   private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
   //
   @Inject
-  ApplicationManagers manager;
+  ApplicationManager manager;
 
   Session mySession;
 

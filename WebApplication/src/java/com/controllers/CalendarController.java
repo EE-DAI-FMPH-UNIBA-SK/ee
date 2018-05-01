@@ -14,15 +14,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 import javax.servlet.http.Part;
 
 /**
  *
  * @author Livia
  */
-@ManagedBean(name = "Calendar")
+@Named("Calendar")
 @ApplicationScoped
 public class CalendarController implements Serializable {
   //

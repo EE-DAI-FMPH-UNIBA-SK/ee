@@ -12,6 +12,7 @@ import webservice.client.Prepocet;
 import webservice.client.Prepocet_Service;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,7 @@ import javax.xml.ws.WebServiceRef;
 public class RecipeController implements Serializable {
   //
   @Inject
-  ApplicationManagers manager;
+  ApplicationManager manager;
   private int userId;
   private String message;
   private Recipe selectedRecipe;
@@ -45,7 +46,7 @@ public class RecipeController implements Serializable {
   private Product newProduct;
   private double productCount;
 
-  private int portion;
+  private int portion = 0;
   private List<Ingredient> ingredients;
 //
   @EJB
@@ -71,11 +72,11 @@ public class RecipeController implements Serializable {
     recipes = manager.getSelectHousehold(userId).getRecipeList();
   }
 
-  public ApplicationManagers getManager() {
+  public ApplicationManager getManager() {
     return manager;
   }
 
-  public void setManager(ApplicationManagers manager) {
+  public void setManager(ApplicationManager manager) {
     this.manager = manager;
   }
 
@@ -103,7 +104,10 @@ public class RecipeController implements Serializable {
     this.selectedRecipe = selectedRecipe;
     portion = 0;
     if (selectedRecipe != null) {
-      ingredients = selectedRecipe.getIngredientList();
+      ingredients = new ArrayList<>();
+      for (Ingredient i : selectedRecipe.getIngredientList()) {
+        ingredients.add(new Ingredient(null, i.getProduct(), i.getCount()));
+      }
       countPortions = selectedRecipe.getCountPortions();
     } else {
       countPortions = 0;
@@ -232,9 +236,9 @@ public class RecipeController implements Serializable {
 
   public void calculateIngredient() {
     Prepocet prepocet = prepocetService.getPrepocetPort();
-    List<Double> ingredients = this.ingredients.stream().map(i -> i.getCount()).collect(Collectors.toList());
+    List<Double> ingredients = selectedRecipe.getIngredientList().stream().map(i -> i.getCount()).collect(Collectors.toList());
     ingredients = prepocet.prepocet(countPortions, portion, ingredients);
-    countPortions = portion;
+    System.out.println(portion);
     for (int i = 0; i < this.ingredients.size(); i++) {
       this.ingredients.get(i).setCount(ingredients.get(i));
     }

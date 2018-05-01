@@ -42,8 +42,6 @@ public class User implements Serializable {
   private String email;
   @Size(max = 20) @Column(name = "password")
   private String password;
-  @OneToMany(mappedBy = "user")
-  private List<ShoppingList> shoppingListCollection;
   @OneToMany(mappedBy = "admin")
   private List<Household> householdCollection;
   @OneToMany(mappedBy = "user")
@@ -55,6 +53,12 @@ public class User implements Serializable {
 
   public User(Integer id) {
     this.id = id;
+  }
+
+  public User(String name, String email, String password) {
+    this.name = name;
+    this.email = email;
+    this.password = password;
   }
 
   public Integer getId() {
@@ -87,15 +91,6 @@ public class User implements Serializable {
 
   public void setPassword(String password) {
     this.password = password;
-  }
-
-  @XmlTransient
-  public List<ShoppingList> getShoppingListCollection() {
-    return shoppingListCollection;
-  }
-
-  public void setShoppingListCollection(List<ShoppingList> shoppingListCollection) {
-    this.shoppingListCollection = shoppingListCollection;
   }
 
   @XmlTransient

@@ -49,8 +49,6 @@ public class ShoppingList implements Serializable {
   private List<Item> itemCollection;
   @JoinColumn(name = "household", referencedColumnName = "id") @ManyToOne
   private Household household;
-  @JoinColumn(name = "user", referencedColumnName = "id") @ManyToOne
-  private User user;
   //
 
   public ShoppingList() {
@@ -114,14 +112,6 @@ public class ShoppingList implements Serializable {
 
   public void setHousehold(Household household) {
     this.household = household;
-  }
-
-  public User getUser() {
-    return user;
-  }
-
-  public void setUser(User user) {
-    this.user = user;
   }
 
   public void removeItem(Item item) {

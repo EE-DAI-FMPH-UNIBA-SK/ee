@@ -22,25 +22,23 @@ import javax.servlet.http.HttpSession;
  */
 @ManagedBean
 @ApplicationScoped
-public class ApplicationManagers implements Serializable {
+public class ApplicationManager implements Serializable {
   //
   String version = "1.0";
 
   private Map<Integer, Household> usersHousholder;
   private Map<Integer, FindWebsocket> userToWs;
 
-  public ApplicationManagers() {
+  public ApplicationManager() {
     usersHousholder = new HashMap<>();
     userToWs = new HashMap<>();
   }
 
   public void newUser(int id) {
-    System.out.println("jsf.ApplicationManagers.newUser()");
     usersHousholder.put(id, null);
   }
 
   public void logout(int userId) {
-    System.out.println("jsf.ApplicationManagers.logout()");
     HttpSession session = SessionUtils.getSession();
     session.setAttribute("userid", 0);
     usersHousholder.remove(userId);

@@ -23,7 +23,7 @@ public class Prepocet {
    * Web service operation
    */
   @WebMethod(operationName = "prepocet")
-  public List<Double> prepocet1(@WebParam(name = "oldPortions") double oldPortions, @WebParam(name = "newPortion") double newPortion, @WebParam(name = "ingredient") List<Double> ingredient) {
+  public List<Double> prepocet(@WebParam(name = "oldPortions") double oldPortions, @WebParam(name = "newPortion") double newPortion, @WebParam(name = "ingredient") List<Double> ingredient) {
     List<Double> result = new ArrayList<>();
     for (int i = 0; i < ingredient.size(); i++) {
       double value = ingredient.get(i) / oldPortions * newPortion;

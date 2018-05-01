@@ -5,21 +5,22 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
   <h:head>
     <title>Facelet Title</title>
+    <h:outputStylesheet name="css/household.css"/>
   </h:head>
   <h:body>
     <f:event type="preRenderView" listener="#{User.checkLoggin()}" />
-    <h:outputText value="#{User.message}"/>
+    <h:outputText class="message" value="#{User.message}"/>
     <h:form>
-      <h3>Login form</h3>
-      <h:panelGrid columns="2">
+      <h1>Application Household</h1>
+
+      <h4>Login form</h4>
+      <h:panelGrid columns="2" class="table">
         <h:outputText value="Email"/>
         <h:inputText value="#{User.email}"/>
-
         <h:outputText value="Password"/>
         <h:inputSecret value="#{User.password}"/>
+        <h:commandButton value="Login" action="#{User.loginControl()}"/>
       </h:panelGrid>
-      <h:commandButton value="Login" action="#{User.loginControl()}"/>
-
     </h:form>
   </h:body>
 </html>

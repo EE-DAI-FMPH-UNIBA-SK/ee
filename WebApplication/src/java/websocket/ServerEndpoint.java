@@ -1,6 +1,7 @@
 package websocket;
 
 import com.controllers.ApplicationManager;
+import com.entity.Event;
 import com.entity.User;
 import com.query.DataQuery;
 
@@ -49,7 +50,6 @@ public class ServerEndpoint {
 
   @OnMessage
   public void onMessage(String text, Session session) {
-    System.err.println(text);
     final RemoteEndpoint.Basic remote = session.getBasicRemote();
     String[] t = text.split(";");
     if (t[0].equals("events")) {
@@ -100,6 +100,18 @@ public class ServerEndpoint {
           remote.sendText("calendarEvents;" + manager.getEvents(u.getSelectedCalendar().getId()));
         }
       } catch (IOException ioe) {
+        System.err.println(ioe.getMessage());
+      }
+    } else if (t[0].equals("showEvent")) {
+      try {
+        if (t[1].equals("")) {
+          return;
+        }
+        Event e = DataQuery.getInstance().getEventById(Integer.valueOf(t[1]));
+        if (e.getType().equals("shoppingList")) {
+          manager.showShoppingListDetail();
+        }
+      } catch (Exception ioe) {
         System.err.println(ioe.getMessage());
       }
     }

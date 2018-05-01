@@ -9,14 +9,14 @@ import com.query.DataQuery;
 
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
 
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObjectBuilder;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 /**
  *
@@ -29,50 +29,52 @@ public class CallendarJSON {
   static final SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm");
 
   public String getEvents(int calendarId) {
-    JSONObject obj = new JSONObject();
+    JsonObjectBuilder obj = Json.createObjectBuilder();
     Calendar calendar = DataQuery.getInstance().getCalendarById(calendarId);
-    JSONArray events = new JSONArray();
+    JsonArrayBuilder events = Json.createArrayBuilder();
     if (calendar != null) {
       for (EventInCalendar el : calendar.getEventincalendarCollection()) {
         Event e = el.getEvent();
         if (e != null) {
-          JSONObject event = new JSONObject();
-          event.put("title", e.getName());
+          JsonObjectBuilder event = Json.createObjectBuilder();
+          event.add("id", e.getId());
+          event.add("title", e.getName());
           java.util.Calendar cal = java.util.Calendar.getInstance();
           cal.setTime(e.getStartDate());
           cal.add(java.util.Calendar.MILLISECOND, ((int) e.getStart().getTime() + 3600000));
-          event.put("start", sdf2.format(cal.getTime()));
+          event.add("start", sdf2.format(cal.getTime()));
           cal.add(java.util.Calendar.HOUR, e.getLength());
           cal.add(java.util.Calendar.MINUTE, -1);
-          event.put("end", sdf2.format(cal.getTime()));
-          JSONArray dow = new JSONArray();
+          event.add("end", sdf2.format(cal.getTime()));
+          JsonArrayBuilder dow = Json.createArrayBuilder();
           if (!e.getIter().equals("")) {
             for (String i : e.getIter().split(",")) {
               dow.add(Integer.valueOf(i));
             }
-            event.put("dow", dow);
+            event.add("dow", dow);
           }
-          JSONArray ranges = new JSONArray();
-          JSONObject range = new JSONObject();
-          range.put("start", sdf1.format(e.getStartDate()));
-          range.put("end", sdf1.format(e.getEndDate()));
+          JsonArrayBuilder ranges = Json.createArrayBuilder();
+          JsonObjectBuilder range = Json.createObjectBuilder();
+          range.add("start", sdf1.format(e.getStartDate()));
+          range.add("end", sdf1.format(e.getEndDate()));
           ranges.add(range);
-          event.put("ranges", ranges);
+          event.add("ranges", ranges);
           events.add(event);
         }
       }
     }
-    events.addAll(getNames());
+    Set<JsonObjectBuilder> jobList = getNames();
+    jobList.addAll(getHolidays());
+    for (JsonObjectBuilder job : jobList) {
+      events.add(job);
+    }
+    obj.add("events", events);
 
-    events.addAll(getHolidays());
-
-    obj.put("events", events);
-
-    return obj.toJSONString();
+    return obj.build().toString();
 
   }
 
-  private Collection<JSONObject> getNames() {
+  private Set<JsonObjectBuilder> getNames() {
     try {
       SAXParserFactory factory = SAXParserFactory.newInstance();
       SAXParser saxParser = factory.newSAXParser();
@@ -89,7 +91,7 @@ public class CallendarJSON {
     return Collections.EMPTY_SET;
   }
 
-  private Collection<JSONObject> getHolidays() {
+  private Set<JsonObjectBuilder> getHolidays() {
     HolidayXML holidays = new HolidayXML();
     return holidays.getHolidays();
   }

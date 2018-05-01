@@ -41,7 +41,7 @@ public class HouseholdController implements Serializable {
   private EntityManager em;
 
   @Inject
-  ApplicationManagers manager;
+  ApplicationManager manager;
   private User user;
   private User newUser;
   private List<Household> householders;
@@ -97,11 +97,11 @@ public class HouseholdController implements Serializable {
     this.householders = householders;
   }
 
-  public ApplicationManagers getManager() {
+  public ApplicationManager getManager() {
     return manager;
   }
 
-  public void setManager(ApplicationManagers manager) {
+  public void setManager(ApplicationManager manager) {
     this.manager = manager;
   }
 
@@ -311,7 +311,7 @@ public class HouseholdController implements Serializable {
   }
 
 //userId#event#id users in householder;name;startDate;start;length
-  public void createJointEvent() {
+  public void createJoinEvent() {
     if (waitEvent && selectedHousehold != null && startDateEvent != null && eventTime != null) {
       try {
         String msg = userId + "#event#";

@@ -1,5 +1,6 @@
 package jsf;
 
+import entity.User;
 import session.SessionUtils;
 import session.UserFacade;
 
@@ -22,7 +23,8 @@ import javax.servlet.http.HttpSession;
 public class UserController implements Serializable {
   //
   @Inject
-  ApplicationManagers manager;
+  ApplicationManager manager;
+  private String name;
   private String email;
   private String password;
   private String message;
@@ -75,6 +77,14 @@ public class UserController implements Serializable {
     return uf;
   }
 
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
   public String getEmail() {
     return email;
   }
@@ -107,12 +117,19 @@ public class UserController implements Serializable {
     this.message = message;
   }
 
-  public ApplicationManagers getManager() {
+  public ApplicationManager getManager() {
     return manager;
   }
 
-  public void setManager(ApplicationManagers manager) {
+  public void setManager(ApplicationManager manager) {
     this.manager = manager;
   }
 
+  public void addNewUser() {
+    User u = new User(name, email, password);
+    uf.create(u);
+    name = "";
+    email = "";
+    password = "";
+  }
 }

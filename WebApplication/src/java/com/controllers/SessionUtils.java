@@ -29,10 +29,11 @@ public class SessionUtils {
   public static int getUserId() {
     HttpSession session = getSession();
     if (session != null) {
-      return (int) session.getAttribute("userid");
-    } else {
-      return 0;
+      if (session.getAttribute("userid") != null) {
+        return (int) session.getAttribute("userid");
+      }
     }
+    return 0;
   }
 
 }

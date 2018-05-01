@@ -12,14 +12,14 @@
   <h:body>
     <h:form id="household" >
       <f:event type="preRenderView" listener="#{Household.manager.checkLoggin(Household.userId)}" />
-      <h:outputText id="userId" value="${Household.userId}" />
-      <h:outputText id="message" value="${Household.message}"/>
+      <h:inputHidden id="userId" value="${Household.userId}" />
+      <h:outputText class="message" value="${Household.message}"/>
       <div id="logout">
         <h:commandButton value="Log out" action="#{Household.manager.logout(Household.userId)}"/>
       </div>
       <h:form id="householders" rendered="#{Household.selectedHousehold==null}">
-
         <div id="householderItems">
+          <h2>All householders</h2>
           <ui:repeat value="${Household.householders}" var="item" >
             <h:commandButton action="${Household.selectHousehold(item)}" value="${item.name}">
               <f:ajax execute="@form" render="household" />
@@ -32,6 +32,7 @@
         </div>
 
         <div id="addHousehold">
+          <br/>
           <h:panelGrid columns="2">
             <f:facet name="header">Create new householder</f:facet>
             <h:outputText value="Name"/>
@@ -48,7 +49,7 @@
 
       <h:form id="householdDetail" rendered="#{Household.selectedHousehold!=null}">
 
-        <div id="navigations">
+        <nav id="navigations">
           <div id="householdRecipes">
             <h:commandButton value="Recipes" action="recipes"/>
           </div>
@@ -63,21 +64,11 @@
               <f:ajax execute="@form" render="household" />
             </h:commandButton>
           </div>
-        </div>
+        </nav>
 
         <h1>${Household.selectedHousehold.name}</h1>
 
         <div id="householdUsers">
-          <h4>Users in householder</h4>
-
-          <ui:repeat value="${Household.selectedHousehold.userInHouseholdCollection}" var="item" >
-            <h:outputLabel value="${item.user.name}"/>
-            <h:commandButton value="X" action="${Household.deleteUserFromHousehold(item)}" rendered="#{Household.selectedHousehold.admin.equals(Household.user)}">
-              <f:ajax execute="@form" render="household" />
-            </h:commandButton>
-            <br/>
-          </ui:repeat>
-
           <div id="addUserInHousehold">
             <h:panelGrid columns="2">
               <f:facet name="header">Add other user</f:facet>
@@ -94,6 +85,29 @@
               </f:facet>
             </h:panelGrid>
           </div>
+          <div id="addNewUser">
+            <h:panelGrid columns="2" class="table">
+              <h:outputText value="Name"/>
+              <h:inputText value="#{User.name}"/>
+              <h:outputText value="Email"/>
+              <h:inputText value="#{User.email}"/>
+              <h:outputText value="Password"/>
+              <h:inputSecret value="#{User.password}"/>
+              <h:commandButton value="Login" action="#{User.addNewUser()}">
+                <f:ajax execute="@form" render="household" />
+              </h:commandButton>
+            </h:panelGrid>
+          </div>
+          <h4>Users in househol</h4>
+
+          <ui:repeat value="${Household.selectedHousehold.userInHouseholdCollection}" var="item" >
+            <h:outputText value="${item.user.name}"/>
+            <h:commandButton value="X" action="${Household.deleteUserFromHousehold(item)}" rendered="#{Household.selectedHousehold.admin.equals(Household.user)}">
+              <f:ajax execute="@form" render="household" />
+            </h:commandButton>
+            <br/>
+          </ui:repeat>
+
         </div>
 
         <div id="jms">
@@ -132,7 +146,7 @@
               <h:outputText value="Length:"/>
               <h:inputText value="${Household.lengthEvent}"/>
               <f:facet name="footer">
-                <h:commandButton value="Create joint event" action="#{Household.createJointEvent()}"/>
+                <h:commandButton value="Create joint event" action="#{Household.createJoinEvent()}"/>
               </f:facet>
             </h:panelGrid>
           </div>

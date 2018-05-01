@@ -6,11 +6,17 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
   <h:head>
     <title>Shopping lists</title>
+    <h:outputStylesheet name="css/household.css"/>
   </h:head>
   <h:body>
     <h:form id="lists">
       <f:event type="preRenderView" listener="#{ShoppingList.manager.checkLoggin(ShoppingList.userId)}" />
-      <div id="navigations">
+      <h:outputText class="message" value="${ShoppingList.message}"/>
+      <div id="logout">
+        <h:commandButton value="Log out" action="#{ShoppingList.manager.logout(ShoppingList.userId)}"/>
+      </div>
+
+      <nav id="navigations">
         <div id="householdRecipes">
           <h:commandButton value="Recipes" action="recipes"/>
         </div>
@@ -25,35 +31,34 @@
             <f:ajax execute="@form" render="lists" />
           </h:commandButton>
         </div>
-        <div id="logout">
-          <h:commandButton value="Log out" action="#{ShoppingList.manager.logout(ShoppingList.userId)}"/>
-        </div>
-      </div>
-      <div id="newSL">
-        <h:outputText value="${ShoppingList.message}"/>
-        <h:panelGrid columns="2">
-          <f:facet name="header">Create new shopping list</f:facet>
-          <h:outputText value="Name"/>
-          <h:inputText value="${ShoppingList.name}"/>
-          <h:outputText value="Start date"/>
-          <h:inputText id = "startDate" value = "${ShoppingList.startDate}">
-            <f:convertDateTime pattern = "dd.mm.yyyy" />
-          </h:inputText>
-          <h:outputText value="End date"/>
-          <h:inputText id = "endDate" value = "${ShoppingList.endDate}">
-            <f:convertDateTime pattern = "dd.mm.yyyy" />
-          </h:inputText>
-          <f:facet name="footer">
-            <h:message for="selectOneMenu" />
-            <h:commandButton value="Add new shopping list" action="#{ShoppingList.addShoppingList()}">
-              <f:ajax execute="@form" render="lists" />
-            </h:commandButton>
-          </f:facet>
-        </h:panelGrid>
-      </div>
+      </nav>
 
       <h:form id="shoppingLists" rendered="#{ShoppingList.selectedShoppingList==null}">
-        <div id="Items">
+        <div id="newSL">
+          <br/>
+          <h:outputText value="${ShoppingList.message}"/>
+          <h:panelGrid columns="2">
+            <f:facet name="header">Create new shopping list</f:facet>
+            <h:outputText value="Name"/>
+            <h:inputText value="${ShoppingList.name}"/>
+            <h:outputText value="Start date"/>
+            <h:inputText id = "startDate" value = "${ShoppingList.startDate}">
+              <f:convertDateTime pattern = "dd.mm.yyyy" />
+            </h:inputText>
+            <h:outputText value="End date"/>
+            <h:inputText id = "endDate" value = "${ShoppingList.endDate}">
+              <f:convertDateTime pattern = "dd.mm.yyyy" />
+            </h:inputText>
+            <f:facet name="footer">
+              <h:commandButton value="Add new shopping list" action="#{ShoppingList.addShoppingList()}">
+                <f:ajax execute="@form" render="lists" />
+              </h:commandButton>
+            </f:facet>
+          </h:panelGrid>
+        </div>
+
+        <div id="slItems">
+          <h2>All shopping lists</h2>
           <ui:repeat value="${ShoppingList.selectedHousehold.shoppingListCollection}" var="item" >
             <h:commandButton action="${ShoppingList.setSelectedShoppingList(item)}" value="${item.name}">
               <f:ajax execute="@form" render="lists" />
@@ -67,25 +72,27 @@
       </h:form>
 
       <h:form id="selected" rendered="#{ShoppingList.selectedShoppingList!=null}">
-        <h:outputText value="#{ShoppingList.selectedShoppingList.name}"/>
+        <h1>#{ShoppingList.selectedShoppingList.name}</h1>
         <br/>
-        Products:
+        <h:outputLabel value="Products:"/>
         <br/>
         <div>
           <ui:repeat value="${ShoppingList.selectedShoppingList.itemCollection}" var="item" >
             <h:selectBooleanCheckbox value = "${item.done}" title="${item.product.name}">
               <f:ajax listener="#{ShoppingList.changeItemState(item)}" render="@form" />
             </h:selectBooleanCheckbox>
-            <h:outputLabel value="${item.count}"/>
-            <h:outputLabel value="${item.product.description}"/>
+            <h:outputText value="${item.count} "/>
+            <h:outputText value="${item.product.description}"/>
             <h:commandButton action="${ShoppingList.deleteItemFromShoppingList(item)}" value="X">
               <f:ajax execute="@form" render="lists" />
             </h:commandButton>
             <br/>
           </ui:repeat>
         </div>
+
+        <br/>
+
         <div id="newItem">
-          <h:outputText value="${ShoppingList.message}"/>
           <h:panelGrid columns="2">
             <f:facet name="header">Add item in shopping list</f:facet>
             <h:outputText value="Product:"/>
