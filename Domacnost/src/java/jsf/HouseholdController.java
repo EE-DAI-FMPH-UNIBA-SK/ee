@@ -260,6 +260,10 @@ public class HouseholdController implements Serializable {
     setMessage("");
     if (manager.setHousehold(userId, h)) {
       selectedHousehold = h;
+      waitEvent = false;
+      endDate = null;
+      startDate = null;
+      length = 0;
     }
   }
 
@@ -281,7 +285,7 @@ public class HouseholdController implements Serializable {
 
 //userId##freeTime#users:#id users in householder;startDate;endDate;length
   public void findFreeTime() {
-    if (!waitEvent && selectedHousehold != null && startDate != null && endDate != null) {
+    if (selectedHousehold != null && startDate != null && endDate != null) {
       try {
         String msg = user.getId() + "#freeTime#users:";
         for (UserInHousehold uih : selectedHousehold.getUserInHouseholdCollection()) {
@@ -306,7 +310,7 @@ public class HouseholdController implements Serializable {
       eventName = "";
       lengthEvent = 0;
     } else {
-      //message = "Select householder";
+      message = "Select householder";
     }
   }
 

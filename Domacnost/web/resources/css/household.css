@@ -1,11 +1,16 @@
-#addHousehold, #householdUsers, #addRecipe, #newSL{
+#addUserInHousehold, #addHousehold, #householdUsers, #addRecipe, #newSL{
   width: 50%;
   float: left;
 }
 
-#householderItems, #recipeItems, #slItems{
+#householderItems, #recipeItems, #slItems, #addNewUser, #freeTimeForm{
   width: 50%;
   float: right;
+}
+
+#usersItem{
+  width: 100%;
+  float: left;
 }
 
 input[type="submit"]{

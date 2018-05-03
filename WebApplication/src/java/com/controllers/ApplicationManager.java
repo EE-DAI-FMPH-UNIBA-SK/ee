@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -328,7 +329,6 @@ public class ApplicationManager implements Serializable {
     Message msg = context.createTextMessage(originalMsgId + "#" + response);
     msg.setStringProperty("Direction", "ToClient");
     context.createProducer().send(topic, msg);
-    System.out.println("com.controllers.ApplicationManager.sendResponse()");
   }
 
   public void findFreeTime(String msg, String msgId) throws JMSException {
@@ -350,26 +350,24 @@ public class ApplicationManager implements Serializable {
       }
       Set<List<Date>> intervals = new HashSet<>();
       for (Event e : events) {
-        if ((e.getStart().after(start) && e.getStart().before(end)) || (e.getEndDate().after(start) && e.getEndDate().before(end))) {
+        if ((e.getStart().after(start) && e.getStart().before(end))
+            || (e.getEndDate().after(start) && e.getEndDate().before(end))
+            || (e.getEndDate().after(end) && e.getStartDate().before(start))) {
           java.util.Calendar c = java.util.Calendar.getInstance();
           c.setTime(e.getStartDate());
           c.add(java.util.Calendar.MILLISECOND, (int) e.getStart().getTime() + 3600000);
           java.util.Calendar c1 = java.util.Calendar.getInstance();
           c1.setTime(e.getEndDate());
-          c.add(java.util.Calendar.MILLISECOND, (int) e.getStart().getTime() + 3600000);
-          c.add(java.util.Calendar.HOUR, e.getLength());
+          c1.add(java.util.Calendar.MILLISECOND, (int) e.getStart().getTime() + 3600000);
+          c1.add(java.util.Calendar.HOUR, e.getLength());
           if (e.getIter() != null && !e.getIter().equals("")) {
-            String[] iter = e.getIter().split(",");
+            List<String> iter = Arrays.asList(e.getIter().split(","));
 
-            for (int i = 0; i < iter.length; i++) {
-              while (c.before(c1) && c.before(end) && c.after(start)) {
+            while (c.before(c1) && c.getTime().before(end)) {
+              if (c.getTime().after(start)) {
                 int day = c.get(java.util.Calendar.DAY_OF_WEEK);
-                if (day == 1) {
-                  day = 6;
-                } else {
-                  day -= 2;
-                }
-                if (Integer.valueOf(iter[i]) == day) {
+                day -= 1;
+                if (iter.contains(String.valueOf(day))) {
                   java.util.Calendar c2 = java.util.Calendar.getInstance();
                   c2.setTime(c.getTime());
                   c2.add(java.util.Calendar.HOUR, e.getLength());
@@ -377,10 +375,10 @@ public class ApplicationManager implements Serializable {
                   interval.add(c.getTime());
                   interval.add(c2.getTime());
                   intervals.add(interval);
-                } else {
-                  c.add(java.util.Calendar.DAY_OF_YEAR, 1);
                 }
               }
+              c.add(java.util.Calendar.DAY_OF_YEAR, 1);
+
             }
 
           } else {
@@ -394,21 +392,34 @@ public class ApplicationManager implements Serializable {
           }
         }
       }
-      List<List<Date>> sortedIntervals = intervals.stream().sorted((l1, l2) -> l1.get(1).compareTo(l2.get(1))).collect(Collectors.toList());
+      intervals.stream();
+      List<List<Date>> sortedIntervals = intervals.stream()
+          .sorted((l1, l2) -> l1.get(1)
+          .compareTo(l2.get(1)))
+          .collect(Collectors.toList());
       List<List<Date>> resultIntervals = new ArrayList<>();
+      Date s = start;
       for (int i = 0; i < sortedIntervals.size() - 1; i++) {
-        if (length <= (int) (sortedIntervals.get(i + 1).get(0).getTime() - sortedIntervals.get(i).get(1).getTime()) / 3600000) {
+        if (length <= (int) (sortedIntervals.get(i).get(0).getTime() - s.getTime()) / 3600000) {
           List<Date> r = new ArrayList<>();
-          r.add(sortedIntervals.get(i).get(1));
-          r.add(sortedIntervals.get(i + 1).get(0));
+          r.add(s);
+          r.add(sortedIntervals.get(i).get(0));
+          resultIntervals.add(r);
+          s = sortedIntervals.get(i).get(1);
         }
       }
+      if (length <= (int) (end.getTime() - sortedIntervals.get(sortedIntervals.size() - 1).get(1).getTime()) / 3600000) {
+        List<Date> r = new ArrayList<>();
+        r.add(sortedIntervals.get(sortedIntervals.size() - 1).get(1));
+        r.add(end);
+        resultIntervals.add(r);
+      }
       for (int i = 0; i < resultIntervals.size(); i++) {
-        result += finderSdf.format(resultIntervals.get(i).get(0)) + "-";
+        result += finderSdf.format(resultIntervals.get(i).get(0)) + " - ";
         result += finderSdf.format(resultIntervals.get(i).get(1)) + ";";
       }
       if (resultIntervals.isEmpty()) {
-        result += msgValue[1] + "-" + msgValue[2];
+        result += msgValue[1] + " - " + msgValue[2];
       }
       sendResponse(result, msgId);
 

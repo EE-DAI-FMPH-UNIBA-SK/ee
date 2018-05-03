@@ -2,7 +2,6 @@ package com.controllers;
 
 import com.entity.Calendar;
 import com.entity.User;
-import com.query.DataQuery;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,8 +12,10 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.Part;
 
@@ -23,21 +24,26 @@ import javax.servlet.http.Part;
  * @author Livia
  */
 @Named("Calendar")
-@ApplicationScoped
+@SessionScoped
 public class CalendarController implements Serializable {
   //
   private List<Calendar> calendars;
   private Calendar showCalendar;
-
+  @Inject
+  ApplicationManager manager;
   private int userId;
   private User user;
   private Part file;
 
   public CalendarController() {
+  }
+
+  @PostConstruct
+  private void init() {
     int id = SessionUtils.getUserId();
     if (id != 0) {
       userId = id;
-      user = DataQuery.getInstance().getUserById(userId);
+      user = manager.getUser(userId);
       calendars = user.getCalendarCollection().stream().collect(Collectors.toList());
     } else {
       try {
