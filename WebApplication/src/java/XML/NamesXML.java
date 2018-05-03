@@ -35,7 +35,6 @@ public class NamesXML extends DefaultHandler {
 
   //parsovanie XML pomocou SAX metody
   public Set<JsonObjectBuilder> getNames() {
-    System.out.println(namesList.size());
     return namesList;
   }
 

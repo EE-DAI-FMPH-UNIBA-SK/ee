@@ -59,6 +59,10 @@ public class HouseholdController implements Serializable {
   private String eventName;
   private boolean waitEvent = false;
 
+  private String uName = "";
+  private String uEmail = "";
+  private String uPassword = "";
+
   @Resource(lookup = "jms/topicfactory")
   private TopicConnectionFactory connectionFactory;
 
@@ -147,6 +151,30 @@ public class HouseholdController implements Serializable {
 
   public void setNewUser(User newUser) {
     this.newUser = newUser;
+  }
+
+  public String getuName() {
+    return uName;
+  }
+
+  public void setuName(String uName) {
+    this.uName = uName;
+  }
+
+  public String getuEmail() {
+    return uEmail;
+  }
+
+  public void setuEmail(String uEmail) {
+    this.uEmail = uEmail;
+  }
+
+  public String getuPassword() {
+    return uPassword;
+  }
+
+  public void setuPassword(String uPassword) {
+    this.uPassword = uPassword;
   }
 
   public String getMessage() {
@@ -281,6 +309,20 @@ public class HouseholdController implements Serializable {
   public void deleteUserFromHousehold(UserInHousehold householdUser) {
     uhf.deleteUserFromHousehold(householdUser);
     selectedHousehold.deleteUser(householdUser);
+  }
+
+  public void addNewUser() {
+    User u = uf.getUserByName(uName);
+    if (u == null) {
+      u = new User(uName, uEmail, uPassword);
+      uf.create(u);
+      uName = "";
+      uEmail = "";
+      uPassword = "";
+      message = "";
+    } else {
+      message = "The user with name already exists, change name.";
+    }
   }
 
 //userId##freeTime#users:#id users in householder;startDate;endDate;length

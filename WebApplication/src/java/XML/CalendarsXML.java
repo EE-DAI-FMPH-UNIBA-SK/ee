@@ -70,7 +70,6 @@ public class CalendarsXML {
       transformer.transform(new DOMSource(doc), new StreamResult(writer));
 
       String result = writer.getBuffer().toString().replaceAll("\n|\r", "");
-      System.out.println(result);
       return result;
 
     } catch (ParserConfigurationException pce) {

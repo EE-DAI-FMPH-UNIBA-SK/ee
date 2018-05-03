@@ -238,7 +238,6 @@ public class RecipeController implements Serializable {
     Prepocet prepocet = prepocetService.getPrepocetPort();
     List<Double> ingredients = selectedRecipe.getIngredientList().stream().map(i -> i.getCount()).collect(Collectors.toList());
     ingredients = prepocet.prepocet(countPortions, portion, ingredients);
-    System.out.println(portion);
     for (int i = 0; i < this.ingredients.size(); i++) {
       this.ingredients.get(i).setCount(ingredients.get(i));
     }

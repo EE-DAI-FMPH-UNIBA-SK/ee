@@ -89,12 +89,12 @@
             <h:panelGrid columns="2" >
               <f:facet name="header">Create new User</f:facet>
               <h:outputText value="Name"/>
-              <h:inputText value="#{User.name}"/>
+              <h:inputText value="#{Household.uName}"/>
               <h:outputText value="Email"/>
-              <h:inputText value="#{User.email}"/>
+              <h:inputText value="#{Household.uEmail}"/>
               <h:outputText value="Password"/>
-              <h:inputSecret value="#{User.password}"/>
-              <h:commandButton value="Login" action="#{User.addNewUser()}">
+              <h:inputSecret value="#{Household.uPassword}"/>
+              <h:commandButton value="Create" action="#{Household.addNewUser()}">
                 <f:ajax execute="@form" render="household" />
               </h:commandButton>
             </h:panelGrid>

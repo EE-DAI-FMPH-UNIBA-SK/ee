@@ -106,6 +106,9 @@ function showCalendars(dataXML) {
     input.setAttribute("onclick", 'showCalendarsEvents(' + id + ', "' + name + '")');
 
     document.getElementById("calendars").appendChild(input);
+
+    var mybr = document.createElement('br');
+    document.getElementById('calendars').appendChild(mybr);
   }
 }
 

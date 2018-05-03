@@ -43,7 +43,6 @@ public class ServerEndpoint {
   //  "importXML" -> importnute data z XML
   @OnOpen
   public void open(Session session, EndpointConfig conf) {
-    System.out.println("websocket.ServerEndpoint.open()");
     mySession = session;
     final RemoteEndpoint.Basic remote = session.getBasicRemote();
   }

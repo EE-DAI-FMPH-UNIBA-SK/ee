@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.json.Json;
+import javax.json.JsonObjectBuilder;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -16,9 +18,6 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
-
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
 
 /**
  *
@@ -117,7 +116,6 @@ public class HolidayXML {
       System.err.println(ex.getMessage());
       ex.printStackTrace();
     }
-    System.out.println(holidaysList.size());
     return holidaysList;
   }
 

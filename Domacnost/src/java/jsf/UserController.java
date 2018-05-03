@@ -1,6 +1,5 @@
 package jsf;
 
-import entity.User;
 import session.SessionUtils;
 import session.UserFacade;
 
@@ -24,6 +23,7 @@ public class UserController implements Serializable {
   //
   @Inject
   ApplicationManager manager;
+
   private String name;
   private String email;
   private String password;
@@ -123,18 +123,5 @@ public class UserController implements Serializable {
 
   public void setManager(ApplicationManager manager) {
     this.manager = manager;
-  }
-
-  public void addNewUser() {
-    User u = uf.getUserByName(name);
-    if (u == null) {
-      u = new User(name, email, password);
-      uf.create(u);
-      name = "";
-      email = "";
-      password = "";
-    } else {
-      message = "The user with name already exists, change name.";
-    }
   }
 }
