@@ -42,13 +42,13 @@ public class UserController implements Serializable {
   }
 
   public String loginControl() {
-    userId = uf.loginControl(email, password);
+    userId = uf.loginControl(name, password);
     if (userId != 0) {
       manager.newUser(userId);
       HttpSession session = SessionUtils.getSession();
       session.setAttribute("userid", userId);
       message = "";
-      email = "";
+      name = "";
       password = "";
       return "householders";
     }
@@ -126,10 +126,15 @@ public class UserController implements Serializable {
   }
 
   public void addNewUser() {
-    User u = new User(name, email, password);
-    uf.create(u);
-    name = "";
-    email = "";
-    password = "";
+    User u = uf.getUserByName(name);
+    if (u == null) {
+      u = new User(name, email, password);
+      uf.create(u);
+      name = "";
+      email = "";
+      password = "";
+    } else {
+      message = "The user with name already exists, change name.";
+    }
   }
 }

@@ -13,7 +13,7 @@
     <h:form id="household" >
       <f:event type="preRenderView" listener="#{Household.manager.checkLoggin(Household.userId)}" />
       <h:inputHidden id="userId" value="${Household.userId}" />
-      <h:outputText class="message" value="${Household.message}"/>
+      <h:outputText class="message" id="message" value="${Household.message}"/>
       <div id="logout">
         <h:commandButton value="Log out" action="#{Household.manager.logout(Household.userId)}"/>
       </div>
@@ -86,7 +86,8 @@
             </h:panelGrid>
           </div>
           <div id="addNewUser">
-            <h:panelGrid columns="2" class="table">
+            <h:panelGrid columns="2" >
+              <f:facet name="header">Create new User</f:facet>
               <h:outputText value="Name"/>
               <h:inputText value="#{User.name}"/>
               <h:outputText value="Email"/>
@@ -98,16 +99,17 @@
               </h:commandButton>
             </h:panelGrid>
           </div>
-          <h4>Users in househol</h4>
+          <div id="usersItem">
+            <h3>Users in househol</h3>
 
-          <ui:repeat value="${Household.selectedHousehold.userInHouseholdCollection}" var="item" >
-            <h:outputText value="${item.user.name}"/>
-            <h:commandButton value="X" action="${Household.deleteUserFromHousehold(item)}" rendered="#{Household.selectedHousehold.admin.equals(Household.user)}">
-              <f:ajax execute="@form" render="household" />
-            </h:commandButton>
-            <br/>
-          </ui:repeat>
-
+            <ui:repeat value="${Household.selectedHousehold.userInHouseholdCollection}" var="item" >
+              <h:outputText value="${item.user.name} "/>
+              <h:commandButton value="X" action="${Household.deleteUserFromHousehold(item)}" rendered="#{Household.selectedHousehold.admin.equals(Household.user)}">
+                <f:ajax execute="@form" render="household" />
+              </h:commandButton>
+              <br/>
+            </ui:repeat>
+          </div>
         </div>
 
         <div id="jms">
@@ -128,8 +130,8 @@
               <h:commandButton value="Find free time" action="#{Household.findFreeTime()}"/>
             </f:facet>
           </h:panelGrid>
-          <div id="freeTime"></div>
           <div id="freeTimeForm">
+            <div id="freeTime"></div>
             <h:panelGrid columns="2" rendered="#{Household.waitEvent}">
               <f:facet name="header">Create a joint event</f:facet>
               <h:outputText value="Name:"/>

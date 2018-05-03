@@ -29,7 +29,6 @@ public class UserFacade extends AbstractFacade<User> {
 
   public int loginControl(String name, String password) {
     try {
-      em.createNamedQuery("User.findById", User.class).setParameter("id", 1);
       User u = em.createNamedQuery("User.control", User.class).setParameter("name", name).setParameter("password", password).getSingleResult();
       System.err.println(u);
       if (u != null) {
@@ -51,9 +50,9 @@ public class UserFacade extends AbstractFacade<User> {
     }
   }
 
-  public User getUserByEmail(String email) {
+  public User getUserByName(String name) {
     try {
-      return em.createNamedQuery("User.findByEmail", User.class).setParameter("email", email).getSingleResult();
+      return em.createNamedQuery("User.findByName", User.class).setParameter("name", name).getSingleResult();
     } catch (Exception e) {
       System.out.println(e.getMessage());
       return null;

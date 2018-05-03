@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
@@ -19,11 +20,13 @@ import javax.servlet.http.HttpSession;
 @SessionScoped
 public class UserController implements Serializable {
   //
-  private String email;
+  private String name;
   private String password;
   private String message;
-
   private int userId;
+
+  @Inject
+  ApplicationManager manager;
 
   public UserController() {
     int id = SessionUtils.getUserId();
@@ -33,12 +36,14 @@ public class UserController implements Serializable {
   }
 
   public String loginControl() {
-    userId = DataQuery.getInstance().loginControl(email, password);
+    userId = DataQuery.getInstance().loginControl(name, password);
     if (userId != 0) {
+      User user = DataQuery.getInstance().getUserById(userId);
+      manager.newUser(userId, user);
       HttpSession session = SessionUtils.getSession();
       session.setAttribute("userid", userId);
       message = "";
-      email = "";
+      name = "";
       password = "";
       return "calendars";
     }
@@ -59,12 +64,12 @@ public class UserController implements Serializable {
     }
   }
 
-  public String getEmail() {
-    return email;
+  public String getName() {
+    return name;
   }
 
-  public void setEmail(String email) {
-    this.email = email;
+  public void setName(String name) {
+    this.name = name;
   }
 
   public String getPassword() {
