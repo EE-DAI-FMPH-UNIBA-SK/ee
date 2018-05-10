@@ -88,6 +88,18 @@ public class DataQuery {
     }
   }
 
+  public List<Calendar> findPublicCalendars() {
+    try {
+      TypedQuery<Calendar> q = em.createNamedQuery("Calendar.findByVisible", Calendar.class);
+      q.setParameter("visible", true);
+      q.setHint("javax.persistence.cache.storeMode", "REFRESH");
+      return q.getResultList();
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      return Collections.EMPTY_LIST;
+    }
+  }
+
   public Calendar findCalendarsByName(String name) {
     try {
       if (name != null) {

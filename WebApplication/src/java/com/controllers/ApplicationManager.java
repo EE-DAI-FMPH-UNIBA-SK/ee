@@ -105,8 +105,9 @@ public class ApplicationManager implements Serializable {
 
   //websocket
   public String getShowCalendars(int userId) {
-    List<Calendar> calendars = DataQuery.getInstance().getUserById(userId).getCalendarCollection().stream().collect(Collectors.toList());
-    CalendarsXML xml = new CalendarsXML(calendars);
+    Set<Calendar> calendars = DataQuery.getInstance().getUserById(userId).getCalendarCollection().stream().collect(Collectors.toSet());
+    calendars.addAll(DataQuery.getInstance().findPublicCalendars());
+    CalendarsXML xml = new CalendarsXML(calendars.stream().collect(Collectors.toList()));
     return xml.exportXMLData(1);
   }
 
